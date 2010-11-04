@@ -9394,6 +9394,16 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
                 spellId1 = 30069;                           // Blood Frenzy (Rank 1)
                 spellId2 = 30070;                           // Blood Frenzy (Rank 2)
             }
+            else
+            {
+                // Bloodrage & Item - Warrior T10 Protection 4P Bonus
+                if (GetId() == 29131 && m_target->HasAura(70844))
+                {
+                    int32 bp = int32(m_target->GetMaxHealth() * 20 / 100);
+                    m_target->CastCustomSpell(m_target, 70845, &bp, NULL, NULL, true);
+                    return;
+                }
+            }
             break;
         }
         case SPELLFAMILY_WARLOCK:
@@ -9531,8 +9541,11 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
         case SPELLFAMILY_DRUID:
         {
             // Barkskin
-            if (GetId()==22812 && m_target->HasAura(63057)) // Glyph of Barkskin
+            if (GetId() == 22812 && m_target->HasAura(63057)) // Glyph of Barkskin
                 spellId1 = 63058;                           // Glyph - Barkskin 01
+            // Item - Druid T10 Feral 4P Bonus
+            else if (GetId() == 5229 && m_target->HasAura(70726)) // Enrage
+                spellId1 = 70725;
             else
                 return;
             break;
