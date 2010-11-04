@@ -2161,6 +2161,14 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura
                     if (pVictim == this)
                        return SPELL_AURA_PROC_FAILED;
 
+                    // PPM per victim
+                    float ppmJoL = 15.0f; // must be hard-coded + 100% proc chance in DB
+                    WeaponAttackType attType = BASE_ATTACK; // TODO: attack type based? 
+                    uint32 WeaponSpeed = pVictim->GetAttackTime(attType);
+                    float chanceForVictim = pVictim->GetPPMProcChance(WeaponSpeed, ppmJoL);
+                    if (!roll_chance_f(chanceForVictim))
+                       return SPELL_AURA_PROC_FAILED;
+
                     basepoints[0] = int32( pVictim->GetMaxHealth() * triggeredByAura->GetModifier()->m_amount / 100 );
                     pVictim->CastCustomSpell(pVictim, 20267, &basepoints[0], NULL, NULL, true, NULL, triggeredByAura);
                     return SPELL_AURA_PROC_OK;
