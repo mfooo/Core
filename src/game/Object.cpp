@@ -759,6 +759,21 @@ void Object::BuildValuesUpdate(uint8 updatetype, ByteBuffer * data, UpdateMask *
             }
         }
     }
+    else if (isType(TYPEMASK_ITEM))
+    {
+        for (uint16 index = 0; index < m_valuesCount; ++index)
+        {
+            if (updateMask->GetBit(index))
+            {
+                uint32 value = m_uint32Values[index];
+
+                if (index == ITEM_FIELD_FLAGS && GetGuidValue(ITEM_FIELD_GIFTCREATOR).IsEmpty())
+                    value &= ~ITEM_FLAG_HEROIC;
+
+                *data << value;
+            }
+        }
+    }
     else                                                    // other objects case (no special index checks)
     {
         for(uint16 index = 0; index < m_valuesCount; ++index)
