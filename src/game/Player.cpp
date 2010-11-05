@@ -17268,7 +17268,7 @@ InstancePlayerBind* Player::BindToInstance(DungeonPersistentState *state, bool p
         else
         {
             if (!load)
-                CharacterDatabase.PExecute("INSERT INTO character_instance (guid, instance, permanent) VALUES ('%u', '%u', '%u')",
+                CharacterDatabase.PExecute("REPLACE INTO character_instance (guid, instance, permanent) VALUES ('%u', '%u', '%u')",
                     GetGUIDLow(), state->GetInstanceId(), permanent);
         }
 
