@@ -872,6 +872,9 @@
 			</File>
 			<File
 				RelativePath="..\..\src\game\MapUpdater.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\game\MassMailMgr.cpp"
 				>
 			</File>
