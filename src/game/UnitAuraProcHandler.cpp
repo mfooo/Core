@@ -1359,8 +1359,18 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura
                     if (!IsPositiveSpell(procSpell->Id))
                         return SPELL_AURA_PROC_FAILED;
 
+                    if (!pVictim || !pVictim->isAlive())
+                        return SPELL_AURA_PROC_FAILED;	
+
+                     basepoints[0] = damage * 15 / 100;	
+
+                    if (Aura* aura = pVictim->GetAura(64413, EFFECT_INDEX_0))
+                        basepoints[0] += aura->GetModifier()->m_amount;
+
+                    if (basepoints[0] > 20000)
+                        basepoints[0] = 20000;	
+
                     triggered_spell_id = 64413;
-                    basepoints[0] = damage * 15 / 100;
                     break;
                 }
             }
