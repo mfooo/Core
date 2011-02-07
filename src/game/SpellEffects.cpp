@@ -1140,7 +1140,7 @@ void Spell::EffectDummy(SpellEffectIndex eff_idx)
 
                     pGameObj->SetRespawnTime(creatureTarget->GetRespawnTime()-time(NULL));
                     pGameObj->SetOwnerGuid(m_caster->GetObjectGuid() );
-                    pGameObj->SetUInt32Value(GAMEOBJECT_LEVEL, m_caster->getLevel() );
+                    //pGameObj->SetUInt32Value(GAMEOBJECT_LEVEL, m_caster->getLevel() );
                     pGameObj->SetSpellId(m_spellInfo->Id);
 
                     creatureTarget->ForcedDespawn();
