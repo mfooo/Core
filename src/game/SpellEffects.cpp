@@ -6995,7 +6995,7 @@ void Spell::EffectScriptEffect(SpellEffectIndex eff_idx)
                 }
                 case 51904:                                 // Summon Ghouls Of Scarlet Crusade
                 {
-                    if(!unitTarget)
+                    if(!unitTarget || unitTarget->IsFriendlyTo(m_caster))
                         return;
 
                     unitTarget->CastSpell(unitTarget, 54522, true);
