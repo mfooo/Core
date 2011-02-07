@@ -9317,6 +9317,11 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
                     }
                     break;
                 }
+                case 45661:                                 // Encapsulate
+                {
+                    spellId1 = 45665;
+                    break;
+                }
                 default:
                     return;
             }
