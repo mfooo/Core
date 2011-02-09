@@ -2224,3 +2224,16 @@ void Object::ForceValuesUpdateAtIndex(uint32 i)
     }
 }
 // Frozen Mod
+
+void WorldObject::GetCreatureListWithEntryInGrid(std::list<Creature*>& lList, uint32 uiEntry, float fMaxSearchRange)
+{
+    CellPair pair(MaNGOS::ComputeCellPair(this->GetPositionX(), this->GetPositionY()));
+    Cell cell(pair);
+    cell.SetNoCreate();
+
+    MaNGOS::AllCreaturesOfEntryInRange check(this, uiEntry, fMaxSearchRange);
+    MaNGOS::CreatureListSearcher<MaNGOS::AllCreaturesOfEntryInRange> searcher(lList, check);
+    TypeContainerVisitor<MaNGOS::CreatureListSearcher<MaNGOS::AllCreaturesOfEntryInRange>, GridTypeMapContainer> visitor(searcher);
+
+    GetMap()->Visit(cell, visitor);
+}
