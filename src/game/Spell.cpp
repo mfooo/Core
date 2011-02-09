@@ -1616,6 +1616,8 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
                 case 38794:                                 // Murmur's Touch (h)
                 case 50988:                                 // Glare of the Tribunal (Halls of Stone)
                 case 59870:                                 // Glare of the Tribunal (h) (Halls of Stone)
+                case 61916:                                 // Lightning Whirl (10 man)
+                case 63482:                                 // Lightning Whirl (25 man)
                 case 66001:                                 // Touch of Darkness
                 case 67281:
                 case 67282:
