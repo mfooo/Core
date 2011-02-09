@@ -7194,13 +7194,16 @@ void Player::_ApplyItemMods(Item *item, uint8 slot,bool apply)
     if(slot >= INVENTORY_SLOT_BAG_END || !item)
         return;
 
-    // not apply/remove mods for broken item
-    if(item->IsBroken())
-        return;
-
     ItemPrototype const *proto = item->GetProto();
 
     if(!proto)
+        return;
+
+    if(proto->Socket[0].Color)                              //only (un)equipping of items with sockets can influence metagems, so no need to waste time with normal items
+        CorrectMetaGemEnchants(slot, apply);
+
+    // not apply/remove mods for broken item
+    if(item->IsBroken())
         return;
 
     DETAIL_LOG("applying mods for item %u ",item->GetGUIDLow());
@@ -7216,9 +7219,6 @@ void Player::_ApplyItemMods(Item *item, uint8 slot,bool apply)
 
     ApplyItemEquipSpell(item,apply);
     ApplyEnchantment(item, apply);
-
-    if(proto->Socket[0].Color)                              //only (un)equipping of items with sockets can influence metagems, so no need to waste time with normal items
-        CorrectMetaGemEnchants(slot, apply);
 
     DEBUG_LOG("_ApplyItemMods complete.");
 }
@@ -12739,7 +12739,7 @@ void Player::RemoveEnchantmentDurations(Item *item)
     }
 }
 
-void Player::RemoveAllEnchantments(EnchantmentSlot slot)
+void Player::RemoveAllEnchantments(EnchantmentSlot slot, bool isArenaRemove)
 {
     // remove enchantments from equipped items first to clean up the m_enchantDuration list
     for(EnchantDurationList::iterator itr = m_enchantDuration.begin(), next; itr != m_enchantDuration.end(); itr = next)
@@ -12747,6 +12747,20 @@ void Player::RemoveAllEnchantments(EnchantmentSlot slot)
         next = itr;
         if (itr->slot == slot)
         {
+            if(isArenaRemove && itr->item) // Do not remove poisons at arenas
+            {
+                uint32 enchant_id = itr->item->GetEnchantmentId(slot);
+                if(enchant_id)
+                {
+                    SpellItemEnchantmentEntry const *pEnchant = sSpellItemEnchantmentStore.LookupEntry(enchant_id);
+                    if(pEnchant && pEnchant->aura_id == 26) // 26 is poison
+                    {
+                        ++next;
+                        continue;
+                    }
+                }
+            }
+
             if (itr->item && itr->item->GetEnchantmentId(slot))
             {
                 // remove from stats
@@ -17199,7 +17213,7 @@ void Player::_LoadBoundInstances(QueryResult *result)
             }
 
             // since non permanent binds are always solo bind, they can always be reset
-            InstanceSave *save = sInstanceSaveMgr.AddInstanceSave(mapId, instanceId, Difficulty(difficulty), resetTime, !perm, true);
+            InstanceSave *save = sInstanceSaveMgr.AddInstanceSave(mapEntry, instanceId, Difficulty(difficulty), resetTime, !perm, true);
             if(save) BindToInstance(save, perm, true);
         } while(result->NextRow());
         delete result;
