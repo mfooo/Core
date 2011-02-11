@@ -518,6 +518,7 @@ class BattleGround
         virtual void EventPlayerClickedOnFlag(Player* /*player*/, GameObject* /*target_obj*/) {}
         virtual void EventPlayerCapturedFlag(Player* /*player*/) {}
         virtual void EventPlayerDamageGO(Player* /*player*/, GameObject* /*target_obj*/, uint32 /*eventId*/) {}
+        virtual void EventPlayerUsedGO(Player* /*Source*/, GameObject* /*object*/) {}
         virtual void EventSpawnGOSA(Player* /*owner*/, Creature* /*obj*/, float /*x*/, float /*y*/, float /*z*/) {}
         virtual void VirtualUpdatePlayerScore(Player* /*Source*/, uint32 /*type*/, uint32 /*value*/) {}
 
@@ -564,6 +565,7 @@ class BattleGround
         typedef std::vector<ObjectGuid> BGCreatures;
         // TODO drop m_BGObjects
         BGObjects m_BgObjects;
+        BGCreatures m_BgCreatures;
         void SpawnBGObject(ObjectGuid guid, uint32 respawntime);
         bool AddObject(uint32 type, uint32 entry, float x, float y, float z, float o, float rotation0, float rotation1, float rotation2, float rotation3, uint32 respawnTime = 0);
         void SpawnBGCreature(ObjectGuid guid, uint32 respawntime);
