@@ -614,6 +614,29 @@ void BattleGround::CastSpellOnTeam(uint32 SpellID, Team teamId)
     }
 }
 
+void BattleGround::RemoveAuraOnTeam(uint32 SpellID, Team team)
+{
+    for (BattleGroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
+    {
+        if (itr->second.OfflineRemoveTime)
+            continue;
+        Player *plr = sObjectMgr.GetPlayer(itr->first);
+
+        if (!plr)
+        {
+            sLog.outError("Battleground:RemoveAuraOnTeam: Player not found!");
+            continue;
+        }
+
+        Team pTeam = itr->second.PlayerTeam;
+        if (!pTeam)
+            team = plr->GetTeam();
+
+        if (team == pTeam)
+            plr->RemoveAurasDueToSpell(SpellID);
+    }
+}
+
 void BattleGround::RewardHonorToTeam(uint32 Honor, Team teamId)
 {
     for(BattleGroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
@@ -1461,6 +1484,39 @@ bool BattleGround::AddObject(uint32 type, uint32 entry, float x, float y, float 
     return true;
 }
 
+bool BattleGround::AddSpiritGuide(uint32 type, float x, float y, float z, float o, uint32 team)
+{
+     uint32 entry = 0;
+
+     if (team == ALLIANCE)
+         entry = BG_CREATURE_ENTRY_A_SPIRITGUIDE;
+     else
+         entry = BG_CREATURE_ENTRY_H_SPIRITGUIDE;
+
+     Creature* pCreature = AddCreature(entry,type,team,x,y,z,o);
+     if (!pCreature)
+     {
+         sLog.outError("Can't create Spirit guide. Battleground not created!");
+         EndNow();
+         return false;
+     }
+
+     pCreature->SetDeathState(DEAD);
+
+     pCreature->SetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT, pCreature->GetGUID());
+     // aura
+     //TODO: Fix display here
+     //pCreature->SetVisibleAura(0, SPELL_SPIRIT_HEAL_CHANNEL);
+     // casting visual effect
+     pCreature->SetUInt32Value(UNIT_CHANNEL_SPELL, SPELL_SPIRIT_HEAL_CHANNEL);
+     // correct cast speed
+     pCreature->SetFloatValue(UNIT_MOD_CAST_SPEED, 1.0f);
+
+    //pCreature->CastSpell(pCreature, SPELL_SPIRIT_HEAL_CHANNEL, true);
+    pCreature->CastSpell(pCreature, SPELL_SPIRIT_HEAL_CHANNEL, true);
+
+    return true;
+}
 //some doors aren't despawned so we cannot handle their closing in gameobject::update()
 //it would be nice to correctly implement GO_ACTIVATED state and open/close doors in gameobject code
 void BattleGround::DoorClose(ObjectGuid guid)

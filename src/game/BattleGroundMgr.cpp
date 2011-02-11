@@ -1373,6 +1373,9 @@ void BattleGroundMgr::BuildPvpLogDataPacket(WorldPacket *data, BattleGround *bg)
             case BATTLEGROUND_DS:                           // wotlk
             case BATTLEGROUND_RV:                           // wotlk
             case BATTLEGROUND_IC:                           // wotlk
+                *data << uint32(((BattlegroundICScore*)itr->second)->BasesAssaulted);       // bases asssulted
+                *data << uint32(((BattlegroundICScore*)itr->second)->BasesDefended);        // bases defended
+                break;
             case BATTLEGROUND_RB:                           // wotlk
                 *data << (int32)0;                          // 0
                 break;

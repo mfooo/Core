@@ -3605,6 +3605,32 @@ void Spell::EffectTeleportUnits(SpellEffectIndex eff_idx)
 {
     if(!unitTarget || unitTarget->IsTaxiFlying())
         return;
+		
+    switch (m_spellInfo->Id)
+    {
+        case 66550: // teleports outside (Isle of Conquest)
+        {
+            if (Player* pTarget = ((Player*)unitTarget))
+            {
+                if (pTarget->GetTeamId() == TEAM_ALLIANCE)
+                    m_targets.setDestination(442.24f, -835.25f, 44.30f);
+                else
+                    m_targets.setDestination(1120.43f, -762.11f, 47.92f);
+            }
+            break;
+        }
+        case 66551: // teleports inside (Isle of Conquest)
+        {
+            if (Player* pTarget = ((Player*)unitTarget))
+            {
+                if (pTarget->GetTeamId() == TEAM_ALLIANCE)
+                    m_targets.setDestination(389.57f, -832.38f, 48.65f);
+                else
+                    m_targets.setDestination(1174.85f, -763.24f, 48.72f);
+            }
+            break;
+        }
+    }
 
     switch (m_spellInfo->EffectImplicitTargetB[eff_idx])
     {
@@ -4573,7 +4599,7 @@ void Spell::EffectOpenLock(SpellEffectIndex eff_idx)
             if (BattleGround *bg = player->GetBattleGround())
             {
                 // check if it's correct bg
-                if (bg->GetTypeID(true) == BATTLEGROUND_AB || bg->GetTypeID(true) == BATTLEGROUND_AV || bg->GetTypeID(true) == BATTLEGROUND_SA)
+                if (bg->GetTypeID(true) == BATTLEGROUND_AB || bg->GetTypeID(true) == BATTLEGROUND_AV || bg->GetTypeID(true) == BATTLEGROUND_SA || bg->GetTypeID(true) == BATTLEGROUND_IC)
                     bg->EventPlayerClickedOnFlag(player, gameObjTarget);
                 return;
             }

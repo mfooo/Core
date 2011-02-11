@@ -1418,6 +1418,12 @@ void GameObject::Use(Unit* user)
             spellId = info->spellcaster.spellId;
 
             AddUse();
+            // For Isle of Conquest teleports
+            if (user->GetTypeId() == TYPEID_PLAYER)
+                if (((Player*)user)->InBattleGround())
+                    if (BattleGround *bg = ((Player*)user)->GetBattleGround())
+                        bg->EventPlayerUsedGO(((Player*)user), this);
+
             break;
         }
         case GAMEOBJECT_TYPE_MEETINGSTONE:                  //23

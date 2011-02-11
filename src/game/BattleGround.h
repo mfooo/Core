@@ -207,7 +207,10 @@ enum ScoreType
     SCORE_SECONDARY_OBJECTIVES  = 15,
     //SA
     SCORE_GATES_DESTROYED       = 16,
-    SCORE_DEMOLISHERS_DESTROYED = 17
+    SCORE_DEMOLISHERS_DESTROYED = 17,
+    //IC
+    SCORE_BASE_ASSAULTED        = 18,
+    SCORE_BASE_DEFENDED         = 19
 };
 
 enum ArenaType
@@ -446,6 +449,7 @@ class BattleGround
         void PlaySoundToTeam(uint32 SoundID, Team team);
         void PlaySoundToAll(uint32 SoundID);
         void CastSpellOnTeam(uint32 SpellID, Team team);
+        void RemoveAuraOnTeam(uint32 SpellID, Team team);
         void RewardHonorToTeam(uint32 Honor, Team team);
         void RewardReputationToTeam(uint32 faction_id, uint32 Reputation, Team team);
         void RewardMark(Player *plr,uint32 count);
@@ -511,6 +515,11 @@ class BattleGround
 
         void EventPlayerLoggedIn(Player* player, ObjectGuid plr_guid);
         void EventPlayerLoggedOut(Player* player);
+		
+        // this function can be used by spell to interact with the BG map
+        virtual void DoAction(uint32 action, uint64 var) {}
+
+        virtual void HandlePlayerResurrect(Player* player) {}
 
         /* Death related */
         virtual WorldSafeLocsEntry const* GetClosestGraveYard(Player* player);
