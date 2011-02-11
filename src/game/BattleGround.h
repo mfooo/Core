@@ -89,6 +89,7 @@ enum BattleGroundMarksCount
 
 enum BattleGroundSpells
 {
+    SPELL_SPIRIT_HEAL_CHANNEL       = 22011,
     SPELL_ARENA_PREPARATION         = 32727,                // use this one, 32728 not correct
     SPELL_ALLIANCE_GOLD_FLAG        = 32724,
     SPELL_ALLIANCE_GREEN_FLAG       = 32725,
@@ -280,6 +281,12 @@ enum GroupJoinBattlegroundResult
     ERR_IN_NON_RANDOM_BG                    = -15,          // Can't queue for Random Battleground while in another Battleground queue.
 };
 
+enum BattlegroundCreatures
+{
+    BG_CREATURE_ENTRY_A_SPIRITGUIDE      = 13116,           // alliance
+    BG_CREATURE_ENTRY_H_SPIRITGUIDE      = 13117,           // horde
+};
+
 class BattleGroundScore
 {
     public:
@@ -469,6 +476,7 @@ class BattleGround
         void SendWarningToAll(int32 entry, ...);
 
         GameObject* GetBGObject(uint32 type);
+        Creature* GetBGCreature(uint32 type);
 
         // specialized version with 2 string id args
         void SendMessage2ToAll(int32 entry, ChatMsg type, Player const* source, int32 strId1 = 0, int32 strId2 = 0);
@@ -559,7 +567,10 @@ class BattleGround
         void SpawnBGObject(ObjectGuid guid, uint32 respawntime);
         bool AddObject(uint32 type, uint32 entry, float x, float y, float z, float o, float rotation0, float rotation1, float rotation2, float rotation3, uint32 respawnTime = 0);
         void SpawnBGCreature(ObjectGuid guid, uint32 respawntime);
+		Creature* AddCreature(uint32 entry, uint32 type, uint32 teamval, float x, float y, float z, float o, uint32 respawntime = 0);
+        bool AddSpiritGuide(uint32 type, float x, float y, float z, float o, uint32 team);
         bool DelObject(uint32 type);
+        bool DelCreature(uint32 type);
 
         void DoorOpen(ObjectGuid guid);
         void DoorClose(ObjectGuid guid);
