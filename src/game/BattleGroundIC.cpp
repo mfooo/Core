@@ -102,7 +102,7 @@ void BattleGroundIC::DoAction(uint32 action, Player *plr)
     else
     {
         // This is not the correct way to do this, but it seems that horde gunship has a problem with waypoints that cause unexpected behaviour when following the path.
-        plr->TeleportTo(GetMapId(), 660.453003f, -1236.030151, 288.643402, 1.6f);
+        plr->TeleportTo(GetMapId(), 660.453003f, -1236.030151f, 288.643402f, 1.6f);
     }
 }
 
