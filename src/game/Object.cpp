@@ -250,7 +250,8 @@ void Object::BuildMovementUpdate(ByteBuffer * data, uint16 updateFlags) const
                 /*if (((Creature*)unit)->hasUnitState(UNIT_STAT_MOVING))
                     unit->m_movementInfo.SetMovementFlags(MOVEFLAG_FORWARD);*/
 
-                if (((Creature*)unit)->CanFly())
+                if (((Creature*)unit)->CanFly() && !(((Creature*)unit)->CanWalk()
+                    && unit->IsAtGroundLevel(unit->GetPositionX(), unit->GetPositionY(), unit->GetPositionZ())))
                 {
                     // (ok) most seem to have this
                     unit->m_movementInfo.AddMovementFlag(MOVEFLAG_LEVITATING);
@@ -1537,6 +1538,14 @@ bool WorldObject::IsPositionValid() const
     return MaNGOS::IsValidMapCoord(m_positionX,m_positionY,m_positionZ,m_orientation);
 }
 
+bool WorldObject::IsAtGroundLevel(float x, float y, float z) const
+{
+    float groundZ = GetTerrain()->GetHeight(x, y, z, true);
+    if(groundZ <= INVALID_HEIGHT || fabs(groundZ-z) > 0.5f)
+        return false;
+    return true;
+}
+
 void WorldObject::MonsterSay(const char* text, uint32 language, Unit* target)
 {
     WorldPacket data(SMSG_MESSAGECHAT, 200);
@@ -1735,7 +1744,7 @@ Creature* WorldObject::SummonCreature(uint32 id, float x, float y, float z, floa
     if (GetTypeId()==TYPEID_PLAYER)
         team = ((Player*)this)->GetTeam();
 
-    if (!pCreature->Create(sObjectMgr.GenerateLowGuid(HIGHGUID_UNIT), GetMap(), GetPhaseMask(), id, team))
+    if (!pCreature->Create(GetMap()->GenerateLocalLowGuid(HIGHGUID_UNIT), GetMap(), GetPhaseMask(), id, team))
     {
         delete pCreature;
         return NULL;
@@ -1775,7 +1784,10 @@ GameObject* WorldObject::SummonGameobject(uint32 id, float x, float y, float z, 
 
     Map *map = GetMap();
 
-    if(!pGameObj->Create(sObjectMgr.GenerateLowGuid(HIGHGUID_GAMEOBJECT), id, map,
+    if (!map)
+        return NULL;
+
+    if(!pGameObj->Create(map->GenerateLocalLowGuid(HIGHGUID_GAMEOBJECT), id, map,
         GetPhaseMask(), x, y, z, angle, 0.0f, 0.0f, 0.0f, 0.0f, 100, GO_STATE_READY))
     {
         delete pGameObj;

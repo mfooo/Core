@@ -405,6 +405,19 @@ void Spell::EffectSchoolDMG(SpellEffectIndex effect_idx)
                     case 67485:
                         damage += uint32(0.5f * m_caster->GetTotalAttackPowerValue(BASE_ATTACK));
                         break;
+                    //Magic Bane normal (Forge of Souls - Bronjahm)
+                    case 68793:
+                    {
+                        damage += uint32(unitTarget->GetMaxPower(POWER_MANA) / 2);
+                        damage = std::min(damage, 10000);
+                        break;
+                    }
+                    //Magic Bane heroic (Forge of Souls - Bronjahm)
+                    case 69050:
+                    {
+                        damage += uint32(unitTarget->GetMaxPower(POWER_MANA) / 2);
+                        damage = std::min(damage, 15000);
+                    }
                     // Defile damage depending from scale.
                     case 72754:
                     case 73708:
@@ -906,6 +919,16 @@ void Spell::EffectDummy(SpellEffectIndex eff_idx)
         {
             switch(m_spellInfo->Id)
             {
+                case 3360:                                  // Curse of the Eye
+                {
+                    if(!unitTarget)
+                        return;
+
+                    uint32 spell_id = (unitTarget->getGender() == GENDER_MALE) ? 10651: 10653;
+
+                    m_caster->CastSpell(unitTarget, spell_id, true);
+                    return;
+                }
                 case 7671:                                  // Transformation (human<->worgen)
                 {
                     if (!unitTarget)
@@ -1089,7 +1112,7 @@ void Spell::EffectDummy(SpellEffectIndex eff_idx)
 
                     Map *map = unitTarget->GetMap();
 
-                    if (!pGameObj->Create(sObjectMgr.GenerateLowGuid(HIGHGUID_GAMEOBJECT), 177704,
+                    if (!pGameObj->Create(map->GenerateLocalLowGuid(HIGHGUID_GAMEOBJECT), 177704,
                         map, m_caster->GetPhaseMask(),
                         unitTarget->GetPositionX(), unitTarget->GetPositionY(), unitTarget->GetPositionZ(),
                         unitTarget->GetOrientation(), 0.0f, 0.0f, 0.0f, 0.0f, GO_ANIMPROGRESS_DEFAULT, GO_STATE_READY))
@@ -1130,7 +1153,7 @@ void Spell::EffectDummy(SpellEffectIndex eff_idx)
                     Map *map = creatureTarget->GetMap();
 
                     // create before death for get proper coordinates
-                    if (!pGameObj->Create(sObjectMgr.GenerateLowGuid(HIGHGUID_GAMEOBJECT), 179644, map, m_caster->GetPhaseMask(),
+                    if (!pGameObj->Create(map->GenerateLocalLowGuid(HIGHGUID_GAMEOBJECT), 179644, map, m_caster->GetPhaseMask(),
                         creatureTarget->GetPositionX(), creatureTarget->GetPositionY(), creatureTarget->GetPositionZ(),
                         creatureTarget->GetOrientation(), 0.0f, 0.0f, 0.0f, 0.0f, GO_ANIMPROGRESS_DEFAULT, GO_STATE_READY) )
                     {
@@ -1367,6 +1390,20 @@ void Spell::EffectDummy(SpellEffectIndex eff_idx)
                     if (unitTarget)
                         m_caster->CastSpell(unitTarget, 38203, true);
 
+                    return;
+                }
+                case 39189:                                 // Sha'tari Torch
+                {
+                    if (!unitTarget || unitTarget->GetTypeId() != TYPEID_UNIT || m_caster->GetTypeId() != TYPEID_PLAYER)
+                        return;
+
+                    // Flames
+                    if (unitTarget->HasAura(39199))
+                        return;
+
+                    unitTarget->CastSpell(unitTarget, 39199, true);
+                    ((Player*)m_caster)->KilledMonsterCredit(unitTarget->GetEntry(), unitTarget->GetObjectGuid());
+                    ((Creature*)unitTarget)->ForcedDespawn(10000);
                     return;
                 }
                 case 40802:                                 // Mingo's Fortune Generator (Mingo's Fortune Giblets)
@@ -2182,6 +2219,7 @@ void Spell::EffectDummy(SpellEffectIndex eff_idx)
                                                 }
                                             }
                             }
+							m_caster->RemoveAurasDueToSpell(62340);
                             float dist_to_compare = GetSpellRadius(sSpellRadiusStore.LookupEntry(m_spellInfo->EffectRadiusIndex[eff_idx]));
                             if (target && target->GetBase()->IsWithinDist2d(m_targets.m_destX, m_targets.m_destY, dist_to_compare * 2)) // now we use *2 because the location of the seat is not correct
                                 passenger->EnterVehicle(target, 0);
@@ -5308,6 +5346,12 @@ void Spell::DoSummonVehicle(SpellEffectIndex eff_idx, uint32 forceFaction)
         vehicle->SetUInt32Value(UNIT_CREATED_BY_SPELL,m_spellInfo->Id);
         m_caster->CastSpell(vehicle, m_mountspell, true);
         DEBUG_LOG("Caster (guidlow %d) summon vehicle (guidlow %d, entry %d) and mounted with spell %d ", m_caster->GetGUIDLow(), vehicle->GetGUIDLow(), vehicle->GetEntry(), m_mountspell->Id);
+
+		if((((Player*)m_caster)->GetQuestStatus(12779) == QUEST_STATUS_INCOMPLETE) && (vehicle->GetCreatureInfo()->VehicleId == 156))
+		{
+			char * Text = "Vermeidet heranfliegende Pfeile und Speere des Scharlachroten Kreuzzugs,\nindem Ihr aus ihrer Reichweite bleibt!";
+			vehicle->MonsterTextEmote(Text, m_caster, true);
+		}
     }
     else
         sLog.outError("Vehicle (guidlow %d, entry %d) NOT summoned by undefined reason. ", vehicle->GetGUIDLow(), vehicle->GetEntry());
@@ -6252,7 +6296,7 @@ void Spell::EffectSummonObjectWild(SpellEffectIndex eff_idx)
 
     Map *map = target->GetMap();
 
-    if(!pGameObj->Create(sObjectMgr.GenerateLowGuid(HIGHGUID_GAMEOBJECT), gameobject_id, map,
+    if(!pGameObj->Create(map->GenerateLocalLowGuid(HIGHGUID_GAMEOBJECT), gameobject_id, map,
         m_caster->GetPhaseMask(), x, y, z, target->GetOrientation(), 0.0f, 0.0f, 0.0f, 0.0f, GO_ANIMPROGRESS_DEFAULT, GO_STATE_READY))
     {
         delete pGameObj;
@@ -7130,6 +7174,27 @@ void Spell::EffectScriptEffect(SpellEffectIndex eff_idx)
 
                     break;
                 }
+				case 53110:									// Devour Humanoid
+				{
+					if (!unitTarget || unitTarget->GetTypeId() != TYPEID_UNIT || !m_caster)
+						return;
+					
+					// check if it's only the npc Hearthglen Crusader or Tirisfal Crusader
+					if(unitTarget->GetEntry() == 29102 || unitTarget->GetEntry() == 29103)
+					{
+						// check if the distance to the npc is only 15
+						if(15.0f >= m_caster->GetDistance(unitTarget->GetPositionX(), unitTarget->GetPositionY(), unitTarget->GetPositionZ()))
+						{
+							// kill the npc
+							m_caster->CastSpell(unitTarget, 5, false);
+							// despawn the npc
+							((Creature*)unitTarget)->ForcedDespawn();
+							// set the mana of the caster (i.e. Frostbrood Vanquisher) to 100%
+							m_caster->SetPower(POWER_MANA, m_caster->GetMaxPower(POWER_MANA));
+						}
+					}
+					return;
+				}
                 case 54182:                                 // An End to the Suffering: Quest Completion Script
                 {
                     if (!unitTarget)
@@ -7308,6 +7373,37 @@ void Spell::EffectScriptEffect(SpellEffectIndex eff_idx)
                         return;
 
                     unitTarget->CastSpell(unitTarget, 69201, true);
+                    return;
+                }
+                case 62428: // Load into Catapult
+                {
+                    if (VehicleKit *seat = m_caster->GetVehicleKit())
+                        if (Unit *passenger = seat->GetPassenger(0))
+                            if (Unit *demolisher = m_caster->GetVehicle()->GetBase())
+                            {
+                                passenger->EnterVehicle(demolisher->GetVehicleKit(), 3);
+                                demolisher->CastSpell(demolisher, 62340, true);
+                            }
+
+                    return;
+                }
+                case 62482: // Grab Crate
+                {
+                    if (unitTarget)
+                    {
+                        if (VehicleKit *seat = m_caster->GetVehicleKit())
+                        {
+                            if (Creature *oldContainer = dynamic_cast<Creature*>(seat->GetPassenger(1)))
+                            {
+                                if (oldContainer->isAlive())
+                                oldContainer->SetDeathState(JUST_DIED);
+                                oldContainer->RemoveCorpse();
+                            }
+                            // TODO: a hack, range = 11, should after some time cast, otherwise too far
+                            unitTarget->CastSpell(seat->GetBase(), 62496, true);
+                            unitTarget->EnterVehicle(seat, 1);
+                        }
+                    }
                     return;
                 }
                 case 60123: // Lightwell
@@ -8138,7 +8234,7 @@ void Spell::EffectDuel(SpellEffectIndex eff_idx)
     uint32 gameobject_id = m_spellInfo->EffectMiscValue[eff_idx];
 
     Map *map = m_caster->GetMap();
-    if(!pGameObj->Create(sObjectMgr.GenerateLowGuid(HIGHGUID_GAMEOBJECT), gameobject_id,
+    if(!pGameObj->Create(map->GenerateLocalLowGuid(HIGHGUID_GAMEOBJECT), gameobject_id,
         map, m_caster->GetPhaseMask(),
         m_caster->GetPositionX()+(unitTarget->GetPositionX()-m_caster->GetPositionX())/2 ,
         m_caster->GetPositionY()+(unitTarget->GetPositionY()-m_caster->GetPositionY())/2 ,
@@ -8297,7 +8393,7 @@ void Spell::DoSummonTotem(SpellEffectIndex eff_idx, uint8 slot_dbc)
 
     Totem* pTotem = new Totem;
 
-    if (!pTotem->Create(sObjectMgr.GenerateLowGuid(HIGHGUID_UNIT), m_caster->GetMap(), m_caster->GetPhaseMask(),
+    if (!pTotem->Create(m_caster->GetMap()->GenerateLocalLowGuid(HIGHGUID_UNIT), m_caster->GetMap(), m_caster->GetPhaseMask(),
         m_spellInfo->EffectMiscValue[eff_idx], team))
     {
         delete pTotem;
@@ -8530,7 +8626,7 @@ void Spell::EffectSummonObject(SpellEffectIndex eff_idx)
     }
 
     Map *map = m_caster->GetMap();
-    if(!pGameObj->Create(sObjectMgr.GenerateLowGuid(HIGHGUID_GAMEOBJECT), go_id, map,
+    if(!pGameObj->Create(map->GenerateLocalLowGuid(HIGHGUID_GAMEOBJECT), go_id, map,
         m_caster->GetPhaseMask(), x, y, z, m_caster->GetOrientation(), 0.0f, 0.0f, 0.0f, 0.0f, GO_ANIMPROGRESS_DEFAULT, GO_STATE_READY))
     {
         delete pGameObj;
@@ -9163,7 +9259,7 @@ void Spell::EffectTransmitted(SpellEffectIndex eff_idx)
 
     GameObject* pGameObj = new GameObject;
 
-    if(!pGameObj->Create(sObjectMgr.GenerateLowGuid(HIGHGUID_GAMEOBJECT), name_id, cMap,
+    if(!pGameObj->Create(cMap->GenerateLocalLowGuid(HIGHGUID_GAMEOBJECT), name_id, cMap,
         m_caster->GetPhaseMask(), fx, fy, fz, m_caster->GetOrientation(), 0.0f, 0.0f, 0.0f, 0.0f, GO_ANIMPROGRESS_DEFAULT, GO_STATE_READY))
     {
         delete pGameObj;

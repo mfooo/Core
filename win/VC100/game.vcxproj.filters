@@ -147,9 +147,6 @@
     <ClCompile Include="..\..\src\game\InstanceData.cpp">
       <Filter>World/Handlers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\game\InstanceSaveMgr.cpp">
-      <Filter>World/Handlers</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\game\ItemHandler.cpp">
       <Filter>World/Handlers</Filter>
     </ClCompile>
@@ -168,7 +165,8 @@
     <ClCompile Include="..\..\src\game\MapManager.cpp">
       <Filter>World/Handlers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\game\MapUpdater.cpp">
+    <ClCompile Include="..\..\src\game\MapPersistentStateMgr.cpp">
+      <Filter>World/Handlers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\game\MassMailMgr.cpp">
       <Filter>World/Handlers</Filter>
@@ -459,13 +457,13 @@
     <ClCompile Include="..\..\src\game\UnitAuraProcHandler.cpp">
       <Filter>World/Handlers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\game\ChatLexicsCutter.cpp" >
+    <ClCompile Include="..\..\src\game\ChatLexicsCutter.cpp">
       <Filter>Object</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\game\ChatLog.cpp" >
+    <ClCompile Include="..\..\src\game\ChatLog.cpp">
       <Filter>Object</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\game\VehicleHandler.cpp" >
+    <ClCompile Include="..\..\src\game\VehicleHandler.cpp">
       <Filter>Object</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\game\AuctionHouseBot.cpp">
@@ -491,6 +489,9 @@
     </ClCompile>
     <ClCompile Include="..\..\src\game\vmap\WorldModel.cpp">
       <Filter>vmaps</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\game\MapUpdater.cpp">
+      <Filter>World/Handlers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -590,9 +591,6 @@
     <ClInclude Include="..\..\src\game\InstanceData.h">
       <Filter>World/Handlers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\game\InstanceSaveMgr.h">
-      <Filter>World/Handlers</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\game\Mail.h">
       <Filter>World/Handlers</Filter>
     </ClInclude>
@@ -602,7 +600,8 @@
     <ClInclude Include="..\..\src\game\MapManager.h">
       <Filter>World/Handlers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\game\MapUpdater.h">
+    <ClInclude Include="..\..\src\game\MapPersistentStateMgr.h">
+      <Filter>World/Handlers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\game\MassMailMgr.h">
       <Filter>World/Handlers</Filter>
@@ -893,10 +892,10 @@
     <ClInclude Include="..\..\src\game\Camera.h">
       <Filter>Object</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\game\ChatLexicsCutter.h" >
+    <ClInclude Include="..\..\src\game\ChatLexicsCutter.h">
       <Filter>Object</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\game\ChatLog.h" >
+    <ClInclude Include="..\..\src\game\ChatLog.h">
       <Filter>Object</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\game\AuctionHouseBot.h">
@@ -931,6 +930,9 @@
     </ClInclude>
     <ClInclude Include="..\..\src\game\vmap\WorldModel.h">
       <Filter>vmaps</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\game\MapUpdater.h">
+      <Filter>World/Handlers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
