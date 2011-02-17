@@ -18728,15 +18728,11 @@ void Player::_SaveStats()
     CharacterDatabase.Execute(cs.str().c_str());
 
 	std::ostringstream equipmentCache;
-    //equipmentCache<<"UPDATE character_stats SET equipmentCache='";
 
     for(uint16 i = 0; i < m_valuesCount; ++i )
     {
         equipmentCache << GetUInt32Value(i) << " ";
     }
-    //equipmentCache<<"' WHERE guid='"<< GUID_LOPART(GetGUIDLow()) <<"'";
-
-    //CharacterDatabase.Execute(equipmentCache.str().c_str());
 
     std::string sql_name = m_name;
     CharacterDatabase.escape_string(sql_name);
