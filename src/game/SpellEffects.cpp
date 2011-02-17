@@ -1733,6 +1733,7 @@ void Spell::EffectDummy(SpellEffectIndex eff_idx)
                     return;
                 }
                 case 46167:                                 // Planning for the Future: Create Snowfall Glade Pup Cover
+                case 50918:                                 // Gluttonous Lurkers: Create Basilisk Crystals Cover
                 case 50926:                                 // Gluttonous Lurkers: Create Zul'Drak Rat Cover
                 case 51026:                                 // Create Drakkari Medallion Cover
                 case 51592:                                 // Pickup Primordial Hatchling
@@ -1749,6 +1750,7 @@ void Spell::EffectDummy(SpellEffectIndex eff_idx)
                     switch(m_spellInfo->Id)
                     {
                         case 46167: spellId = 46773; break;
+                        case 50918: spellId = 50919; break;
                         case 50926: spellId = 50927; break;
                         case 51026: spellId = 50737; break;
                         case 51592: spellId = 51593; break;
@@ -2434,6 +2436,20 @@ void Spell::EffectDummy(SpellEffectIndex eff_idx)
                     m_caster->CastSpell(unitTarget, 62936, true);
                     return;
                 }
+                case 64981:                                 // Summon Random Vanquished Tentacle
+                {
+                     uint32 spell_id = 0;
+ 
+                     switch(urand(0, 2))
+                     {
+                         case 0: spell_id = 64982; break;    // Summon Vanquished Crusher Tentacle
+                         case 1: spell_id = 64983; break;    // Summon Vanquished Constrictor Tentacle
+                         case 2: spell_id = 64984; break;    // Summon Vanquished Corruptor Tentacle
+                     }
+ 
+                     m_caster->CastSpell(m_caster, spell_id, true);
+                     return;
+                }
                 case 66390:                                 // Read Last Rites
                 {
                     if (!unitTarget || unitTarget->GetTypeId() != TYPEID_UNIT || m_caster->GetTypeId() != TYPEID_PLAYER)
@@ -2543,6 +2559,15 @@ void Spell::EffectDummy(SpellEffectIndex eff_idx)
 
                     unitTarget->CastSpell(unitTarget, 72195, true);
                     break;
+                }
+                case 69922:                                 // Temper Quel'Delar 
+                { 
+                    if (!unitTarget) 
+                        return; 
+ 
+                    // Return Tempered Quel'Delar 
+                    unitTarget->CastSpell(m_caster, 69956, true); 
+                    return; 
                 }
             }
             break;
@@ -7600,6 +7625,23 @@ void Spell::EffectScriptEffect(SpellEffectIndex eff_idx)
                     m_caster->CastSpell(unitTarget, 59807, false);
                     return;
                 }
+                case 50894:                                 // Zul'Drak Rat 
+                { 
+                    if (!unitTarget || unitTarget->GetTypeId() != TYPEID_UNIT) 
+                        return; 
+ 
+                    (SpellAuraHolder* pHolder = unitTarget->GetSpellAuraHolder(m_spellInfo->Id)) 
+                    { 
+                        if (pHolder->GetStackAmount() + 1 >= m_spellInfo->StackAmount)
+                        { 
+                            // Gluttonous Lurkers: Summon Gorged Lurking Basilisk 
+                            unitTarget->CastSpell(m_caster, 50928, true); 
+                            ((Creature*)unitTarget)->ForcedDespawn(1); 
+                        } 
+                    } 
+ 
+                    return; 
+                } 
                 case 51770:                                 // Emblazon Runeblade
                 {
                     Unit* caster = GetAffectiveCaster();
