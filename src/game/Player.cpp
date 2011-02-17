@@ -18080,18 +18080,12 @@ void Player::SaveToDB()
         CharacterDatabase.Execute( ps.str().c_str() );
     }
     /** World of Warcraft Armory **/
-
-    std::string sql_name = m_name;
-    CharacterDatabase.escape_string(sql_name);
-
-    std::ostringstream data_armory;
-    for(uint16 i = 0; i < m_valuesCount; i++)
-    {
-	    data_armory << GetUInt32Value(i) << " ";
-    }
+	
+        std::string sql_name = m_name;
+        CharacterDatabase.escape_string(sql_name);
 
     std::ostringstream ss;
-    ss << "REPLACE INTO characters (guid,account,data,name,race,class,gender,level,xp,money,playerBytes,playerBytes2,playerFlags,"
+    ss << "REPLACE INTO characters (guid,account,name,race,class,gender,level,xp,money,playerBytes,playerBytes2,playerFlags,"
         "map, dungeon_difficulty, position_x, position_y, position_z, orientation, "
         "taximask, online, cinematic, "
         "totaltime, leveltime, rest_bonus, logout_time, is_logout_resting, resettalents_cost, resettalents_time, "
@@ -18101,7 +18095,6 @@ void Player::SaveToDB()
         "power4, power5, power6, power7, specCount, activeSpec, exploredZones, equipmentCache, ammoId, knownTitles, actionBars, grantableLevels) VALUES ("
         << GetGUIDLow() << ", "
         << GetSession()->GetAccountId() << ", '"
-        << data_armory.str().c_str() << "', '"
         << sql_name << "', "
         << (uint32)getRace() << ", "
         << (uint32)getClass() << ", "
@@ -18683,17 +18676,6 @@ void Player::_SaveStats()
     // check if stat saving is enabled and if char level is high enough
     if(!sWorld.getConfig(CONFIG_UINT32_MIN_LEVEL_STAT_SAVE) || getLevel() < sWorld.getConfig(CONFIG_UINT32_MIN_LEVEL_STAT_SAVE))
         return;
-
-	std::ostringstream cs;
-    cs<<"UPDATE characters SET data='";
-
-    for(uint16 i = 0; i < m_valuesCount; ++i )
-    {
-        cs << GetUInt32Value(i) << " ";
-    }
-    cs<<"' WHERE guid='"<< GetGUIDLow() <<"'";
-
-    CharacterDatabase.Execute(cs.str().c_str());
 
 	std::ostringstream equipmentCache;
 
