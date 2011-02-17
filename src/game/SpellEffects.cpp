@@ -937,13 +937,6 @@ void Spell::EffectDummy(SpellEffectIndex eff_idx)
         {
             switch(m_spellInfo->Id)
             {
-                case 69922:                                 // Temper Quel'Delar
-                {
-                    if (m_caster->GetTypeId() != TYPEID_PLAYER)
-                        return;
-
-                    m_caster->CastSpell(m_caster,69956,true,NULL);
-                }
                 case 3360:                                  // Curse of the Eye
                 {
                     if(!unitTarget)
@@ -2401,18 +2394,6 @@ void Spell::EffectDummy(SpellEffectIndex eff_idx)
                         return;
 
                     m_caster->CastSpell(unitTarget,60934,true,NULL);
-                    return;
-                }
-                case 64981:                                 //Vanquished Clutches of Yogg-Saron
-                {
-                   uint32 spell_id = 0;
-                   switch(irand(1,3))
-                   {
-                        case 1: spell_id = 64982; break;
-                        case 2: spell_id = 64983; break;
-                        case 3: spell_id = 64984; break;
-                    }
-                    m_caster->CastSpell(m_caster,spell_id,true);
                     return;
                 }
                 case 64385:                                 // Spinning (from Unusual Compass)
@@ -7630,7 +7611,7 @@ void Spell::EffectScriptEffect(SpellEffectIndex eff_idx)
                     if (!unitTarget || unitTarget->GetTypeId() != TYPEID_UNIT) 
                         return; 
  
-                    (SpellAuraHolder* pHolder = unitTarget->GetSpellAuraHolder(m_spellInfo->Id)) 
+                    if (SpellAuraHolder* pHolder = unitTarget->GetSpellAuraHolder(m_spellInfo->Id))
                     { 
                         if (pHolder->GetStackAmount() + 1 >= m_spellInfo->StackAmount)
                         { 
