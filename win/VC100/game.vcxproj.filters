@@ -541,9 +541,6 @@
     <ClCompile Include="..\..\src\game\playerbot\PlayerbotWarriorAI.cpp">
       <Filter>Playerbot</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\game\LFGMgr.cpp">
-      <Filter>World/Handlers</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\game\AccountMgr.h">
@@ -649,9 +646,6 @@
       <Filter>World/Handlers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\game\MapManager.h">
-      <Filter>World/Handlers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\game\MapUpdater.cpp">
       <Filter>World/Handlers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\game\MapUpdater.h">
@@ -1037,9 +1031,6 @@
       <Filter>Playerbot</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\game\LFG.h">
-      <Filter>World/Handlers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\game\LFGMgr.h">
       <Filter>World/Handlers</Filter>
     </ClInclude>
   </ItemGroup>
