@@ -1549,7 +1549,7 @@ Creature* BattleGround::AddCreature(uint32 entry, uint32 type, uint32 teamval, f
         return NULL;
 
     Creature* pCreature = new Creature;
-    if (!pCreature->Create(sObjectMgr.GenerateLowGuid(HIGHGUID_UNIT), map, PHASEMASK_NORMAL, entry, TEAM_NONE))
+    if (!pCreature->Create(GetBgMap()->GenerateLocalLowGuid(HIGHGUID_UNIT), map, PHASEMASK_NORMAL, entry, TEAM_NONE))
     {
         sLog.outError("Can't create creature entry: %u",entry);
         delete pCreature;

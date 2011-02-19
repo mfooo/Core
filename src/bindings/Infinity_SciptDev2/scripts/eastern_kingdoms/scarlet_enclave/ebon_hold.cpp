@@ -1317,13 +1317,16 @@ struct MANGOS_DLL_DECL npc_eye_of_acherusAI : public ScriptedAI
         if(!m_creature || m_creature->GetTypeId() != TYPEID_UNIT)
             return;
 
-        Unit* owner = m_creature->GetCharmerOrOwner();
+        m_creature->RemoveAurasDueToSpell(530);
 
-        if(!owner || owner->GetTypeId() != TYPEID_PLAYER)
+		Player* owner = ObjectAccessor::FindPlayer(ownerGuid);
+
+        if(!owner)
             return;
 
         owner->RemoveAurasDueToSpell(51852);
-        m_creature->RemoveAurasDueToSpell(530);
+        owner->RemoveAurasDueToSpell(51923);
+		owner->RemoveAurasDueToSpell(51890);
     }
 
     void MovementInform(uint32 uiType, uint32 uiPointId)
