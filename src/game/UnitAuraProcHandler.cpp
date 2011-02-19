@@ -2426,6 +2426,10 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura
                     if (!triggeredEntry)
                         return SPELL_AURA_PROC_FAILED;
 
+                    if(pVictim)
+                        if(!pVictim->HasAura(53569, EFFECT_INDEX_0) && !pVictim->HasAura(53576, EFFECT_INDEX_0))
+                            return SPELL_AURA_PROC_FAILED;
+
                     basepoints[0] = int32(damage / (GetSpellDuration(triggeredEntry) / triggeredEntry->EffectAmplitude[EFFECT_INDEX_0]));
                     target = this;
                     break;
@@ -2520,7 +2524,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura
                 // Totemic Power (The Earthshatterer set)
                 case 28823:
                 {
-                    if( !pVictim )
+                    if (!pVictim)
                         return SPELL_AURA_PROC_FAILED;
 
                     // Set class defined buff
@@ -2565,7 +2569,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura
                         return SPELL_AURA_PROC_FAILED;
 
                     // custom cooldown processing case
-                    if( cooldown && ((Player*)this)->HasSpellCooldown(dummySpell->Id))
+                    if (cooldown && ((Player*)this)->HasSpellCooldown(dummySpell->Id))
                         return SPELL_AURA_PROC_FAILED;
 
                     // Now amount of extra power stored in 1 effect of Enchant spell
@@ -2630,7 +2634,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura
                 // Shaman Tier 6 Trinket
                 case 40463:
                 {
-                    if( !procSpell )
+                    if (!procSpell)
                         return SPELL_AURA_PROC_FAILED;
 
                     float  chance;
