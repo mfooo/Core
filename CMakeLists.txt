@@ -168,7 +168,6 @@ else()
   include(cmake/ImportACE.cmake)
 endif()
 
-<<<<<<< HEAD
 unset(TBB_INCLUDE_DIR CACHE)
 unset(TBB_LIBRARIES CACHE)
 unset(TBB_LIBRARIES_DIR CACHE)
@@ -184,7 +183,7 @@ if(TBB_USE_EXTERNAL)
   endif()
 else()
   include(cmake/ImportTBB.cmake)
-=======
+
 if(NOT USE_STD_MALLOC)
   unset(TBB_INCLUDE_DIR CACHE)
   unset(TBB_LIBRARIES CACHE)
@@ -208,7 +207,7 @@ else()
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DUSE_STANDARD_MALLOC")
   set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -DUSE_STANDARD_MALLOC")
   set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DUSE_STANDARD_MALLOC")
->>>>>>> 45213fbf98841add027e9073375315c694cff535
+
 endif()
 
 # Win32 delifered packages
@@ -243,10 +242,15 @@ add_custom_target(uninstall
 # Find core revision
 if(GIT_EXECUTABLE)
   execute_process(
-    COMMAND ${GIT_EXECUTABLE} describe
+    COMMAND ${GIT_EXECUTABLE} rev-parse HEAD
     WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
     OUTPUT_VARIABLE GIT_REVISION
+    RESULT_VARIABLE GIT_RESULT
+    ERROR_QUIET
   )
+  if(GIT_RESULT)
+    set(GIT_REVISION "Git repository not found")
+  endif()
 else()
   set(GIT_REVISION "Git not found")
 endif()

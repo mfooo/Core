@@ -202,6 +202,7 @@ bool TargetedMovementGeneratorMedium<T,D>::Update(T &owner, const uint32 & time_
         if (owner.GetTypeId() == TYPEID_UNIT && ((Creature*)&owner)->CanFly() &&
             !(((Creature*)&owner)->CanWalk() && ((Creature*)&owner)->IsAtGroundLevel(x,y,z)))
             ((Creature&)owner).AddSplineFlag(SPLINEFLAG_UNKNOWN7);
+    }
 
     if (i_destinationHolder.UpdateTraveller(traveller, time_diff, i_recalculateTravel || owner.IsStopped()))
     {
