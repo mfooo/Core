@@ -10564,6 +10564,8 @@ void Unit::DoPetAction( Player* owner, uint8 flag, uint32 spellid, ObjectGuid pe
 
             if(result == SPELL_CAST_OK)
             {
+                ((Creature*)this)->AddCreatureSpellCooldown(spellid);
+
                 unit_target = spell->m_targets.getUnitTarget();
 
                 //10% chance to play special pet attack talk, else growl
@@ -10622,6 +10624,7 @@ void Unit::DoPetCastSpell( Player *owner, uint8 cast_count, SpellCastTargets* ta
     SpellCastResult result = spell->CheckPetCast(NULL);
     if (result == SPELL_CAST_OK)
     {
+        pet->AddCreatureSpellCooldown(spellInfo->Id);
         if (pet->IsPet())
         {
             //10% chance to play special pet attack talk, else growl

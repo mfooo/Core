@@ -309,6 +309,8 @@ void PetAI::UpdateAI(const uint32 diff)
                     m_creature->SendCreateUpdateToPlayer( (Player*)owner );
             }
 
+            m_creature->AddCreatureSpellCooldown(spell->m_spellInfo->Id);
+
             spell->prepare(&targets);
         }
 

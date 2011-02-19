@@ -47,7 +47,8 @@ void PointMovementGenerator<T>::Initialize(T &unit)
         unit.SendMonsterMoveByPath(pointPath, 1, pointPath.size(), flags, traveltime);
     }
 
-    if (unit.GetTypeId() == TYPEID_UNIT && ((Creature*)&unit)->CanFly())
+    if (unit.GetTypeId() == TYPEID_UNIT && ((Creature*)&unit)->CanFly() &&
+        !(((Creature*)&unit)->CanWalk() && ((Creature*)&unit)->IsAtGroundLevel(i_x, i_y, i_z)))
         ((Creature&)unit).AddSplineFlag(SPLINEFLAG_UNKNOWN7);
 }
 
