@@ -227,7 +227,7 @@ ChatCommand * ChatHandler::getCommandTable()
         { "uws",            SEC_ADMINISTRATOR,  false, &ChatHandler::HandleDebugUpdateWorldStateCommand,    "", NULL },
         { "entervehicle",   SEC_GAMEMASTER,     false, &ChatHandler::HandleDebugEnterVehicleCommand,        "", NULL }, 
         { "setvehicleid",   SEC_GAMEMASTER,     false, &ChatHandler::HandleDebugSetVehicleIdCommand,        "", NULL }, 
-        { NULL                                  0,                  false, NULL,                                                "", NULL }
+        { NULL,             0,                  false, NULL,                                                "", NULL }
     };
 
     static ChatCommand eventCommandTable[] =
