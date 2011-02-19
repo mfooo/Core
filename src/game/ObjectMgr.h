@@ -480,19 +480,6 @@ struct MANGOS_DLL_SPEC LanguageDesc
     uint32   skill_id;
 };
 
-// Not sure if it's the correct place!
-struct AccessRequirement
-{
-    uint8  levelMin;
-    uint8  levelMax;
-    uint32 item;
-    uint32 item2;
-    uint32 quest_A;
-    uint32 quest_H;
-    uint32 achievement;
-    std::string questFailedText;
-};
-
 extern LanguageDesc lang_description[LANGUAGES_COUNT];
 MANGOS_DLL_SPEC LanguageDesc const* GetLanguageDescByID(uint32 lang);
 
@@ -535,7 +522,6 @@ class ObjectMgr
         typedef UNORDERED_MAP<uint32, Quest*> QuestMap;
 
         typedef UNORDERED_MAP<uint32, AreaTrigger> AreaTriggerMap;
-        typedef UNORDERED_MAP<uint32, AccessRequirement> AccessRequirementMap;
 
         typedef UNORDERED_MAP<uint32, RepRewardRate > RepRewardRateMap;
         typedef UNORDERED_MAP<uint32, ReputationOnKillEntry> RepOnKillMap;
@@ -673,14 +659,6 @@ class ObjectMgr
             return NULL;
         }
 
-        AccessRequirement const* GetAccessRequirement(uint32 mapid, Difficulty difficulty) const
-        {
-            AccessRequirementMap::const_iterator itr = mAccessRequirements.find(MAKE_PAIR32(mapid,difficulty));
-            if (itr != mAccessRequirements.end())
-                return &itr->second;
-            return NULL;
-        }
-
         AreaTrigger const* GetGoBackTrigger(uint32 Map) const;
         AreaTrigger const* GetMapEntranceTrigger(uint32 Map) const;
 
@@ -777,7 +755,6 @@ class ObjectMgr
         void LoadGossipText();
 
         void LoadAreaTriggerTeleports();
-        void LoadAccessRequirements();
         void LoadQuestAreaTriggers();
         void LoadTavernAreaTriggers();
         void LoadGameObjectForQuests();
@@ -1226,7 +1203,6 @@ class ObjectMgr
         GameObjectForQuestSet mGameObjectForQuestSet;
         GossipTextMap       mGossipText;
         AreaTriggerMap      mAreaTriggers;
-        AccessRequirementMap  mAccessRequirements;
 
         RepRewardRateMap    m_RepRewardRateMap;
         RepOnKillMap        mRepOnKill;

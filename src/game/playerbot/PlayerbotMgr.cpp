@@ -392,7 +392,7 @@ void PlayerbotMgr::HandleMasterIncomingPacket(const WorldPacket& packet)
                 Player* const bot = itr->second;
                 Group *grp = bot->GetGroup();
                 if (grp)
-                    grp->RemoveMember(bot->GetGUID() );
+                    grp->RemoveMember(bot->GetGUID(), 1);
             }
             return;
         }
@@ -531,7 +531,7 @@ void PlayerbotMgr::RemoveAllBotsFromGroup()
     {
         Player* const bot = it->second;
         if (bot->IsInSameGroupWith(m_master))
-            m_master->GetGroup()->RemoveMember(bot->GetGUID() );
+            m_master->GetGroup()->RemoveMember(bot->GetGUID(), 0);
     }
 }
 
