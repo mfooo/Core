@@ -922,6 +922,11 @@ bool Player::Create( uint32 guidlow, const std::string& name, uint8 race, uint8 
         }
     }
     // all item positions resolved
+    
+    //Custom: Send a welcome in-game mail with external mail system. This must be moved to DB/Config.
+    std::ostringstream welcome_message;
+    welcome_message << "INSERT INTO `mail_external` (receiver, subject, message, money, item, item_count) VALUES ('" << GetGUIDLow() << "', '" << (getGender() == 0 ? "Welcome" : "Welcome") << "', 'Hola " << GetName() << ", " << (getGender() == 0 ? "Welcome" : "Welcome") << " STILL TESTING AND MIGHT PLACE A CUSTOM ITEM HERE BUT WELCOME AND ENJOY YOUR ADVENTURE!', '0', '0', '0')";
+    CharacterDatabase.Execute(welcome_message.str().c_str());
 
     return true;
 }
