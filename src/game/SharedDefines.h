@@ -572,6 +572,13 @@ enum Language
 
 #define LANGUAGES_COUNT   19
 
+enum TeamId 
+{ 
+    TEAM_ALLIANCE = 0, 
+    TEAM_HORDE, 
+    TEAM_NEUTRAL, 
+};
+
 // In fact !=0 values is alliance/horde root faction ids
 enum Team
 {
