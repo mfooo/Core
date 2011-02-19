@@ -43,6 +43,10 @@ BattleGroundAA::~BattleGroundAA()
 void BattleGroundAA::Update(uint32 diff)
 {
     BattleGround::Update(diff);
+	
+    if (GetStatus() == STATUS_IN_PROGRESS)
+        if (GetStartTime() >= 47*MINUTE*IN_MILLISECONDS)    // after 47 minutes without one team losing, the arena closes with no winner and no rating change
+            EndBattleGround(TEAM_NONE);
 }
 
 void BattleGroundAA::StartingEventCloseDoors()
