@@ -47,7 +47,7 @@ PetAI::~PetAI()
 
 void PetAI::MoveInLineOfSight(Unit *u)
 {
-    if (m_creature->getVictim())
+    if (m_creature->isAttackReady() && m_creature->getVictim())
         return;
 
     if (m_creature->IsPet() && ((Pet*)m_creature)->GetModeFlags() & PET_MODE_DISABLE_ACTIONS)
