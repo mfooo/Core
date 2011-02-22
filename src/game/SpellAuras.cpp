@@ -8995,10 +8995,10 @@ void SpellAuraHolder::_RemoveSpellAuraHolder()
         }
 
         // reset cooldown state for spells
-        if ( GetSpellProto()->Attributes & SPELL_ATTR_DISABLED_WHILE_ACTIVE )
+        if (caster && GetSpellProto()->Attributes & SPELL_ATTR_DISABLED_WHILE_ACTIVE )
         {
             // always send for players
-            if(caster && caster->GetTypeId() == TYPEID_PLAYER)
+            if (caster->GetTypeId() == TYPEID_PLAYER)
             {
                 // note: item based cooldowns and cooldown spell mods with charges ignored (unknown existing cases)
                 ((Player*)caster)->SendCooldownEvent(GetSpellProto());
