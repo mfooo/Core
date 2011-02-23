@@ -261,7 +261,7 @@ struct MANGOS_DLL_DECL npc_zulaman_hostageAI : public ScriptedAI
     }*/
     void UpdateAI(const uint32 diff)
     {
-        if(IsLoot) m_creature->CastSpell(m_creature, 7, false);
+        if (IsLoot) m_creature->CastSpell(m_creature, 7, false);
     }
 };
 
@@ -274,15 +274,15 @@ bool GossipHello_npc_zulaman_hostage(Player* player, Creature* _Creature)
 
 bool GossipSelect_npc_zulaman_hostage(Player* player, Creature* _Creature, uint32 sender, uint32 action)
 {
-    if(action == GOSSIP_ACTION_INFO_DEF + 1)
+    if (action == GOSSIP_ACTION_INFO_DEF + 1)
         player->CLOSE_GOSSIP_MENU();
 
-    if(!_Creature->HasFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP))
+    if (!_Creature->HasFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP))
         return true;
     _Creature->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
 
     ScriptedInstance* pInstance = ((ScriptedInstance*)_Creature->GetInstanceData());
-    if(pInstance)
+    if (pInstance)
     {
         uint8 progress = pInstance->GetData(TYPE_CHESTLOOTED);
         pInstance->SetData(TYPE_CHESTLOOTED, 0);
@@ -290,7 +290,7 @@ bool GossipSelect_npc_zulaman_hostage(Player* player, Creature* _Creature, uint3
         _Creature->GetPosition(x, y, z);
         // Creature* summon = _Creature->SummonCreature(HostageInfo[progress], x-2, y, z, 0, TEMPSUMMON_TIMED_DESPAWN, 300000);
 		Creature* summon = _Creature->SummonCreature(HostageInfo[progress], x-2, y, z, 0, TEMPSUMMON_DEAD_DESPAWN, 0);
-        if(summon)
+        if (summon)
         {
 			summon->SetRespawnTime(400000);
             ((npc_zulaman_hostageAI*)summon->AI())->PlayerGUID = player->GetGUID();

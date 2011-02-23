@@ -81,16 +81,16 @@ struct MANGOS_DLL_DECL instance_zulaman : public ScriptedInstance
         BossKilled = 0;
         ChestLooted = 0;
 
-        for(uint8 i = 0; i < ENCOUNTERS; i++)
+        for (uint8 i = 0; i < ENCOUNTERS; i++)
             Encounters[i] = NOT_STARTED;
-        for(uint8 i = 0; i < RAND_VENDOR; i++)
+        for (uint8 i = 0; i < RAND_VENDOR; i++)
             RandVendor[i] = NOT_STARTED;
     }
 
     bool IsEncounterInProgress() const
     {
-        for(uint8 i = 0; i < ENCOUNTERS; i++)
-            if(Encounters[i] == IN_PROGRESS) return true;
+        for (uint8 i = 0; i < ENCOUNTERS; i++)
+            if (Encounters[i] == IN_PROGRESS) return true;
 
         return false;
     }
@@ -143,15 +143,15 @@ struct MANGOS_DLL_DECL instance_zulaman : public ScriptedInstance
 		OpenDoor(HalazziDoorGUID, true);
 
 		OpenDoor(EntranceDoorGUID, false);
-        if(BossKilled >= 4)
+        if (BossKilled >= 4)
             OpenDoor(HexLordGateGUID, true);
 
-        if(BossKilled >= 5)
+        if (BossKilled >= 5)
             OpenDoor(ZulJinGateGUID, true);
     }
     void OpenDoor(uint64 DoorGUID, bool open)
     {
-        if(GameObject* pGo = instance->GetGameObject(DoorGUID))
+        if (GameObject* pGo = instance->GetGameObject(DoorGUID))
         {
             if (open)
                 pGo->SetGoState(GO_STATE_READY);          // Closed
@@ -161,7 +161,7 @@ struct MANGOS_DLL_DECL instance_zulaman : public ScriptedInstance
     }
     void SummonHostage(uint8 num)
     {
-        if(!QuestMinute)
+        if (!QuestMinute)
             return;
 
         Map::PlayerList const &PlayerList = instance->GetPlayers();
@@ -169,9 +169,9 @@ struct MANGOS_DLL_DECL instance_zulaman : public ScriptedInstance
             return;
 
         Map::PlayerList::const_iterator i = PlayerList.begin();
-        if(Player* i_pl = i->getSource())
+        if (Player* i_pl = i->getSource())
         {
-            if(Unit* Hostage = i_pl->SummonCreature(HostageInfo[num].npc, HostageInfo[num].x, HostageInfo[num].y, HostageInfo[num].z, HostageInfo[num].o, TEMPSUMMON_DEAD_DESPAWN, 0))
+            if (Unit* Hostage = i_pl->SummonCreature(HostageInfo[num].npc, HostageInfo[num].x, HostageInfo[num].y, HostageInfo[num].z, HostageInfo[num].o, TEMPSUMMON_DEAD_DESPAWN, 0))
             {
                 Hostage->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                 Hostage->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
@@ -199,14 +199,14 @@ struct MANGOS_DLL_DECL instance_zulaman : public ScriptedInstance
 
     void Load(const char* load)
     {
-        if(!load) return;
+        if (!load) return;
         std::istringstream ss(load);
         //error_log("SD2: Zul'aman loaded, %s.", ss.str().c_str());
         char dataHead; // S
         uint16 data1, data2, data3;
         ss >> dataHead >> data1 >> data2 >> data3;
         //error_log("SD2: Zul'aman loaded, %d %d %d.", data1, data2, data3);
-        if(dataHead == 'S')
+        if (dataHead == 'S')
         {
             BossKilled = data1;
             ChestLooted = data2;
@@ -275,10 +275,10 @@ struct MANGOS_DLL_DECL instance_zulaman : public ScriptedInstance
             break;
         }
 
-        if(data == DONE)
+        if (data == DONE)
         {
             BossKilled++;
-            if(QuestMinute && BossKilled >= 4)
+            if (QuestMinute && BossKilled >= 4)
             {
                 QuestMinute = 0;
                 UpdateWorldState(3104, 0);
@@ -307,14 +307,14 @@ struct MANGOS_DLL_DECL instance_zulaman : public ScriptedInstance
 
     void Update(uint32 diff)
     {
-        if(QuestMinute)
+        if (QuestMinute)
         {
-            if(QuestTimer < diff)
+            if (QuestTimer < diff)
             {
                 QuestMinute--;
                 SaveToDB();
                 QuestTimer += 60000;
-                if(QuestMinute)
+                if (QuestMinute)
                 {
                     UpdateWorldState(3104, 1);
                     UpdateWorldState(3106, QuestMinute);

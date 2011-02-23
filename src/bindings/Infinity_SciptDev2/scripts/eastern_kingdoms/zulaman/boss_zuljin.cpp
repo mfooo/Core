@@ -131,7 +131,7 @@ struct MANGOS_DLL_DECL boss_zuljinAI : public ScriptedAI
         pInstance = ((ScriptedInstance*)c->GetInstanceData());
         // wait for core patch be accepted
         SpellEntry *TempSpell = (SpellEntry*)GetSpellStore()->LookupEntry(SPELL_CLAW_RAGE_DAMAGE);
-        if(TempSpell)
+        if (TempSpell)
         {
             //if(TempSpell->DmgClass != SPELL_DAMAGE_CLASS_MELEE)
             //    TempSpell->DmgClass = SPELL_DAMAGE_CLASS_MELEE;
@@ -169,7 +169,7 @@ struct MANGOS_DLL_DECL boss_zuljinAI : public ScriptedAI
 
     void Reset()
     {
-        if(pInstance)
+        if (pInstance)
 		{
             pInstance->SetData(TYPE_ZULJIN, NOT_STARTED);
 			if (GameObject* pEncounterDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_ZULJINDOOR)))
@@ -213,12 +213,12 @@ struct MANGOS_DLL_DECL boss_zuljinAI : public ScriptedAI
 
     void Aggro(Unit *who)
     {
-        if(pInstance)
-		{
+        if (pInstance)
+        {
             pInstance->SetData(TYPE_ZULJIN, IN_PROGRESS);
-			if (GameObject* pEncounterDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_ZULJINDOOR)))
-				pEncounterDoor->SetGoState(GO_STATE_READY);
-		}
+            if (GameObject* pEncounterDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_ZULJINDOOR)))
+                pEncounterDoor->SetGoState(GO_STATE_READY);
+        }
 
         m_creature->SetInCombatWithZone();
 
@@ -229,7 +229,7 @@ struct MANGOS_DLL_DECL boss_zuljinAI : public ScriptedAI
 
     void KilledUnit(Unit* victim)
     {
-        if(Intro_Timer)
+        if (Intro_Timer)
             return;
 
         switch(rand()%2)
@@ -241,11 +241,11 @@ struct MANGOS_DLL_DECL boss_zuljinAI : public ScriptedAI
 
     void JustDied(Unit* Killer)
     {
-        if(pInstance)
+        if (pInstance)
 		{
             pInstance->SetData(TYPE_ZULJIN, DONE);
-			if (GameObject* pEncounterDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_ZULJINDOOR)))
-				pEncounterDoor->SetGoState(GO_STATE_ACTIVE);
+            if (GameObject* pEncounterDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_ZULJINDOOR)))
+                pEncounterDoor->SetGoState(GO_STATE_ACTIVE);
 		}
 
         DoScriptText(SAY_DEATH, m_creature);
@@ -272,7 +272,7 @@ struct MANGOS_DLL_DECL boss_zuljinAI : public ScriptedAI
                 Aggro(who);
             }
 
-            if(Phase == 2)
+            if (Phase == 2)
                 DoStartNoMovement(who);
             else
                 DoStartMovement(who);
@@ -281,15 +281,15 @@ struct MANGOS_DLL_DECL boss_zuljinAI : public ScriptedAI
 
     void DoMeleeAttackIfReady()
     {
-        if( !m_creature->IsNonMeleeSpellCasted(false))
+        if ( !m_creature->IsNonMeleeSpellCasted(false))
         {
-            if(m_creature->isAttackReady() && m_creature->IsWithinDistInMap(m_creature->getVictim(), ATTACK_DISTANCE))
+            if (m_creature->isAttackReady() && m_creature->IsWithinDistInMap(m_creature->getVictim(), ATTACK_DISTANCE))
             {
-                if(Phase == 1 && !Overpower_Timer)
+                if (Phase == 1 && !Overpower_Timer)
                 {
                     uint32 health = m_creature->getVictim()->GetHealth();
                     m_creature->AttackerStateUpdate(m_creature->getVictim());
-                    if(m_creature->getVictim() && health == m_creature->getVictim()->GetHealth())
+                    if (m_creature->getVictim() && health == m_creature->getVictim()->GetHealth())
                     {
                         m_creature->CastSpell(m_creature->getVictim(), SPELL_OVERPOWER, false);
                         Overpower_Timer = 5000;
@@ -303,10 +303,10 @@ struct MANGOS_DLL_DECL boss_zuljinAI : public ScriptedAI
     void SpawnAdds()
     {
         Creature *pCreature = NULL;
-        for(uint8 i = 0; i < 4; i++)
+        for (uint8 i = 0; i < 4; i++)
         {
             pCreature = m_creature->SummonCreature(SpiritInfo[i].entry, SpiritInfo[i].x, SpiritInfo[i].y, SpiritInfo[i].z, SpiritInfo[i].orient, TEMPSUMMON_DEAD_DESPAWN, 0);
-            if(pCreature)
+            if (pCreature)
             {
                 pCreature->CastSpell(pCreature, SPELL_SPIRIT_AURA, true);
                 pCreature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
@@ -318,12 +318,12 @@ struct MANGOS_DLL_DECL boss_zuljinAI : public ScriptedAI
 
     void DespawnAdds()
     {
-        for(uint8 i = 0; i < 4; i++)
+        for (uint8 i = 0; i < 4; i++)
         {
             Unit* Temp = NULL;
-            if(SpiritGUID[i])
+            if (SpiritGUID[i])
             {
-                if(Temp = m_creature->GetMap()->GetUnit( SpiritGUID[i]))
+                if (Temp = m_creature->GetMap()->GetUnit( SpiritGUID[i]))
                 {
                     Temp->SetVisibility(VISIBILITY_OFF);
                     Temp->SetDeathState(DEAD);
@@ -353,7 +353,7 @@ struct MANGOS_DLL_DECL boss_zuljinAI : public ScriptedAI
             cell.Visit(pair, cSearcher, *(m_creature->GetMap()),*m_creature,100);
         }
 
-        for(std::list<Creature*>::iterator i = templist.begin(); i != templist.end(); ++i)
+        for (std::list<Creature*>::iterator i = templist.begin(); i != templist.end(); ++i)
         {
             (*i)->SetVisibility(VISIBILITY_OFF);
             (*i)->SetDeathState(JUST_DIED);
@@ -378,21 +378,21 @@ struct MANGOS_DLL_DECL boss_zuljinAI : public ScriptedAI
             m_creature->RemoveAurasDueToSpell(Transform[Phase].unaura);
             DoCast(m_creature, Transform[Phase].spell);
             DoScriptText(Transform[Phase].id, m_creature);
-            if(Phase > 0)
+            if (Phase > 0)
             {
-                if(Unit *Temp = m_creature->GetMap()->GetUnit( SpiritGUID[Phase - 1]))
+                if (Unit *Temp = m_creature->GetMap()->GetUnit( SpiritGUID[Phase - 1]))
                     Temp->SetUInt32Value(UNIT_FIELD_BYTES_1,UNIT_STAND_STATE_DEAD);
             }
-            if(Unit *Temp = m_creature->GetMap()->GetUnit( SpiritGUID[NextPhase - 1]))
+            if (Unit *Temp = m_creature->GetMap()->GetUnit( SpiritGUID[NextPhase - 1]))
                 Temp->CastSpell(m_creature, SPELL_SIPHON_SOUL, false); // should m cast on temp
-            if(NextPhase == 2)
+            if (NextPhase == 2)
             {
                 m_creature->GetMotionMaster()->Clear();
                 m_creature->CastSpell(m_creature, SPELL_ENERGY_STORM, true); // enemy aura
-                for(uint8 i = 0; i < 4; i++)
+                for (uint8 i = 0; i < 4; i++)
                 {
                     Creature* Vortex = DoSpawnCreature(CREATURE_FEATHER_VORTEX, 0, 0, 0, 0, TEMPSUMMON_CORPSE_DESPAWN, 0);
-                    if(Vortex)
+                    if (Vortex)
                     {
                         Vortex->CastSpell(Vortex, SPELL_CYCLONE_PASSIVE, true);
                         Vortex->CastSpell(Vortex, SPELL_CYCLONE_VISUAL, true);
@@ -405,7 +405,7 @@ struct MANGOS_DLL_DECL boss_zuljinAI : public ScriptedAI
             }
             else
                 m_creature->AI()->AttackStart(m_creature->getVictim());
-            if(NextPhase == 3)
+            if (NextPhase == 3)
             {
 				m_creature->RemoveAurasDueToSpell(SPELL_ENERGY_STORM);
                 DespawnSummons(CREATURE_FEATHER_VORTEX);
@@ -420,16 +420,16 @@ struct MANGOS_DLL_DECL boss_zuljinAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if(!TankGUID)
+        if (!TankGUID)
         {
-            if(!m_creature->SelectHostileTarget() && !m_creature->getVictim())
+            if (!m_creature->SelectHostileTarget() && !m_creature->getVictim())
                 return;
 
-            if(m_creature->GetHealth() < health_20 * (4 - Phase))
+            if (m_creature->GetHealth() < health_20 * (4 - Phase))
                 EnterPhase(Phase + 1);
         }
 
-        if(Berserk_Timer < diff)
+        if (Berserk_Timer < diff)
         {
             m_creature->CastSpell(m_creature, SPELL_BERSERK, true);
             DoScriptText(SAY_BERSERK, m_creature);
@@ -439,22 +439,22 @@ struct MANGOS_DLL_DECL boss_zuljinAI : public ScriptedAI
         switch (Phase)
         {
         case 0:
-            if(Intro_Timer)
+            if (Intro_Timer)
             {
-                if(Intro_Timer <= diff)
+                if (Intro_Timer <= diff)
                 {
                     DoScriptText(SAY_AGGRO, m_creature);
                     Intro_Timer = 0;
                 }else Intro_Timer -= diff;
             }
 
-            if(Whirlwind_Timer < diff)
+            if (Whirlwind_Timer < diff)
             {
                 DoCast(m_creature, SPELL_WHIRLWIND);
                 Whirlwind_Timer = 15000 + rand()%5000;
             }else Whirlwind_Timer -= diff;
 
-            if(Grievous_Throw_Timer < diff)
+            if (Grievous_Throw_Timer < diff)
             {
                 if(Unit *target = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
                     m_creature->CastSpell(target, SPELL_GRIEVOUS_THROW, false);
@@ -463,13 +463,13 @@ struct MANGOS_DLL_DECL boss_zuljinAI : public ScriptedAI
             break;
 
         case 1:
-            if(Creeping_Paralysis_Timer < diff)
+            if (Creeping_Paralysis_Timer < diff)
             {
                 DoCast(m_creature, SPELL_CREEPING_PARALYSIS);
                 Creeping_Paralysis_Timer = 20000;
             }else Creeping_Paralysis_Timer -= diff;
 
-            if(Overpower_Timer < diff)
+            if (Overpower_Timer < diff)
             {
                 // implemented in DoMeleeAttackIfReady()
                 Overpower_Timer = 0;
@@ -481,11 +481,11 @@ struct MANGOS_DLL_DECL boss_zuljinAI : public ScriptedAI
             break;
 
         case 3:
-            if(Claw_Rage_Timer <= diff)
+            if (Claw_Rage_Timer <= diff)
             {
-                if(!TankGUID)
+                if (!TankGUID)
                 {
-                    if(Unit* target = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
+                    if (Unit* target = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
                     {
                         TankGUID = m_creature->getVictim()->GetGUID();
                         m_creature->SetSpeedRate(MOVE_RUN, 5.0f, true);
@@ -495,21 +495,21 @@ struct MANGOS_DLL_DECL boss_zuljinAI : public ScriptedAI
                         Claw_Counter = 0;
                     }
                 }
-                else if(!Claw_Rage_Timer) // do not do this when Lynx_Rush
+                else if (!Claw_Rage_Timer) // do not do this when Lynx_Rush
                 {
-                    if(Claw_Loop_Timer < diff)
+                    if (Claw_Loop_Timer < diff)
                     {
                         Unit* target = m_creature->getVictim();
-                        if(!target || !target->isTargetableForAttack()) target = m_creature->GetMap()->GetUnit( TankGUID);
-                        if(!target || !target->isTargetableForAttack()) target = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0);
-                        if(target)
+                        if (!target || !target->isTargetableForAttack()) target = m_creature->GetMap()->GetUnit( TankGUID);
+                        if (!target || !target->isTargetableForAttack()) target = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0);
+                        if (target)
                         {
                             AttackStart(target);
-                            if(m_creature->IsWithinDistInMap(target, ATTACK_DISTANCE))
+                            if (m_creature->IsWithinDistInMap(target, ATTACK_DISTANCE))
                             {
                                 m_creature->CastSpell(target, SPELL_CLAW_RAGE_DAMAGE, true);
                                 Claw_Counter++;
-                                if(Claw_Counter == 12)
+                                if (Claw_Counter == 12)
                                 {
                                     Claw_Rage_Timer = 15000 + rand()%5000;
                                     m_creature->SetSpeedRate(MOVE_RUN, 1.2f, true);
@@ -525,11 +525,11 @@ struct MANGOS_DLL_DECL boss_zuljinAI : public ScriptedAI
                 } //if(TankGUID)
             }else Claw_Rage_Timer -= diff;
 
-            if(Lynx_Rush_Timer <= diff)
+            if (Lynx_Rush_Timer <= diff)
             {
-                if(!TankGUID)
+                if (!TankGUID)
                 {
-                    if(Unit* target = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
+                    if (Unit* target = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
                     {
                         TankGUID = m_creature->getVictim()->GetGUID();
                         m_creature->SetSpeedRate(MOVE_RUN, 5.0f, true);
@@ -538,21 +538,21 @@ struct MANGOS_DLL_DECL boss_zuljinAI : public ScriptedAI
                         Claw_Counter = 0;
                     }
                 }
-                else if(!Lynx_Rush_Timer)
+                else if (!Lynx_Rush_Timer)
                 {
                     Unit* target = m_creature->getVictim();
-                    if(!target || !target->isTargetableForAttack())
+                    if (!target || !target->isTargetableForAttack())
                     {
                         target = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0);
                         AttackStart(target);
                     }
-                    if(target)
+                    if (target)
                     {
-                        if(m_creature->IsWithinDistInMap(target, ATTACK_DISTANCE))
+                        if (m_creature->IsWithinDistInMap(target, ATTACK_DISTANCE))
                         {
                             m_creature->CastSpell(target, SPELL_LYNX_RUSH_DAMAGE, true);
                             Claw_Counter++;
-                            if(Claw_Counter == 9)
+                            if (Claw_Counter == 9)
                             {
                                 Lynx_Rush_Timer = 15000 + rand()%5000;
                                 m_creature->SetSpeedRate(MOVE_RUN, 1.2f, true);
@@ -568,20 +568,20 @@ struct MANGOS_DLL_DECL boss_zuljinAI : public ScriptedAI
 
             break;
         case 4:
-            if(Flame_Whirl_Timer < diff)
+            if (Flame_Whirl_Timer < diff)
             {
                 DoCast(m_creature, SPELL_FLAME_WHIRL);
                 Flame_Whirl_Timer = 12000;
             }Flame_Whirl_Timer -= diff;
 
-            if(Pillar_Of_Fire_Timer < diff)
+            if (Pillar_Of_Fire_Timer < diff)
             {
-                if(Unit* target = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
+                if (Unit* target = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
                 {
                     float x, y, z;
                     target->GetPosition(x, y, z);
                     Creature* Pillar = m_creature->SummonCreature(CREATURE_COLUMN_OF_FIRE, x, y, z, 0, TEMPSUMMON_TIMED_DESPAWN, 30000);
-                    if(Pillar)
+                    if (Pillar)
                     {
                         Pillar->CastSpell(Pillar, SPELL_PILLAR_TRIGGER, true);
                         Pillar->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
@@ -590,9 +590,9 @@ struct MANGOS_DLL_DECL boss_zuljinAI : public ScriptedAI
                 Pillar_Of_Fire_Timer = 10000;
             }else Pillar_Of_Fire_Timer -= diff;
 
-            if(Flame_Breath_Timer < diff)
+            if (Flame_Breath_Timer < diff)
             {
-                if(Unit* target = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
+                if (Unit* target = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
                     m_creature->CastSpell(m_creature, SPELL_FLAME_BREATH, false);
                 Flame_Breath_Timer = 10000;
             }else Flame_Breath_Timer -= diff;
@@ -602,7 +602,7 @@ struct MANGOS_DLL_DECL boss_zuljinAI : public ScriptedAI
             break;
         }
 
-        if(!TankGUID)
+        if (!TankGUID)
             DoMeleeAttackIfReady();
     }
 };
@@ -633,21 +633,20 @@ struct MANGOS_DLL_DECL feather_vortexAI : public ScriptedAI
 
     void Reset()
 	{
-		;
 	}
 
     void Aggro(Unit* target) {}
 
     void SpellHit(Unit *caster, const SpellEntry *spell)
     {
-        if(spell->Id == SPELL_ZAP_INFORM)
+        if (spell->Id == SPELL_ZAP_INFORM)
             m_creature->CastSpell(caster, SPELL_ZAP_DAMAGE, true);
     }
 
     void UpdateAI(const uint32 diff)
     {
         //if the vortex reach the target, it change his target to another player
-        if( m_creature->IsWithinDistInMap(m_creature->getVictim(), ATTACK_DISTANCE))
+        if ( m_creature->IsWithinDistInMap(m_creature->getVictim(), ATTACK_DISTANCE))
             AttackStart(m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0));
     }
 };
