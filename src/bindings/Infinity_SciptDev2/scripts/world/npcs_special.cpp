@@ -26,6 +26,10 @@ EndScriptData
 #include "escort_ai.h"
 #include "ObjectMgr.h"
 #include "GameEventMgr.h"
+#include "PetAI.h"
+#include "Pet.h"
+#include "SpellMgr.h"
+#include "Totem.h"
 
 /* ContentData
 npc_air_force_bots       80%    support for misc (invisible) guard bots in areas where player allowed to fly. Summon guards after a preset time if tagged by spell
@@ -1932,45 +1936,26 @@ struct MANGOS_DLL_DECL npc_snake_trap_serpentsAI : public ScriptedAI
     npc_snake_trap_serpentsAI(Creature *c) : ScriptedAI(c) {Reset();}
 
     uint32 SpellTimer;
-    Unit* Owner;
 
     void Reset()
     {
         SpellTimer = 500;
-        Owner = m_creature->GetCharmerOrOwner();
-        if (!Owner) return;
-
-        m_creature->SetLevel(Owner->getLevel());
-        m_creature->setFaction(Owner->getFaction());
-    }
-
-    void AttackStart(Unit* pWho)
-    {
-      if (!pWho) return;
-
-      if (m_creature->Attack(pWho, true))
-         {
-            m_creature->SetInCombatWith(pWho);
-            m_creature->AddThreat(pWho, 100.0f);
-            SetCombatMovement(true);
-            m_creature->GetMotionMaster()->MoveChase(pWho);
-         }
     }
 
     void UpdateAI(const uint32 diff)
     {
-        if (!m_creature->getVictim())
+        if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
         {
-            if (Owner && Owner->getVictim())
-                AttackStart(Owner->getVictim());
+            if (!m_creature->hasUnitState(UNIT_STAT_ROAMING|UNIT_STAT_ROAMING_MOVE))
+                m_creature->GetMotionMaster()->MoveRandom();
             return;
         }
 
-        if (SpellTimer <= diff)
+        if (m_creature->GetEntry() == MOB_VIPER )
         {
-            if (m_creature->GetEntry() == MOB_VIPER ) //Viper - 19921
+            if (SpellTimer <= diff)
             {
-                if (!urand(0,2)) //33% chance to cast
+                if (!urand(0,1)) //50% chance to cast
                 {
                     uint32 spell;
                     if (urand(0,1))
@@ -1980,17 +1965,11 @@ struct MANGOS_DLL_DECL npc_snake_trap_serpentsAI : public ScriptedAI
                     DoCast(m_creature->getVictim(), spell);
                 }
 
-                SpellTimer = urand(3000, 5000);
-            }
-            else if (m_creature->GetEntry() == MOB_VENOM_SNIKE ) //Venomous Snake - 19833
-            {
-                if (urand(0,1) == 0) //80% chance to cast
-                    DoCast(m_creature->getVictim(), SPELL_DEADLY_POISON);
-                SpellTimer = urand(2500, 4500);
-            }
-        }
-        else SpellTimer -= diff;
+                SpellTimer = urand(2000, 4000);
 
+            }
+            else SpellTimer -= diff;
+        }
         DoMeleeAttackIfReady();
     }
 };
@@ -2339,6 +2318,257 @@ CreatureAI* GetAI_npc_eye_of_kilrogg(Creature* pCreature)
     return new npc_eye_of_kilrogg(pCreature);
 }
 
+struct MANGOS_DLL_DECL pet_simple_guardianAI : public PetAI
+{
+    /* This AI is more a kind of additional initialisation,
+       that adds spells to the autocast list, defined in
+       CreatureInfo::Spells.
+       The AI functions are processed by PetAI.
+    */
+    pet_simple_guardianAI(Pet* pPet): PetAI(pPet)
+    {
+        // lookup spells
+        if (CreatureInfo const* pPetInfo = pPet->GetCreatureInfo())
+            for (uint8 i = 0; i<CREATURE_MAX_SPELLS; i++)
+            {
+                if (!pPetInfo->spells[i])
+                  continue;
+
+                if (SpellEntry const *spellInfo = GetSpellStore()->LookupEntry(pPetInfo->spells[i]))
+                {
+                    // skip spells without any cooldown
+                    if (!spellInfo->StartRecoveryTime && !GetSpellRecoveryTime(spellInfo) && !(spellInfo->Attributes & SPELL_ATTR_PASSIVE))
+                        continue;
+
+                    // add spell, if pet does not know
+                    pPet->addSpell(spellInfo->Id);
+
+                    // toggle autocast (normally disabled for non-controlled pets)
+                    pPet->ToggleAutocast(spellInfo->Id, true, true);
+                }
+            }
+    }
+};
+
+CreatureAI* GetAI_pet_simple_guardian(Creature* pCreature)
+{
+    if (pCreature->IsPet())
+        return new pet_simple_guardianAI((Pet*)pCreature);
+    else
+        return NULL;
+}
+
+/*######
+## pet_dk_ghoul
+######*/
+
+enum
+{
+    SPELL_DK_SCALING_01 = 54566,
+    SPELL_DK_SCALING_02 = 51996,
+    SPELL_LEAP          = 47482
+};
+
+struct MANGOS_DLL_DECL pet_dk_ghoulAI : public pet_simple_guardianAI
+{
+    pet_dk_ghoulAI(Pet* pPet) : pet_simple_guardianAI(pPet) {}
+
+    // some hacky-hacky for "Leap" :-/
+    void AttackStart(Unit *u)
+    {
+        Unit* oldTarget = m_creature->getVictim();
+        PetAI::AttackStart(u);
+
+        // PetAI::AttackStart was successfull
+        if (m_creature->getVictim() != oldTarget && m_creature->getVictim() == u
+            && !m_creature->IsNonMeleeSpellCasted(false))
+        {
+            float dist = m_creature->GetDistance(m_creature->getVictim());
+            if (dist > 5.0f && dist < 30.0f)
+                // self cast (works only like this, because target mode is buggy)
+                m_creature->CastSpell(m_creature, SPELL_LEAP, false);
+        }
+    }
+};
+CreatureAI* GetAI_pet_dk_ghoul(Creature* pCreature)
+{
+    if (pCreature->IsPet())
+        return new pet_dk_ghoulAI((Pet*)pCreature);
+    else
+        return NULL;
+}
+/*######
+## pet_greater_earth_elemental
+######*/
+
+enum
+{
+    SPELL_AOE_TAUNT         = 36213,
+    SPELL_IMMUNITY_NATURE   = 7941
+};
+
+struct MANGOS_DLL_DECL pet_greater_earth_elementalAI : public PetAI
+{
+    pet_greater_earth_elementalAI(Pet* pPet) : PetAI(pPet)
+    {
+        pPet->addSpell(SPELL_IMMUNITY_NATURE);
+        Reset();
+    }
+
+    uint32 m_timer;
+
+    void Reset()
+    {
+        m_timer = 500;
+    }
+
+    Unit* GetOriginalOwner()
+    {
+        Unit* owner = ((Pet*)m_creature)->GetOwner();
+        if (!owner)
+            return NULL;
+
+        if (owner->GetTypeId() != TYPEID_UNIT || !((Creature*)owner)->IsTotem())
+            return NULL;
+
+        return ((Totem*)owner)->GetOwner();
+    }
+
+    void UpdateAI(const uint32 uiDiff)
+    {
+        PetAI::UpdateAI(uiDiff);
+
+        // kind of workaround to react also on non-hostile attackers
+        if (!m_creature->getVictim())
+            if (Unit* origOwner = GetOriginalOwner())
+            {
+                Unit* pTarget = origOwner->getAttackerForHelper();
+                if (pTarget && pTarget->IsWithinDist(m_creature, 35.0f))
+                    AttackStart(pTarget);
+            }
+
+        if (m_timer < uiDiff)
+        {
+            if (m_creature->getVictim() && !m_creature->IsNonMeleeSpellCasted(false))
+            {
+                m_creature->CastSpell(m_creature->getVictim(), SPELL_AOE_TAUNT, false);
+                m_timer = urand(2000, 6000);
+            }
+        }
+        else
+            m_timer -= uiDiff;
+    }
+};
+
+
+CreatureAI* GetAI_pet_greater_earth_elemental(Creature* pCreature)
+{
+    if (pCreature->IsPet())
+        return new pet_greater_earth_elementalAI((Pet*)pCreature);
+    else
+        return NULL;
+}
+
+
+/*######
+## pet_greater_fire_elemental
+######*/
+
+enum
+{
+    SPELL_FIRE_NOVA = 12470,
+    SPELL_FIRE_BLAST = 57984,
+    SPELL_IMMUNITY_FIRE = 7942
+};
+
+struct MANGOS_DLL_DECL pet_greater_fire_elementalAI : public PetAI
+{
+    pet_greater_fire_elementalAI(Pet* pPet) : PetAI(pPet)
+    {
+        // Immunity: Fire
+        pPet->addSpell(SPELL_IMMUNITY_FIRE);
+        Reset();
+    }
+
+    uint32 m_timer_blast, m_timer_nova;
+    int32 m_damage_blast, m_damage_nova;
+
+    void Reset()
+    {
+        m_timer_blast = 500;
+        m_timer_nova  = 500;
+
+        // custom damage, as the core calculated damage of this spells is quite high
+        // (SPELL_ATTR_LEVEL_DAMAGE_CALCULATION)
+        m_damage_blast  = 47;
+        m_damage_nova   = 76;
+    }
+
+    Unit* GetOriginalOwner()
+    {
+        Unit* owner = ((Pet*)m_creature)->GetOwner();
+        if (!owner)
+            return NULL;
+
+        if (owner->GetTypeId() != TYPEID_UNIT || !((Creature*)owner)->IsTotem())
+            return NULL;
+
+        return ((Totem*)owner)->GetOwner();
+    }
+
+    void UpdateAI(const uint32 uiDiff)
+    {
+        PetAI::UpdateAI(uiDiff);
+
+        // kind of workaround to react also on non-hostile attackers
+        if (!m_creature->getVictim())
+            if (Unit* origOwner = GetOriginalOwner())
+            {
+                Unit* pTarget = origOwner->getAttackerForHelper();
+                if (pTarget && pTarget->IsWithinDist(m_creature, 35.0f))
+                    AttackStart(pTarget);
+            }
+
+        // fire nova
+        if (m_timer_nova < uiDiff)
+        {
+            if (m_creature->getVictim() && m_creature->getVictim()->IsWithinDist(m_creature, 6.0f) && !m_creature->IsNonMeleeSpellCasted(false))
+            {
+                m_creature->CastCustomSpell(m_creature->getVictim(), SPELL_FIRE_NOVA, &m_damage_nova, 0, 0, false);
+                m_timer_nova = urand(5000, 10000);
+                m_timer_blast = 3000;
+            }
+        }
+        else
+            m_timer_nova -= uiDiff;
+
+        // fire blast
+        if (m_timer_blast < uiDiff)
+        {
+            if (m_creature->getVictim() && !m_creature->IsNonMeleeSpellCasted(false))
+            {
+                // cast fireblast always if out of range, and only sometimes when in melee range
+                bool cast = true;;
+                if (m_creature->CanReachWithMeleeAttack(m_creature->getVictim()))
+                    cast = !urand(0,2) ? false : true;
+                if (cast)
+                    m_creature->CastCustomSpell(m_creature->getVictim(), SPELL_FIRE_BLAST, &m_damage_blast, 0, 0, false);
+                m_timer_blast = 3000;
+                return;
+            }
+        }
+        else
+            m_timer_blast -= uiDiff;
+    }
+};
+
+CreatureAI* GetAI_pet_greater_fire_elemental(Creature* pCreature)
+{
+    if (pCreature->IsPet())
+        return new pet_greater_fire_elementalAI((Pet*)pCreature);
+    else
+        return NULL;
+}
 
 void AddSC_npcs_special()
 {
@@ -2465,4 +2695,23 @@ void AddSC_npcs_special()
     newscript->GetAI = &GetAI_npc_eye_of_kilrogg; 
     newscript->RegisterSelf(); 
 
+    newscript = new Script;
+    newscript->Name = "pet_simple_guardian";
+    newscript->GetAI = &GetAI_pet_simple_guardian;
+    newscript->RegisterSelf();
+
+    newscript = new Script;
+    newscript->Name = "pet_dk_ghoul";
+    newscript->GetAI = &GetAI_pet_dk_ghoul;
+    newscript->RegisterSelf();
+
+    newscript = new Script;
+    newscript->Name = "pet_greater_earth_elemental";
+    newscript->GetAI = &GetAI_pet_greater_earth_elemental;
+    newscript->RegisterSelf();
+
+    newscript = new Script;
+    newscript->Name = "pet_greater_fire_elemental";
+    newscript->GetAI = &GetAI_pet_greater_fire_elemental;
+    newscript->RegisterSelf();
 }

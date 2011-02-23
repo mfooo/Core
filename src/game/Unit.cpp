@@ -1709,7 +1709,10 @@ void Unit::CalculateMeleeDamage(Unit *pVictim, uint32 damage, CalcDamageInfo *da
     // Calculate armor reduction
 
     uint32 armor_affected_damage = CalcNotIgnoreDamageRedunction(damage,damageInfo->damageSchoolMask);
-    damageInfo->damage = damage - armor_affected_damage + CalcArmorReducedDamage(damageInfo->target, armor_affected_damage);
+    if (damageInfo->damageSchoolMask & SPELL_SCHOOL_MASK_NORMAL)
+        damageInfo->damage = damage - armor_affected_damage + CalcArmorReducedDamage(damageInfo->target, armor_affected_damage);
+    else
+        damageInfo->damage = damage;
     damageInfo->cleanDamage += damage - damageInfo->damage;
 
     damageInfo->hitOutCome = RollMeleeOutcomeAgainst(damageInfo->target, damageInfo->attackType);
@@ -2883,21 +2886,23 @@ void Unit::AttackerStateUpdate (Unit *pVictim, WeaponAttackType attType, bool ex
     else
         return;                                             // ignore ranged case
 
-    uint32 extraAttacks = m_extraAttacks;
-
     // melee attack spell casted at main hand attack only
     if (attType == BASE_ATTACK && m_currentSpells[CURRENT_MELEE_SPELL])
     {
         m_currentSpells[CURRENT_MELEE_SPELL]->cast();
 
-        // not recent extra attack only at any non extra attack (melee spell case)
-        if(!extra && extraAttacks)
+        // extra attack only at any non extra attack (melee spell case)
+        uint32 current_extraAttacks = m_extraAttacks;
+        if (!extra && current_extraAttacks)
         {
-            while(m_extraAttacks)
+            while (current_extraAttacks)
             {
                 AttackerStateUpdate(pVictim, BASE_ATTACK, true);
-                if(m_extraAttacks > 0)
+                if (current_extraAttacks > 0)
+                {
+                    --current_extraAttacks;
                     --m_extraAttacks;
+                }
             }
         }
         return;
@@ -2925,13 +2930,17 @@ void Unit::AttackerStateUpdate (Unit *pVictim, WeaponAttackType attType, bool ex
     pVictim->AttackedBy(this);
 
     // extra attack only at any non extra attack (normal case)
-    if (!extra && extraAttacks)
+    uint32 current_extraAttacks = m_extraAttacks;
+    if (!extra && current_extraAttacks)
     {
-        while(m_extraAttacks)
+        while (current_extraAttacks)
         {
             AttackerStateUpdate(pVictim, BASE_ATTACK, true);
-            if(m_extraAttacks > 0)
+            if (current_extraAttacks > 0)
+            {
+                --current_extraAttacks;
                 --m_extraAttacks;
+            }
         }
     }
 }
@@ -4451,7 +4460,7 @@ bool Unit::AddSpellAuraHolder(SpellAuraHolder *holder)
                     case SPELL_AURA_PERIODIC_HEAL:
                     case SPELL_AURA_OBS_MOD_HEALTH:
                     case SPELL_AURA_PERIODIC_MANA_LEECH:
-                    case SPELL_AURA_OBS_MOD_MANA:
+                    case SPELL_AURA_OBS_MOD_ENERGY:
                     case SPELL_AURA_POWER_BURN_MANA:
                         break;
                     case SPELL_AURA_PERIODIC_ENERGIZE:      // all or self or clear non-stackable
@@ -4528,6 +4537,7 @@ bool Unit::AddSpellAuraHolder(SpellAuraHolder *holder)
         return false;
 
     holder->HandleSpellSpecificBoosts(true);
+    holder->HandleBoundUnit(true);
 
     return true;
 }
@@ -5139,6 +5149,8 @@ void Unit::RemoveSpellAuraHolder(SpellAuraHolder *holder, AuraRemoveMode mode)
     if (mode != AURA_REMOVE_BY_DELETE)
         holder->HandleSpellSpecificBoosts(false);
 
+    holder ->HandleBoundUnit(false);
+
     if(statue)
         statue->UnSummon();
 
@@ -5560,7 +5572,7 @@ void Unit::SendPeriodicAuraLog(SpellPeriodicAuraLogInfo *pInfo)
             data << uint32(pInfo->absorb);                  // absorb
             data << uint8(pInfo->critical ? 1 : 0);         // new 3.1.2 critical flag
             break;
-        case SPELL_AURA_OBS_MOD_MANA:
+        case SPELL_AURA_OBS_MOD_ENERGY:
         case SPELL_AURA_PERIODIC_ENERGIZE:
             data << uint32(mod->m_miscvalue);               // power type
             data << uint32(pInfo->damage);                  // damage
@@ -9683,9 +9695,9 @@ void Unit::ApplyDiminishingAura( DiminishingGroup group, bool apply )
     }
 }
 
-Creature* Unit::GetCreature(WorldObject const& object, uint64 guid) 
-{ 
-    return object.GetMap()->GetCreature(guid); 
+Creature* Unit::GetCreature(WorldObject const& object, uint64 guid)
+{
+    return object.GetMap()->GetCreature(guid);
 }
 
 bool Unit::isVisibleForInState( Player const* u, WorldObject const* viewPoint, bool inVisibleList ) const
@@ -10564,8 +10576,6 @@ void Unit::DoPetAction( Player* owner, uint8 flag, uint32 spellid, ObjectGuid pe
 
             if(result == SPELL_CAST_OK)
             {
-                ((Creature*)this)->AddCreatureSpellCooldown(spellid);
-
                 unit_target = spell->m_targets.getUnitTarget();
 
                 //10% chance to play special pet attack talk, else growl
@@ -10624,7 +10634,6 @@ void Unit::DoPetCastSpell( Player *owner, uint8 cast_count, SpellCastTargets* ta
     SpellCastResult result = spell->CheckPetCast(NULL);
     if (result == SPELL_CAST_OK)
     {
-        pet->AddCreatureSpellCooldown(spellInfo->Id);
         if (pet->IsPet())
         {
             //10% chance to play special pet attack talk, else growl
@@ -11826,6 +11835,10 @@ void Unit::ExitVehicle()
         return;
 
     m_pVehicle->RemovePassenger(this);
+	
+	if((GetTypeId() == TYPEID_PLAYER) && (((Player*)this)->GetQuestStatus(12779) == QUEST_STATUS_INCOMPLETE) && (m_pVehicle->GetVehicleId() == 156))
+		((Player*)this)->CastSpell(((Player*)this), 74470, false);
+
     m_pVehicle = NULL;
 
     if (GetTypeId() == TYPEID_PLAYER)

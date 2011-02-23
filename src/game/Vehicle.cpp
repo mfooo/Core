@@ -187,7 +187,7 @@ bool VehicleKit::AddPassenger(Unit *passenger, int8 seatId)
 
         passenger->SetCharm(m_pBase);
 
-        if(m_pBase->HasAuraType(SPELL_AURA_FLY) || m_pBase->HasAuraType(SPELL_AURA_MOD_FLIGHT_SPEED))
+        if(m_pBase->HasAuraType(SPELL_AURA_FLY) || m_pBase->HasAuraType(SPELL_AURA_MOD_FLIGHT_SPEED) || ((Creature*)m_pBase)->CanFly())
         {
             WorldPacket data;
             data.Initialize(SMSG_MOVE_SET_CAN_FLY, 12);
@@ -199,6 +199,8 @@ bool VehicleKit::AddPassenger(Unit *passenger, int8 seatId)
         if (passenger->GetTypeId() == TYPEID_PLAYER)
         {
             m_pBase->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED);
+            if(m_pBase->GetMap() && !m_pBase->GetMap()->IsBattleGround())
+                m_pBase->setFaction(passenger->getFaction());
 
             if (CharmInfo* charmInfo = m_pBase->InitCharmInfo(m_pBase))
             {

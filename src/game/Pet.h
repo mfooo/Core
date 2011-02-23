@@ -214,7 +214,7 @@ class Pet : public Creature
         void UpdateManaRegen();
 
         bool CanTakeMoreActiveSpells(uint32 SpellIconID);
-        void ToggleAutocast(uint32 spellid, bool apply);
+        MANGOS_DLL_SPEC void ToggleAutocast(uint32 spellid, bool apply, bool force = false);
 
         void ApplyModeFlags(PetModeFlags mode, bool apply);
         PetModeFlags GetModeFlags() const { return m_petModeFlags; }
