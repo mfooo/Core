@@ -1,58 +1,57 @@
-/* Copyright (C) 2006 - 2011 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 2 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*/
+/* Copyright (C) 2006 - 2010 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 
 /* ScriptData
 SDName: boss_Halazzi
 SD%Complete: 80
-SDComment:
-SDCategory: Zul¡äAman
+SDComment: 
+SDCategory: Zul'Aman
 EndScriptData */
 
 #include "precompiled.h"
 #include "zulaman.h"
-//#include "spell.h"
 
-//(-1568043,'Come, fools. Fill ma empty cages...',12029,1,0,0,'halazzi SAY_EVENT1'), 
-//(-1568044,'I be waitin, strangers. Your deaths gonna make me stronger!',12030,1,0,0,'halazzi SAY_EVENT2'), 
+#define SAY_AGGRO                       -1568042
+#define SAY_SPLIT                       -1568043
+#define SAY_MERGE                       -1568044
+#define SAY_SABERLASH1                  -1568045
+#define SAY_SABERLASH2                  -1568046
+#define SAY_BERSERK                     -1568047
+#define SAY_KILL1                       -1568048
+#define SAY_KILL2                       -1568049
+#define SAY_DEATH                       -1568050
 
-enum
-{
-    SAY_AGGRO                      = -1568034, //(-1568034,'Get on ya knees and bow.... to da fang and claw!',12020,1,0,0,'halazzi SAY_AGGRO'),
-    SAY_SPLIT                      = -1568035, //(-1568035,'I fight wit\' untamed spirit....',12021,1,0,0,'halazzi SAY_SPLIT'),
-    SAY_MERGE                      = -1568036,//(-1568036,'Spirit, come back to me!',12022,1,0,0,'halazzi SAY_MERGE'),
-    SAY_SABERLASH1                 = -1568037,//(-1568037,'Me gonna carve ya now!',12023,1,0,0,'halazzi SAY_SABERLASH1'),
-    SAY_SABERLASH2                 = -1568038,//(-1568038,'You gonna leave in pieces!',12024,1,0,0,'halazzi SAY_SABERLASH2'),
-    SAY_BERSERK                    = -1568039,//(-1568039,'Whatch you be doing? Pissin\' yourselves...',12025,1,0,0,'halazzi SAY_BERSERK'),
-    SAY_KILL1                      = -1568040,//(-1568040,'You cant fight the power!',12026,1,0,0,'halazzi SAY_KILL1'),
-    SAY_KILL2                      = -1568041,//(-1568041,'You gonna fail!',12027,1,0,0,'halazzi SAY_KILL2'),
-    SAY_DEATH                      = -1568042,//(-1568042,'Chaga... choka\'jinn.',12028,1,0,0,'halazzi SAY_DEATH'),
+#define SPELL_DUAL_WIELD                29651
+#define SPELL_SABER_LASH                43267
+#define SPELL_FRENZY                    43139
+#define SPELL_FLAMESHOCK                43303
+#define SPELL_EARTHSHOCK                43305
+#define SPELL_TRANSFORM_SPLIT           43142
+#define SPELL_TRANSFORM_SPLIT2          43573
+#define SPELL_TRANSFORM_MERGE           43271
+#define SPELL_SUMMON_LYNX               43143
+#define SPELL_SUMMON_TOTEM              43302
+#define SPELL_BERSERK                   45078
 
-    SPELL_DUAL_WIELD               = 29651,
-    SPELL_SABER_LASH               = 43267,
-    SPELL_FRENZY                   = 43139,
-    SPELL_FLAMESHOCK               = 43303,
-    SPELL_EARTHSHOCK               = 43305,
-    SPELL_TRANSFORM_SPLIT          = 43142,
-    SPELL_TRANSFORM_SPLIT2         = 43573,
-    SPELL_TRANSFORM_MERGE          = 43271,
-    SPELL_SUMMON_LYNX              = 43143,
-    SPELL_SUMMON_TOTEM             = 43302,
-    SPELL_BERSERK                  = 45078,
-    SPELL_LIGHTNING                = 43301
-};
+#define MOB_SPIRIT_LYNX                 24143
+#define SPELL_LYNX_FRENZY               43290
+#define SPELL_SHRED_ARMOR               43243
+
+#define MOB_TOTEM                       24224
+#define SPELL_LIGHTNING                 43301
 
 enum PhaseHalazzi
 {
@@ -64,24 +63,19 @@ enum PhaseHalazzi
     PHASE_ENRAGE = 5
 };
 
-#define MOB_SPIRIT_LYNX                 24143
-#define SPELL_LYNX_FRENZY               43290
-#define SPELL_SHRED_ARMOR               43243
-#define MOB_TOTEM                       24224
-
 struct MANGOS_DLL_DECL boss_halazziAI : public ScriptedAI
 {
     boss_halazziAI(Creature *c) : ScriptedAI(c)
-    {
+    { 
         pInstance = ((ScriptedInstance*)c->GetInstanceData());
         Reset();
         // wait for core patch be accepted
         SpellEntry *TempSpell = (SpellEntry*)GetSpellStore()->LookupEntry(SPELL_SUMMON_TOTEM);
-        if (TempSpell && TempSpell->EffectImplicitTargetA[0] != 1)
+        if(TempSpell && TempSpell->EffectImplicitTargetA[0] != 1)
             TempSpell->EffectImplicitTargetA[0] = 1;
         // need to find out what controls totem's spell cooldown
         TempSpell = (SpellEntry*)GetSpellStore()->LookupEntry(SPELL_LIGHTNING);
-        if (TempSpell && TempSpell->CastingTimeIndex != 5)
+        if(TempSpell && TempSpell->CastingTimeIndex != 5)
             TempSpell->CastingTimeIndex = 5; // 2000 ms casting time
     }
 
@@ -102,12 +96,8 @@ struct MANGOS_DLL_DECL boss_halazziAI : public ScriptedAI
 
     void Reset()
     {
-		if (pInstance)
-		{
-            pInstance->SetData(TYPE_HALAZZI, NOT_STARTED);
-			if (GameObject* pEncounterDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_HALAZZIFRONTDOOR)))
-				pEncounterDoor->SetGoState(GO_STATE_READY);
-		}
+		if(pInstance)
+            pInstance->SetData(DATA_HALAZZIEVENT, NOT_STARTED);
 
         TransformCount = 0;
         BerserkTimer = 600000;
@@ -119,10 +109,10 @@ struct MANGOS_DLL_DECL boss_halazziAI : public ScriptedAI
         EnterPhase(PHASE_LYNX);
     }
 
-	void Aggro(Unit *who)
+    void Aggro(Unit *who)
     {
 		if(pInstance)
-            pInstance->SetData(TYPE_HALAZZI, IN_PROGRESS);
+            pInstance->SetData(DATA_HALAZZIEVENT, IN_PROGRESS);
 
         DoScriptText(SAY_AGGRO, m_creature);
         EnterPhase(PHASE_LYNX);
@@ -131,25 +121,25 @@ struct MANGOS_DLL_DECL boss_halazziAI : public ScriptedAI
     void JustSummoned(Creature* summon)
     {
         summon->AI()->AttackStart(m_creature->getVictim());
-        if (summon->GetEntry() == MOB_SPIRIT_LYNX)
+        if(summon->GetEntry() == MOB_SPIRIT_LYNX)
             LynxGUID = summon->GetGUID();
     }
 
     void DamageTaken(Unit *done_by, uint32 &damage)
     {
-        if (damage >= m_creature->GetHealth() && Phase != PHASE_ENRAGE)
+        if(damage >= m_creature->GetHealth() && Phase != PHASE_ENRAGE)
             damage = 0;
     }
 
     void SpellHit(Unit*, const SpellEntry *spell)
     {
-        if (spell->Id == SPELL_TRANSFORM_SPLIT2)
+        if(spell->Id == SPELL_TRANSFORM_SPLIT2)
             EnterPhase(PHASE_HUMAN);
     }
 
     void AttackStart(Unit *who)
     {
-        if (Phase != PHASE_MERGE)
+        if(Phase != PHASE_MERGE)
             ScriptedAI::AttackStart(who);
     }
 
@@ -159,13 +149,13 @@ struct MANGOS_DLL_DECL boss_halazziAI : public ScriptedAI
         {
         case PHASE_LYNX:
         case PHASE_ENRAGE:
-            if (Phase == PHASE_MERGE)
+            if(Phase == PHASE_MERGE)
             {
                 m_creature->CastSpell(m_creature, SPELL_TRANSFORM_MERGE, true);
                 m_creature->Attack(m_creature->getVictim(), true);
                 m_creature->GetMotionMaster()->MoveChase(m_creature->getVictim());
             }
-            if (Unit *Lynx = m_creature->GetMap()->GetUnit( LynxGUID))
+            if(Unit *Lynx = m_creature->GetMap()->GetUnit(LynxGUID))
             {
                 Lynx->SetVisibility(VISIBILITY_OFF);
                 Lynx->SetDeathState(JUST_DIED);
@@ -190,7 +180,7 @@ struct MANGOS_DLL_DECL boss_halazziAI : public ScriptedAI
             TotemTimer = 12000;
             break;
         case PHASE_MERGE:
-            if (Unit *Lynx = m_creature->GetMap()->GetUnit( LynxGUID))
+            if(Unit *Lynx = m_creature->GetMap()->GetUnit(LynxGUID))
             {
                 DoScriptText(SAY_MERGE, m_creature);
                 Lynx->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
@@ -208,25 +198,25 @@ struct MANGOS_DLL_DECL boss_halazziAI : public ScriptedAI
 
      void UpdateAI(const uint32 diff)
     {
-        if (!m_creature->SelectHostileTarget() && !m_creature->getVictim())
+        if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;
 
-        if (BerserkTimer < diff)
+        if(BerserkTimer < diff)
         {
             DoScriptText(SAY_BERSERK, m_creature);
             DoCast(m_creature, SPELL_BERSERK, true);
             BerserkTimer = 60000;
         }else BerserkTimer -= diff;
 
-        if (Phase == PHASE_LYNX || Phase == PHASE_ENRAGE)
+        if(Phase == PHASE_LYNX || Phase == PHASE_ENRAGE)
         {
-            if (SaberlashTimer < diff)
+            if(SaberlashTimer < diff)
             {
                 // A tank with more than 490 defense skills should receive no critical hit
                 //m_creature->CastSpell(m_creature, 41296, true);
                 m_creature->CastSpell(m_creature->getVictim(), SPELL_SABER_LASH, true);
                 //m_creature->RemoveAurasDueToSpell(41296);
-
+                
                 switch (rand()%2)
                 {
                     case 0: DoScriptText(SAY_SABERLASH1, m_creature); break;
@@ -235,36 +225,36 @@ struct MANGOS_DLL_DECL boss_halazziAI : public ScriptedAI
                 SaberlashTimer = 30000;
             }else SaberlashTimer -= diff;
 
-            if (FrenzyTimer < diff)
+            if(FrenzyTimer < diff)
             {
                 DoCast(m_creature, SPELL_FRENZY);
                 FrenzyTimer = (10+rand()%5)*1000;
             }else FrenzyTimer -= diff;
 
-            if (Phase == PHASE_LYNX)
+            if(Phase == PHASE_LYNX)
             {
-                if (CheckTimer < diff)
+                if(CheckTimer < diff)
                 {
-                    if (m_creature->GetHealth() * 4 < m_creature->GetMaxHealth() * (3 - TransformCount))
+                    if(m_creature->GetHealth() * 4 < m_creature->GetMaxHealth() * (3 - TransformCount))
                         EnterPhase(PHASE_SPLIT);
                     CheckTimer = 1000;
                 }else CheckTimer -= diff;
             }
         }
 
-        if (Phase == PHASE_HUMAN || Phase == PHASE_ENRAGE)
+        if(Phase == PHASE_HUMAN || Phase == PHASE_ENRAGE)
         {
-            if (TotemTimer < diff)
+            if(TotemTimer < diff)
             {
                 DoCast(m_creature, SPELL_SUMMON_TOTEM);
                 TotemTimer = 20000;
             }else TotemTimer -= diff;
 
-            if (ShockTimer < diff)
+            if(ShockTimer < diff)
             {
-                if (Unit* target = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM,0))
+                if(Unit* target = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
                 {
-                    if (target->IsNonMeleeSpellCasted(false))
+                    if(target->IsNonMeleeSpellCasted(false))
                         DoCast(target,SPELL_EARTHSHOCK);
                     else
                         DoCast(target,SPELL_FLAMESHOCK);
@@ -272,16 +262,16 @@ struct MANGOS_DLL_DECL boss_halazziAI : public ScriptedAI
                 }
             }else ShockTimer -= diff;
 
-            if (Phase == PHASE_HUMAN)
+            if(Phase == PHASE_HUMAN)
             {
-                if (CheckTimer < diff)
+                if(CheckTimer < diff)
                 {
-                    if (m_creature->GetHealth() * 10 < m_creature->GetMaxHealth())
+                    if(m_creature->GetHealth() * 10 < m_creature->GetMaxHealth())
                         EnterPhase(PHASE_MERGE);
                     else
                     {
-                        Unit *Lynx = m_creature->GetMap()->GetUnit( LynxGUID);
-                        if (Lynx && Lynx->GetHealth() * 10 < Lynx->GetMaxHealth())
+                        Unit *Lynx = m_creature->GetMap()->GetUnit(LynxGUID);
+                        if(Lynx && Lynx->GetHealth() * 10 < Lynx->GetMaxHealth())
                             EnterPhase(PHASE_MERGE);
                     }
                     CheckTimer = 1000;
@@ -289,14 +279,14 @@ struct MANGOS_DLL_DECL boss_halazziAI : public ScriptedAI
             }
         }
 
-        if (Phase == PHASE_MERGE)
+        if(Phase == PHASE_MERGE)
         {
-            if (CheckTimer < diff)
+            if(CheckTimer < diff)
             {
-                Unit *Lynx = m_creature->GetMap()->GetUnit( LynxGUID);
-                if (Lynx && m_creature->IsWithinDistInMap(Lynx, 6.0f))
+                Unit *Lynx = m_creature->GetMap()->GetUnit(LynxGUID);
+                if(Lynx && m_creature->IsWithinDistInMap(Lynx, 6.0f))
                 {
-                    if (TransformCount < 3)
+                    if(TransformCount < 3)
                         EnterPhase(PHASE_LYNX);
                     else
                         EnterPhase(PHASE_ENRAGE);
@@ -320,16 +310,7 @@ struct MANGOS_DLL_DECL boss_halazziAI : public ScriptedAI
     void JustDied(Unit* Killer)
     {
 		if(pInstance)
-		{
-            pInstance->SetData(TYPE_HALAZZI, DONE);
-			if (GameObject* pEncounterDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_HALAZZIFRONTDOOR)))
-				pEncounterDoor->SetGoState(GO_STATE_ACTIVE);
-			if (pInstance->GetData64(DATA_BOSSKILLED)>=4) {
-				if (GameObject* pEncounterDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_HEXLORDGATE)))
-					pEncounterDoor->SetGoState(GO_STATE_ACTIVE);
-			}
-		}
-
+            pInstance->SetData(DATA_HALAZZIEVENT, DONE);
 
         DoScriptText(SAY_DEATH, m_creature);
     }
@@ -362,7 +343,7 @@ struct MANGOS_DLL_DECL boss_spiritlynxAI : public ScriptedAI
             ScriptedAI::AttackStart(who);
     }
 
-    void Aggro(Unit *who) { m_creature->SetInCombatWithZone(); }
+    void Aggro(Unit *who) {m_creature->SetInCombatWithZone();}
 
     void UpdateAI(const uint32 diff)
     {
