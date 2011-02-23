@@ -72,10 +72,6 @@ class MANGOS_DLL_SPEC InstanceData
         //use HandleGameObject(GUID,boolen,NULL); in any other script 
         void HandleGameObject(uint64 GUID, bool open, GameObject *go = NULL);
 
-        //Handle open / close objects
-        //use HandleGameObject(NULL,boolen,GO); in OnObjectCreate in instance scripts
-        //use HandleGameObject(GUID,boolen,NULL); in any other script
-        void HandleGameObject(uint64 GUID, bool open, GameObject *go = NULL);
 
         //Called when a gameobject is created
         virtual void OnObjectCreate(GameObject *) {}
