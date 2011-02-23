@@ -39,8 +39,8 @@ struct MANGOS_DLL_DECL pet_simple_guardianAI : public PetAI
     */
     pet_simple_guardianAI(Pet* pPet): PetAI(pPet)
     {
-        // add spells if any
-         if (CreatureInfo const* pPetInfo = pPet->GetCreatureInfo())
+        // lookup spells
+        if (CreatureInfo const* pPetInfo = pPet->GetCreatureInfo())
             for (uint8 i = 0; i<CREATURE_MAX_SPELLS; i++)
             {
                 if (!pPetInfo->spells[i])
@@ -51,14 +51,24 @@ struct MANGOS_DLL_DECL pet_simple_guardianAI : public PetAI
                     // skip spells without any cooldown
                     if (!spellInfo->StartRecoveryTime && !GetSpellRecoveryTime(spellInfo) && !(spellInfo->Attributes & SPELL_ATTR_PASSIVE))
                         continue;
-                    // in case applying stat auras, we need to set it modifiable temporary
-                    pPet->SetCanModifyStats(true);
-                    pPet->addSpell(pPetInfo->spells[i], spellInfo->Attributes & SPELL_ATTR_PASSIVE ? ACT_PASSIVE : ACT_ENABLED);
-                    pPet->SetCanModifyStats(false);
+
+                    // add spell, if pet does not know
+                    pPet->addSpell(spellInfo->Id);
+
+                    // toggle autocast (normally disabled for non-controlled pets)
+                    pPet->ToggleAutocast(spellInfo->Id, true, true);
                 }
             }
     }
 };
+
+CreatureAI* GetAI_pet_simple_guardian(Creature* pCreature)
+{
+    if (pCreature->IsPet())
+        return new pet_simple_guardianAI((Pet*)pCreature);
+    else
+        return NULL;
+}
 
 /*######
 ## pet_greater_earth_elemental
@@ -122,6 +132,15 @@ struct MANGOS_DLL_DECL pet_greater_earth_elementalAI : public PetAI
             m_timer -= uiDiff;
     }
 };
+
+
+CreatureAI* GetAI_pet_greater_earth_elemental(Creature* pCreature)
+{
+    if (pCreature->IsPet())
+        return new pet_greater_earth_elementalAI((Pet*)pCreature);
+    else
+        return NULL;
+}
 
 
 /*######
@@ -216,27 +235,50 @@ struct MANGOS_DLL_DECL pet_greater_fire_elementalAI : public PetAI
     }
 };
 
-
-CreatureAI* GetAI_pet_simple_guardian(Creature* pCreature)
-{
-    if (pCreature->IsPet())
-        return new pet_simple_guardianAI((Pet*)pCreature);
-    else
-        return NULL;
-}
-
-CreatureAI* GetAI_pet_greater_earth_elemental(Creature* pCreature)
-{
-    if (pCreature->IsPet())
-        return new pet_greater_earth_elementalAI((Pet*)pCreature);
-    else
-        return NULL;
-}
-
 CreatureAI* GetAI_pet_greater_fire_elemental(Creature* pCreature)
 {
     if (pCreature->IsPet())
         return new pet_greater_fire_elementalAI((Pet*)pCreature);
+    else
+        return NULL;
+}
+
+/*######
+## pet_dk_ghoul
+######*/
+
+enum
+{
+    SPELL_DK_SCALING_01 = 54566,
+    SPELL_DK_SCALING_02 = 51996,
+    SPELL_LEAP          = 47482
+};
+
+struct MANGOS_DLL_DECL pet_dk_ghoulAI : public pet_simple_guardianAI
+{
+    pet_dk_ghoulAI(Pet* pPet) : pet_simple_guardianAI(pPet) {}
+
+    // some hacky-hacky for "Leap" :-/
+    void AttackStart(Unit *u)
+    {
+        Unit* oldTarget = m_creature->getVictim();
+        PetAI::AttackStart(u);
+
+        // PetAI::AttackStart was successfull
+        if (m_creature->getVictim() != oldTarget && m_creature->getVictim() == u
+            && !m_creature->IsNonMeleeSpellCasted(false))
+        {
+            float dist = m_creature->GetDistance(m_creature->getVictim());
+            if (dist > 5.0f && dist < 30.0f)
+                // self cast (works only like this, because target mode is buggy)
+                m_creature->CastSpell(m_creature, SPELL_LEAP, false);
+        }
+    }
+};
+CreatureAI* GetAI_pet_dk_ghoul(Creature* pCreature)
+{
+    if (pCreature->IsPet())
+        return new pet_dk_ghoulAI((Pet*)pCreature);
     else
         return NULL;
 }
@@ -259,5 +301,9 @@ void AddSC_pets()
     newscript->Name = "pet_greater_fire_elemental";
     newscript->GetAI = &GetAI_pet_greater_fire_elemental;
     newscript->RegisterSelf();
-
+	
+    newscript = new Script;
+    newscript->Name = "pet_dk_ghoul";
+    newscript->GetAI = &GetAI_pet_dk_ghoul;
+    newscript->RegisterSelf();
 }
