@@ -176,7 +176,7 @@ struct MANGOS_DLL_DECL boss_hex_lord_malacrassAI : public ScriptedAI
     {
         pInstance = ((ScriptedInstance*)c->GetInstanceData());
         SelectAddEntry();
-        for(uint8 i = 0; i < 4; ++i)
+        for (uint8 i = 0; i < 4; ++i)
             AddGUID[i] = 0;
         Reset();
     }
@@ -201,7 +201,7 @@ struct MANGOS_DLL_DECL boss_hex_lord_malacrassAI : public ScriptedAI
 
     void Reset()
     {
-        if(pInstance)
+        if (pInstance)
             pInstance->SetData(TYPE_MALACRASS, NOT_STARTED);
 
         SpiritBolts_Timer = 20000;
@@ -221,19 +221,19 @@ struct MANGOS_DLL_DECL boss_hex_lord_malacrassAI : public ScriptedAI
 
     void Aggro(Unit* who)
     {
-        if(pInstance)
+        if (pInstance)
 		{
             pInstance->SetData(TYPE_MALACRASS, IN_PROGRESS);
-			if (GameObject* pEncounterDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_HEXLORDDOOR)))
-				pEncounterDoor->SetGoState(GO_STATE_READY);
+            if (GameObject* pEncounterDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_HEXLORDDOOR)))
+                pEncounterDoor->SetGoState(GO_STATE_READY);
 		}
 
         DoScriptText(SAY_AGGRO, m_creature);
 
-        for(uint8 i = 0; i < 4; ++i)
+        for (uint8 i = 0; i < 4; ++i)
         {
             Unit* Temp = m_creature->GetMap()->GetUnit(AddGUID[i]);
-            if(Temp && Temp->isAlive())
+            if (Temp && Temp->isAlive())
                 ((Creature*)Temp)->AI()->AttackStart(m_creature->getVictim());
             else
             {
@@ -250,18 +250,18 @@ struct MANGOS_DLL_DECL boss_hex_lord_malacrassAI : public ScriptedAI
 
     void JustDied(Unit* victim)
     {
-        if(pInstance)
+        if (pInstance)
 		{
             pInstance->SetData(TYPE_MALACRASS, DONE);
-			if (GameObject* pEncounterDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_HEXLORDDOOR)))
-				pEncounterDoor->SetGoState(GO_STATE_ACTIVE);
+            if (GameObject* pEncounterDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_HEXLORDDOOR)))
+                pEncounterDoor->SetGoState(GO_STATE_ACTIVE);
 	}
         DoScriptText(SAY_DEATH_ONE, m_creature);
 
-        for(uint8 i = 0; i < 4 ; ++i)
+        for (uint8 i = 0; i < 4 ; ++i)
         {
             Unit* Temp = m_creature->GetMap()->GetUnit(AddGUID[i]);
-            if(Temp && Temp->isAlive())
+            if (Temp && Temp->isAlive())
                 Temp->DealDamage(Temp, Temp->GetHealth(), NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
         }
     }
@@ -274,27 +274,27 @@ struct MANGOS_DLL_DECL boss_hex_lord_malacrassAI : public ScriptedAI
             AddList.push_back(AddEntryList[i]);
 
         uint8 i = 0;
-        while(AddList.size() > 4)
+        while (AddList.size() > 4)
         {
             AddList.erase(AddList.begin()+rand()%2+i);
             i++;
         }
 
         i=0;
-        for(std::vector<uint32>::iterator itr = AddList.begin(); itr != AddList.end(); ++itr, ++i)
+        for (std::vector<uint32>::iterator itr = AddList.begin(); itr != AddList.end(); ++itr, ++i)
             AddEntry[i] = *itr;
     }
 
     void SpawnAdds()
     {
-        for(uint8 i = 0; i < 4; ++i)
+        for (uint8 i = 0; i < 4; ++i)
         {
             Creature *pCreature = ((Creature*)m_creature->GetMap()->GetUnit( AddGUID[i]));
-            if(!pCreature || !pCreature->isAlive())
+            if (!pCreature || !pCreature->isAlive())
             {
-                if(pCreature) pCreature->SetDeathState(DEAD);
+                if (pCreature) pCreature->SetDeathState(DEAD);
                 pCreature = m_creature->SummonCreature(AddEntry[i], Pos_X[i], POS_Y, POS_Z, ORIENT, TEMPSUMMON_DEAD_DESPAWN, 0);
-                if(pCreature) AddGUID[i] = pCreature->GetGUID();
+                if (pCreature) AddGUID[i] = pCreature->GetGUID();
             }
             else
             {
@@ -320,23 +320,23 @@ struct MANGOS_DLL_DECL boss_hex_lord_malacrassAI : public ScriptedAI
         if(!m_creature->SelectHostileTarget() && !m_creature->getVictim())
             return;
 
-        if(CheckAddState_Timer < diff)
+        if (CheckAddState_Timer < diff)
         {
-            for(uint8 i = 0; i < 4; ++i)
+            for (uint8 i = 0; i < 4; ++i)
             {
                 Unit* Temp = m_creature->GetMap()->GetUnit(AddGUID[i]);
-                if(Temp && Temp->isAlive() && !Temp->getVictim())
+                if (Temp && Temp->isAlive() && !Temp->getVictim())
                     ((Creature*)Temp)->AI()->AttackStart(m_creature->getVictim());
             }
             CheckAddState_Timer = 5000;
         }else CheckAddState_Timer -= diff;
 
-        if(m_creature->GetHealth() * 10 < m_creature->GetMaxHealth() * 8 && !bDrainPower)
+        if (m_creature->GetHealth() * 10 < m_creature->GetMaxHealth() * 8 && !bDrainPower)
             bDrainPower = true;
 
-        if(bDrainPower)
+        if (bDrainPower)
         {
-            if(DrainPower_Timer < diff)
+            if (DrainPower_Timer < diff)
             {
                 DoScriptText(SAY_DRAIN_POWER, m_creature);
                 m_creature->CastSpell(m_creature, SPELL_DRAIN_POWER, true);
@@ -344,9 +344,9 @@ struct MANGOS_DLL_DECL boss_hex_lord_malacrassAI : public ScriptedAI
             }else DrainPower_Timer -= diff;
         }
 
-        if(SpiritBolts_Timer < diff)
+        if (SpiritBolts_Timer < diff)
         {
-            if(DrainPower_Timer < 12000)    // channel 10 sec
+            if (DrainPower_Timer < 12000)    // channel 10 sec
                 SpiritBolts_Timer = 13000;  // cast drain power first
             else
             {
@@ -358,7 +358,7 @@ struct MANGOS_DLL_DECL boss_hex_lord_malacrassAI : public ScriptedAI
             }
         }else SpiritBolts_Timer -= diff;
 
-        if(SiphonSoul_Timer < diff)
+        if (SiphonSoul_Timer < diff)
         {
             Player* target = SelectRandomPlayer(50);
             Unit *trigger = DoSpawnCreature(MOB_TEMP_TRIGGER, 0, 0, 0, 0, TEMPSUMMON_TIMED_DESPAWN, 30000);
@@ -374,13 +374,13 @@ struct MANGOS_DLL_DECL boss_hex_lord_malacrassAI : public ScriptedAI
                 PlayerGUID = target->GetGUID();
                 PlayerAbility_Timer = 8000 + rand()%2000;
                 PlayerClass = target->getClass() - 1;
-                if(PlayerClass == 10) PlayerClass = 9; // druid
-                if(PlayerClass == 4 && target->HasSpell(15473)) PlayerClass = 5; // shadow priest
+                if (PlayerClass == 10) PlayerClass = 9; // druid
+                if (PlayerClass == 4 && target->HasSpell(15473)) PlayerClass = 5; // shadow priest
                 SiphonSoul_Timer = 99999;   // buff lasts 30 sec
             }
         }else SiphonSoul_Timer -= diff;
 
-        if(PlayerAbility_Timer < diff)
+        if (PlayerAbility_Timer < diff)
         {
             UseAbility();
             PlayerAbility_Timer = 8000 + rand()%2000;
@@ -432,8 +432,8 @@ struct MANGOS_DLL_DECL boss_hex_lord_malacrassAI : public ScriptedAI
         std::list<Player*> temp;
         std::list<Player*>::iterator j;
 
-        for(Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
-            if((range == 0.0f || m_creature->IsWithinDistInMap(i->getSource(), range))
+        for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
+            if ((range == 0.0f || m_creature->IsWithinDistInMap(i->getSource(), range))
                 && (!alive || i->getSource()->isAlive()))
                     temp.push_back(i->getSource());
 
@@ -461,25 +461,33 @@ struct MANGOS_DLL_DECL boss_hexlord_addAI : public ScriptedAI
     void Aggro(Unit* who) {}
     void JustDied(Unit* killer)
 	{
-		if(!pInstance)
+		if (!pInstance)
             return;
 
         Creature* HexLord = (Creature*)m_creature->GetMap()->GetUnit(pInstance->GetData64(DATA_HEXLORDGUID));
-        if(HexLord)
+        if (HexLord)
 			((boss_hex_lord_malacrassAI*)HexLord->AI())->AddDied();
 	}
 
     void UpdateAI(const uint32 diff)
     {
-        if(pInstance && pInstance->GetData(TYPE_MALACRASS) != IN_PROGRESS)
+        if (pInstance && pInstance->GetData(TYPE_MALACRASS) != IN_PROGRESS)
             EnterEvadeMode();
 
         DoMeleeAttackIfReady();
     }
 };
 
-#define SPELL_BLOODLUST       43578
-#define SPELL_CLEAVE          15496
+
+/****
+**BOSS Thurg
+****/
+
+enum
+{
+    SPELL_BLOODLUST      = 43578,
+    SPELL_CLEAVE         = 15496
+};
 
 struct MANGOS_DLL_DECL boss_thurgAI : public boss_hexlord_addAI
 {
@@ -499,13 +507,13 @@ struct MANGOS_DLL_DECL boss_thurgAI : public boss_hexlord_addAI
 
     void UpdateAI(const uint32 diff)
     {
-        if(!m_creature->SelectHostileTarget() || !m_creature->getVictim() )
+        if (!m_creature->SelectHostileTarget() || !m_creature->getVictim() )
             return;
 
-        if(bloodlust_timer < diff)
+        if (bloodlust_timer < diff)
         {
             std::list<Creature*> templist = DoFindFriendlyMissingBuff(50, SPELL_BLOODLUST);
-            if(!templist.empty())
+            if (!templist.empty())
             {
                 Unit* target = *(templist.begin());
                 m_creature->CastSpell(target, SPELL_BLOODLUST, false);
@@ -513,7 +521,7 @@ struct MANGOS_DLL_DECL boss_thurgAI : public boss_hexlord_addAI
             bloodlust_timer = 12000;
         }else bloodlust_timer -= diff;
 
-        if(cleave_timer < diff)
+        if (cleave_timer < diff)
         {
             m_creature->CastSpell(m_creature->getVictim(),SPELL_CLEAVE, false);
             cleave_timer = 12000; //3 sec cast
@@ -523,8 +531,15 @@ struct MANGOS_DLL_DECL boss_thurgAI : public boss_hexlord_addAI
     }
 };
 
-#define SPELL_FLASH_HEAL     43575
-#define SPELL_DISPEL_MAGIC   43577
+/****
+** boss Alyso
+****/
+
+enum
+{
+    SPELL_FLASH_HEAL    = 43575,
+    SPELL_DISPEL_MAGIC  = 43577
+};
 
 struct MANGOS_DLL_DECL boss_alyson_antilleAI : public boss_hexlord_addAI
 {
@@ -551,7 +566,7 @@ struct MANGOS_DLL_DECL boss_alyson_antilleAI : public boss_hexlord_addAI
 
         if (who->isTargetableForAttack())
         {
-            if(m_creature->Attack(who, false))
+            if (m_creature->Attack(who, false))
             {
                 m_creature->GetMotionMaster()->MoveChase(who, 20);
                 m_creature->AddThreat(who, 0.0f);
@@ -567,15 +582,15 @@ struct MANGOS_DLL_DECL boss_alyson_antilleAI : public boss_hexlord_addAI
 
     void UpdateAI(const uint32 diff)
     {
-        if(!m_creature->SelectHostileTarget() || !m_creature->getVictim() )
+        if (!m_creature->SelectHostileTarget() || !m_creature->getVictim() )
             return;
 
-        if(flashheal_timer < diff)
+        if (flashheal_timer < diff)
         {
             Unit* target = DoSelectLowestHpFriendly(99, 30000);
-            if(target)
+            if (target)
             {
-                if(target->IsWithinDistInMap(m_creature, 50))
+                if (target->IsWithinDistInMap(m_creature, 50))
                     m_creature->CastSpell(target,SPELL_FLASH_HEAL, false);
                 else
                 {
@@ -586,7 +601,7 @@ struct MANGOS_DLL_DECL boss_alyson_antilleAI : public boss_hexlord_addAI
             }
             else
             {
-                if(rand()%2)
+                if (rand()%2)
                 {
                     Unit* target = DoSelectLowestHpFriendly(50, 0);
                     m_creature->CastSpell(target, SPELL_DISPEL_MAGIC, false);
@@ -615,7 +630,14 @@ struct MANGOS_DLL_DECL boss_alyson_antilleAI : public boss_hexlord_addAI
     }
 };
 
-#define SPELL_FIREBOLT        43584
+/****
+**boss gazakroth
+****/
+
+enum
+{
+    SPELL_FIREBOLT        43584
+};
 
 struct MANGOS_DLL_DECL boss_gazakrothAI : public boss_hexlord_addAI
 {
@@ -636,7 +658,7 @@ struct MANGOS_DLL_DECL boss_gazakrothAI : public boss_hexlord_addAI
 
         if (who->isTargetableForAttack())
         {
-            if(m_creature->Attack(who, false))
+            if (m_creature->Attack(who, false))
             {
                 m_creature->GetMotionMaster()->MoveChase(who, 20);
                 m_creature->AddThreat(who, 0.0f);
@@ -652,10 +674,10 @@ struct MANGOS_DLL_DECL boss_gazakrothAI : public boss_hexlord_addAI
 
     void UpdateAI(const uint32 diff)
     {
-        if(!m_creature->SelectHostileTarget() || !m_creature->getVictim() )
+        if (!m_creature->SelectHostileTarget() || !m_creature->getVictim() )
             return;
 
-        if(firebolt_timer < diff)
+        if (firebolt_timer < diff)
         {
             m_creature->CastSpell(m_creature->getVictim(),SPELL_FIREBOLT, false);
             firebolt_timer = 700;
@@ -665,8 +687,15 @@ struct MANGOS_DLL_DECL boss_gazakrothAI : public boss_hexlord_addAI
     }
 };
 
-#define SPELL_FLAME_BREATH    43582
-#define SPELL_THUNDERCLAP     43583
+/***
+**bossraadan
+***/
+
+enum
+{
+    SPELL_FLAME_BREATH  =  43582,
+    SPELL_THUNDERCLAP   =  43583
+};
 
 struct MANGOS_DLL_DECL boss_lord_raadanAI : public boss_hexlord_addAI
 {
@@ -685,7 +714,7 @@ struct MANGOS_DLL_DECL boss_lord_raadanAI : public boss_hexlord_addAI
     }
     void UpdateAI(const uint32 diff)
     {
-        if(!m_creature->SelectHostileTarget() || !m_creature->getVictim() )
+        if (!m_creature->SelectHostileTarget() || !m_creature->getVictim() )
             return;
 
         if (thunderclap_timer < diff)
@@ -704,7 +733,14 @@ struct MANGOS_DLL_DECL boss_lord_raadanAI : public boss_hexlord_addAI
     }
 };
 
-#define SPELL_PSYCHIC_WAIL   43590
+/***
+**boss darkheart
+***/
+
+enum
+{
+    SPELL_PSYCHIC_WAIL   43590
+};
 
 struct MANGOS_DLL_DECL boss_darkheartAI : public boss_hexlord_addAI
 {
@@ -721,7 +757,7 @@ struct MANGOS_DLL_DECL boss_darkheartAI : public boss_hexlord_addAI
     }
     void UpdateAI(const uint32 diff)
     {
-        if(!m_creature->SelectHostileTarget() || !m_creature->getVictim() )
+        if (!m_creature->SelectHostileTarget() || !m_creature->getVictim() )
             return;
 
         if (psychicwail_timer < diff)
@@ -734,7 +770,14 @@ struct MANGOS_DLL_DECL boss_darkheartAI : public boss_hexlord_addAI
     }
 };
 
-#define SPELL_VENOM_SPIT    43579
+/****
+**boss slither
+****/
+
+enum
+{
+    SPELL_VENOM_SPIT    43579
+};
 
 struct MANGOS_DLL_DECL boss_slitherAI : public boss_hexlord_addAI
 {
@@ -756,7 +799,7 @@ struct MANGOS_DLL_DECL boss_slitherAI : public boss_hexlord_addAI
 
         if (who->isTargetableForAttack())
         {
-            if(m_creature->Attack(who, false))
+            if (m_creature->Attack(who, false))
             {
                 m_creature->GetMotionMaster()->MoveChase(who, 20);
                 m_creature->AddThreat(who, 0.0f);
@@ -772,7 +815,7 @@ struct MANGOS_DLL_DECL boss_slitherAI : public boss_hexlord_addAI
 
     void UpdateAI(const uint32 diff)
     {
-        if(!m_creature->SelectHostileTarget() || !m_creature->getVictim() )
+        if (!m_creature->SelectHostileTarget() || !m_creature->getVictim() )
             return;
 
         if (venomspit_timer < diff)
@@ -786,8 +829,14 @@ struct MANGOS_DLL_DECL boss_slitherAI : public boss_hexlord_addAI
     }
 };
 
-//Fenstalker
-#define SPELL_VOLATILE_INFECTION 43586
+/****
+** boss Fenstalker
+****/
+
+enum
+{
+    SPELL_VOLATILE_INFECTION = 43586
+};
 
 struct MANGOS_DLL_DECL boss_fenstalkerAI : public boss_hexlord_addAI
 {
@@ -804,7 +853,7 @@ struct MANGOS_DLL_DECL boss_fenstalkerAI : public boss_hexlord_addAI
     }
     void UpdateAI(const uint32 diff)
     {
-        if(!m_creature->SelectHostileTarget() || !m_creature->getVictim() )
+        if (!m_creature->SelectHostileTarget() || !m_creature->getVictim() )
             return;
 
         if (volatileinf_timer < diff)
@@ -818,10 +867,15 @@ struct MANGOS_DLL_DECL boss_fenstalkerAI : public boss_hexlord_addAI
     }
 };
 
-//Koragg
-#define SPELL_COLD_STARE      43593
-#define SPELL_MIGHTY_BLOW     43592
+/***
+** boss Koragg
+***/
 
+enum
+{
+    SPELL_COLD_STARE     = 43593,
+    SPELL_MIGHTY_BLOW    = 43592
+};
 
 struct MANGOS_DLL_DECL boss_koraggAI : public boss_hexlord_addAI
 {

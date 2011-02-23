@@ -135,16 +135,16 @@ struct MANGOS_DLL_DECL boss_akilzonAI : public ScriptedAI
         if (pInstance)
 		{
             pInstance->SetData(TYPE_AKILZON, DONE);
-			if (GameObject* pEncounterDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_AKILZONDOOR)))
-				pEncounterDoor->SetGoState(GO_STATE_ACTIVE);
-			if (pInstance->GetData64(DATA_BOSSKILLED)>=4) {
-				if (GameObject* pEncounterDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_HEXLORDGATE)))
-					pEncounterDoor->SetGoState(GO_STATE_ACTIVE);
+            if (GameObject* pEncounterDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_AKILZONDOOR)))
+                pEncounterDoor->SetGoState(GO_STATE_ACTIVE);
+            if (pInstance->GetData64(DATA_BOSSKILLED)>=4) {
+                if (GameObject* pEncounterDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_HEXLORDGATE)))
+                    pEncounterDoor->SetGoState(GO_STATE_ACTIVE);
 			}
 		}
         DespawnSummons(MOB_SOARING_EAGLE);
 
-		SetWeather(WEATHER_STATE_FINE, 0.0f);
+        SetWeather(WEATHER_STATE_FINE, 0.0f);
     }
 
     void KilledUnit(Unit* victim)
@@ -196,7 +196,7 @@ struct MANGOS_DLL_DECL boss_akilzonAI : public ScriptedAI
         std::list<Player*> temp;
         std::list<Player*>::iterator j;
 
-        for(Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
+        for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
 			if ((range == 0.0f || m_creature->IsWithinDistInMap(i->getSource(), range))
 				&& (!alive || i->getSource()->isTargetableForAttack()))
 				temp.push_back(i->getSource());
@@ -228,7 +228,7 @@ struct MANGOS_DLL_DECL boss_akilzonAI : public ScriptedAI
         {
             // deal damage
             int32 bp0 = 800;
-            for(uint8 i = 2; i < StormCount; ++i)
+            for (uint8 i = 2; i < StormCount; ++i)
                 bp0 *= 2;
 
             CellPair p(MaNGOS::ComputeCellPair(m_creature->GetPositionX(), m_creature->GetPositionY()));
@@ -259,7 +259,7 @@ struct MANGOS_DLL_DECL boss_akilzonAI : public ScriptedAI
                     y = rand()%2 ? y + rand()%5 : y - rand()%5;
                     z = Cloud->GetPositionZ() + 2 - rand()%4;
 
-                    if(Creature *trigger = m_creature->SummonCreature(MOB_TEMP_TRIGGER, x, y, z, 0, TEMPSUMMON_TIMED_DESPAWN, 2000))
+                    if (Creature *trigger = m_creature->SummonCreature(MOB_TEMP_TRIGGER, x, y, z, 0, TEMPSUMMON_TIMED_DESPAWN, 2000))
                     {
                         trigger->StopMoving();
                         trigger->CastSpell(trigger, 37248, true);
@@ -472,7 +472,7 @@ struct MANGOS_DLL_DECL mob_soaring_eagleAI : public ScriptedAI
     uint32 EagleSwoop_Timer;
     bool arrived;
     uint32 TargetGUID;
-	bool InCombat;
+    bool InCombat;
 
     void Reset()
     {
@@ -482,7 +482,7 @@ struct MANGOS_DLL_DECL mob_soaring_eagleAI : public ScriptedAI
         m_creature->addUnitState(MOVE_FLIGHT);
     }
 
-	void Aggro(Unit *who) { m_creature->SetInCombatWithZone(); }
+    void Aggro(Unit *who) { m_creature->SetInCombatWithZone(); }
 
     void AttackStart(Unit *who)
     {
@@ -511,13 +511,13 @@ struct MANGOS_DLL_DECL mob_soaring_eagleAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if(EagleSwoop_Timer < diff)
+        if (EagleSwoop_Timer < diff)
             EagleSwoop_Timer = 0;
         else EagleSwoop_Timer -= diff;
 
-        if(arrived)
+        if (arrived)
         {
-            if(Unit* target = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
+            if (Unit* target = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
             {
                 float x, y, z;
                 if(EagleSwoop_Timer)
@@ -525,7 +525,7 @@ struct MANGOS_DLL_DECL mob_soaring_eagleAI : public ScriptedAI
                     x = target->GetPositionX() + 10 - rand()%20;
                     y = target->GetPositionY() + 10 - rand()%20;
                     z = target->GetPositionZ() + 10 + rand()%5;
-                    if(z > 95) z = 95 - rand()%5;
+                    if (z > 95) z = 95 - rand()%5;
                 }
                 else
                 {

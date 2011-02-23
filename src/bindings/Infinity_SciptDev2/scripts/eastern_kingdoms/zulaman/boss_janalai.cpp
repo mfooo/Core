@@ -139,7 +139,6 @@ struct MANGOS_DLL_DECL boss_janalaiAI : public ScriptedAI
 
         isFlameBreathing = false;
 
-
         for(uint8 i = 0; i < 40; i++)
             FireBombGUIDs[i] = 0;
 
@@ -153,9 +152,9 @@ struct MANGOS_DLL_DECL boss_janalaiAI : public ScriptedAI
 		if (pInstance)
 		{
             pInstance->SetData(TYPE_JANALAI, DONE);
-			if (pInstance->GetData64(DATA_BOSSKILLED)>=4) {
-				if (GameObject* pEncounterDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_HEXLORDGATE)))
-					pEncounterDoor->SetGoState(GO_STATE_ACTIVE);
+            if (pInstance->GetData64(DATA_BOSSKILLED)>=4) {
+                if (GameObject* pEncounterDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_HEXLORDGATE)))
+                    pEncounterDoor->SetGoState(GO_STATE_ACTIVE);
 			}
 		}
     }
@@ -175,7 +174,7 @@ struct MANGOS_DLL_DECL boss_janalaiAI : public ScriptedAI
 
         if (pInstance)
             pInstance->SetData(TYPE_JANALAI, IN_PROGRESS);
-			m_creature->SetInCombatWithZone();
+            m_creature->SetInCombatWithZone();
     }
 
     void DamageDeal(Unit* target, uint32 &damage)
@@ -523,16 +522,16 @@ struct MANGOS_DLL_DECL mob_janalai_hatcherAI : public ScriptedAI
 
         //error_log("Eggs %d at %d", templist.size(), side);
 
-        for(std::list<Creature*>::iterator i = templist.begin(); i != templist.end() && num > 0; ++i)
+        for (std::list<Creature*>::iterator i = templist.begin(); i != templist.end() && num > 0; ++i)
         {
-            if((*i)->GetDisplayId() != 11686)
+            if ((*i)->GetDisplayId() != 11686)
             {
                (*i)->CastSpell(*i, SPELL_HATCH_EGG, false);
                 num--;
             }
         }
 
-        if(num)
+        if (num)
             return false;   // no more templist
         else
             return true;
@@ -543,7 +542,7 @@ struct MANGOS_DLL_DECL mob_janalai_hatcherAI : public ScriptedAI
     void MoveInLineOfSight(Unit*) {}
     void MovementInform(uint32, uint32)
     {
-        if(waypoint == 5)
+        if (waypoint == 5)
         {
             isHatching = true;
             HatchNum = 1;
@@ -555,16 +554,16 @@ struct MANGOS_DLL_DECL mob_janalai_hatcherAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if(!pInstance || !(pInstance->GetData(TYPE_JANALAI) == IN_PROGRESS))
+        if (!pInstance || !(pInstance->GetData(TYPE_JANALAI) == IN_PROGRESS))
         {
             m_creature->SetVisibility(VISIBILITY_OFF);
             m_creature->SetDeathState(JUST_DIED);
             return;
         }
 
-        if(!isHatching)
+        if (!isHatching)
         {
-            if(WaitTimer)
+            if (WaitTimer)
             {
                 m_creature->GetMotionMaster()->Clear();
                 m_creature->GetMotionMaster()->MovePoint(0,hatcherway[side][waypoint][0],hatcherway[side][waypoint][1],hatcherway[side][waypoint][2]);
@@ -574,9 +573,9 @@ struct MANGOS_DLL_DECL mob_janalai_hatcherAI : public ScriptedAI
         }
         else
         {
-            if(WaitTimer < diff)
+            if (WaitTimer < diff)
             {
-                if(HatchEggs(HatchNum))
+                if (HatchEggs(HatchNum))
                 {
                     HatchNum++;
                     WaitTimer = 10000;
@@ -618,7 +617,7 @@ struct MANGOS_DLL_DECL mob_hatchlingAI : public ScriptedAI
     void Reset()
     {
         BuffetTimer = 7000;
-        if(m_creature->GetPositionY() > 1150)
+        if (m_creature->GetPositionY() > 1150)
             m_creature->GetMotionMaster()->MovePoint(0, hatcherway[0][3][0]+rand()%4-2,1150+rand()%4-2,hatcherway[0][3][2]);
         else
             m_creature->GetMotionMaster()->MovePoint(0, hatcherway[1][3][0]+rand()%4-2,1150+rand()%4-2,hatcherway[1][3][2]);
@@ -630,17 +629,17 @@ struct MANGOS_DLL_DECL mob_hatchlingAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if(!pInstance || !(pInstance->GetData(TYPE_JANALAI) == IN_PROGRESS))
+        if (!pInstance || !(pInstance->GetData(TYPE_JANALAI) == IN_PROGRESS))
         {
             m_creature->SetVisibility(VISIBILITY_OFF);
             m_creature->SetDeathState(JUST_DIED);
             return;
         }
 
-        if(!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;
 
-        if(BuffetTimer < diff)
+        if (BuffetTimer < diff)
         {
             m_creature->CastSpell(m_creature->getVictim(), SPELL_FLAMEBUFFET, false);
             BuffetTimer = 5000;
@@ -666,7 +665,7 @@ struct MANGOS_DLL_DECL mob_eggAI : public ScriptedAI
 
     void SpellHit(Unit *caster, const SpellEntry *spell)
     {
-        if(spell->Id == SPELL_HATCH_EGG)
+        if (spell->Id == SPELL_HATCH_EGG)
         {
             DoSpawnCreature(MOB_HATCHLING, 0, 0, 0, 0, TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 60000);
             m_creature->SetDisplayId(11686);

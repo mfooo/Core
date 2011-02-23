@@ -25,8 +25,8 @@ EndScriptData */
 #include "zulaman.h"
 //#include "spell.h"
 
-//(-1568043,'Come, fools. Fill ma empty cages...',12029,1,0,0,'halazzi SAY_EVENT1'), 
-//(-1568044,'I be waitin, strangers. Your deaths gonna make me stronger!',12030,1,0,0,'halazzi SAY_EVENT2'), 
+//(-1568043,'Come, fools. Fill ma empty cages...',12029,1,0,0,'halazzi SAY_EVENT1'),
+//(-1568044,'I be waitin, strangers. Your deaths gonna make me stronger!',12030,1,0,0,'halazzi SAY_EVENT2'),
 
 enum
 {
@@ -119,9 +119,9 @@ struct MANGOS_DLL_DECL boss_halazziAI : public ScriptedAI
         EnterPhase(PHASE_LYNX);
     }
 
-	void Aggro(Unit *who)
+    void Aggro(Unit *who)
     {
-		if(pInstance)
+		if (pInstance)
             pInstance->SetData(TYPE_HALAZZI, IN_PROGRESS);
 
         DoScriptText(SAY_AGGRO, m_creature);
@@ -322,11 +322,11 @@ struct MANGOS_DLL_DECL boss_halazziAI : public ScriptedAI
 		if(pInstance)
 		{
             pInstance->SetData(TYPE_HALAZZI, DONE);
-			if (GameObject* pEncounterDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_HALAZZIFRONTDOOR)))
-				pEncounterDoor->SetGoState(GO_STATE_ACTIVE);
-			if (pInstance->GetData64(DATA_BOSSKILLED)>=4) {
-				if (GameObject* pEncounterDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_HEXLORDGATE)))
-					pEncounterDoor->SetGoState(GO_STATE_ACTIVE);
+            if (GameObject* pEncounterDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_HALAZZIFRONTDOOR)))
+                pEncounterDoor->SetGoState(GO_STATE_ACTIVE);
+            if (pInstance->GetData64(DATA_BOSSKILLED)>=4) {
+                if (GameObject* pEncounterDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_HEXLORDGATE)))
+                    pEncounterDoor->SetGoState(GO_STATE_ACTIVE);
 			}
 		}
 
@@ -352,13 +352,13 @@ struct MANGOS_DLL_DECL boss_spiritlynxAI : public ScriptedAI
 
     void DamageTaken(Unit *done_by, uint32 &damage)
     {
-        if(damage >= m_creature->GetHealth())
+        if (damage >= m_creature->GetHealth())
             damage = 0;
     }
 
     void AttackStart(Unit *who)
     {
-        if(!m_creature->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE))
+        if (!m_creature->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE))
             ScriptedAI::AttackStart(who);
     }
 
@@ -369,13 +369,13 @@ struct MANGOS_DLL_DECL boss_spiritlynxAI : public ScriptedAI
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;
 
-        if(FrenzyTimer < diff)
+        if (FrenzyTimer < diff)
         {
             DoCast(m_creature, SPELL_LYNX_FRENZY);
             FrenzyTimer = (30+rand()%20)*1000;
         }else FrenzyTimer -= diff;
 
-        if(shredder_timer < diff)
+        if (shredder_timer < diff)
         {
             DoCast(m_creature->getVictim(), SPELL_SHRED_ARMOR);
             shredder_timer = 4000;
