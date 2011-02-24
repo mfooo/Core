@@ -495,19 +495,26 @@ void PathInfo::BuildShortcut()
 
 void PathInfo::createFilter()
 {
-    if (m_sourceUnit->GetTypeId() != TYPEID_UNIT)
-        return;
-
     unsigned short includeFlags = 0;
     unsigned short excludeFlags = 0;
 
-    Creature* creature = (Creature*)m_sourceUnit;
-    if (creature->CanWalk())
-        includeFlags |= NAV_GROUND;          // walk
+    if (m_sourceUnit->GetTypeId() == TYPEID_UNIT)
+    {
+        Creature* creature = (Creature*)m_sourceUnit;
+        if (creature->CanWalk())
+            includeFlags |= NAV_GROUND;          // walk
 
-    // creatures don't take environmental damage
-    if (creature->CanSwim() || creature->IsPet())
-        includeFlags |= (NAV_WATER | NAV_MAGMA | NAV_SLIME);           // swim
+        // creatures don't take environmental damage
+        if (creature->CanSwim() || creature->IsPet())
+            includeFlags |= (NAV_WATER | NAV_MAGMA | NAV_SLIME);           // swim
+    }
+    else if (m_sourceUnit->GetTypeId() == TYPEID_PLAYER)
+    {
+        Player* player = (Player*)m_sourceUnit;
+
+        // perfect support not possible, just stay 'safe'
+        includeFlags |= (NAV_GROUND | NAV_WATER);
+    }
 
     m_filter.setIncludeFlags(includeFlags);
     m_filter.setExcludeFlags(excludeFlags);
@@ -520,9 +527,14 @@ void PathInfo::updateFilter()
     // allow creatures to cheat and use different movement types if they are moved
     // forcefully into terrain they can't normally move in
     if (m_sourceUnit->IsInWater() || m_sourceUnit->IsUnderWater())
-        m_filter.setIncludeFlags(getNavTerrain(m_sourceUnit->GetPositionX(),
-                                               m_sourceUnit->GetPositionY(),
-                                               m_sourceUnit->GetPositionZ()));
+    {
+        unsigned short includedFlags = m_filter.getIncludeFlags();
+        includedFlags |= getNavTerrain(m_sourceUnit->GetPositionX(),
+                                       m_sourceUnit->GetPositionY(),
+                                       m_sourceUnit->GetPositionZ());
+
+        m_filter.setIncludeFlags(includedFlags);
+    }
 }
 
 NavTerrain PathInfo::getNavTerrain(float x, float y, float z)
@@ -540,7 +552,7 @@ NavTerrain PathInfo::getNavTerrain(float x, float y, float z)
         case MAP_LIQUID_TYPE_SLIME:
             return NAV_SLIME;
         default:
-            return NAV_EMPTY;
+            return NAV_GROUND;
     }
 }
 
