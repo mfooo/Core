@@ -126,24 +126,22 @@ namespace MaNGOS
         void Visit(CreatureMapType &);
     };
 
-    template<class U>
-    struct MANGOS_DLL_DECL AI_RelocationNotifier
+    struct MANGOS_DLL_DECL PlayerRelocationNotifier
     {
-        U &i_unit;
-        AI_RelocationNotifier(U &c) : i_unit(c) {}
-        template<class T> void Visit(GridRefManager<T> &) {}
-        void Visit(CreatureMapType&){}
-        void Visit(PlayerMapType&){}
-    };
-
-    struct MANGOS_DLL_DECL DelayedUnitRelocation
-    {
-        const float i_visibility_radius;
-        const float i_aggroRadius;
-        explicit DelayedUnitRelocation(float radius, float aggro) : i_visibility_radius(radius), i_aggroRadius(aggro) {}
+        Player &i_player;
+        PlayerRelocationNotifier(Player &pl) : i_player(pl) {}
         template<class T> void Visit(GridRefManager<T> &) {}
         void Visit(CreatureMapType &);
-        void Visit(PlayerMapType   &);
+    };
+
+    struct MANGOS_DLL_DECL CreatureRelocationNotifier
+    {
+        Creature &i_creature;
+        CreatureRelocationNotifier(Creature &c) : i_creature(c) {}
+        template<class T> void Visit(GridRefManager<T> &) {}
+        #ifdef WIN32
+        template<> void Visit(PlayerMapType &);
+        #endif
     };
 
     struct MANGOS_DLL_DECL DynamicObjectUpdater
@@ -1262,6 +1260,9 @@ namespace MaNGOS
     };
 
     #ifndef WIN32
+    template<> void PlayerRelocationNotifier::Visit<Creature>(CreatureMapType &);
+    template<> void CreatureRelocationNotifier::Visit<Player>(PlayerMapType &);
+    template<> void CreatureRelocationNotifier::Visit<Creature>(CreatureMapType &);
     template<> inline void DynamicObjectUpdater::Visit<Creature>(CreatureMapType &);
     template<> inline void DynamicObjectUpdater::Visit<Player>(PlayerMapType &);
     #endif
