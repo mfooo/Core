@@ -514,7 +514,7 @@ void LoadDBCStores(const std::string& dataPath)
         std::swap(*((uint32*)(&spell->SpellFamilyFlags)),*(((uint32*)(&spell->SpellFamilyFlags))+1));
         #endif
     }
-	
+
     // DBC Hacks
 
     //Throw Passanger

@@ -26,6 +26,10 @@ EndScriptData
 #include "escort_ai.h"
 #include "ObjectMgr.h"
 #include "GameEventMgr.h"
+#include "PetAI.h"
+#include "Pet.h"
+#include "SpellMgr.h"
+#include "Totem.h"
 
 /* ContentData
 npc_air_force_bots       80%    support for misc (invisible) guard bots in areas where player allowed to fly. Summon guards after a preset time if tagged by spell
@@ -1932,45 +1936,26 @@ struct MANGOS_DLL_DECL npc_snake_trap_serpentsAI : public ScriptedAI
     npc_snake_trap_serpentsAI(Creature *c) : ScriptedAI(c) {Reset();}
 
     uint32 SpellTimer;
-    Unit* Owner;
 
     void Reset()
     {
         SpellTimer = 500;
-        Owner = m_creature->GetCharmerOrOwner();
-        if (!Owner) return;
-
-        m_creature->SetLevel(Owner->getLevel());
-        m_creature->setFaction(Owner->getFaction());
-    }
-
-    void AttackStart(Unit* pWho)
-    {
-      if (!pWho) return;
-
-      if (m_creature->Attack(pWho, true))
-         {
-            m_creature->SetInCombatWith(pWho);
-            m_creature->AddThreat(pWho, 100.0f);
-            SetCombatMovement(true);
-            m_creature->GetMotionMaster()->MoveChase(pWho);
-         }
     }
 
     void UpdateAI(const uint32 diff)
     {
-        if (!m_creature->getVictim())
+        if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
         {
-            if (Owner && Owner->getVictim())
-                AttackStart(Owner->getVictim());
+            if (!m_creature->hasUnitState(UNIT_STAT_ROAMING|UNIT_STAT_ROAMING_MOVE))
+                m_creature->GetMotionMaster()->MoveRandom();
             return;
         }
 
-        if (SpellTimer <= diff)
+        if (m_creature->GetEntry() == MOB_VIPER )
         {
-            if (m_creature->GetEntry() == MOB_VIPER ) //Viper - 19921
+            if (SpellTimer <= diff)
             {
-                if (!urand(0,2)) //33% chance to cast
+                if (!urand(0,1)) //50% chance to cast
                 {
                     uint32 spell;
                     if (urand(0,1))
@@ -1980,17 +1965,11 @@ struct MANGOS_DLL_DECL npc_snake_trap_serpentsAI : public ScriptedAI
                     DoCast(m_creature->getVictim(), spell);
                 }
 
-                SpellTimer = urand(3000, 5000);
-            }
-            else if (m_creature->GetEntry() == MOB_VENOM_SNIKE ) //Venomous Snake - 19833
-            {
-                if (urand(0,1) == 0) //80% chance to cast
-                    DoCast(m_creature->getVictim(), SPELL_DEADLY_POISON);
-                SpellTimer = urand(2500, 4500);
-            }
-        }
-        else SpellTimer -= diff;
+                SpellTimer = urand(2000, 4000);
 
+            }
+            else SpellTimer -= diff;
+        }
         DoMeleeAttackIfReady();
     }
 };
@@ -2339,7 +2318,6 @@ CreatureAI* GetAI_npc_eye_of_kilrogg(Creature* pCreature)
     return new npc_eye_of_kilrogg(pCreature);
 }
 
-
 void AddSC_npcs_special()
 {
     Script* newscript;
@@ -2464,5 +2442,4 @@ void AddSC_npcs_special()
     newscript->Name = "npc_eye_of_kilrogg"; 
     newscript->GetAI = &GetAI_npc_eye_of_kilrogg; 
     newscript->RegisterSelf(); 
-
 }

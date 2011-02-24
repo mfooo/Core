@@ -439,12 +439,20 @@
     <ClCompile Include="..\..\src\game\Mail.cpp" />
     <ClCompile Include="..\..\src\game\Map.cpp" />
     <ClCompile Include="..\..\src\game\MapManager.cpp" />
+<<<<<<< HEAD
     <ClCompile Include="..\..\src\game\MapUpdater.cpp" />
     <ClCompile Include="..\..\src\game\MapPersistentStateMgr.cpp" />
     <ClCompile Include="..\..\src\game\MassMailMgr.cpp" />
     <ClCompile Include="..\..\src\game\MiscHandler.cpp" />
     <ClCompile Include="..\..\src\game\MotionMaster.cpp" />
     <ClCompile Include="..\..\src\game\MoveMap.cpp" />
+=======
+    <ClCompile Include="..\..\src\game\MapPersistentStateMgr.cpp" />
+    <ClCompile Include="..\..\src\game\MapUpdater.cpp" />
+    <ClCompile Include="..\..\src\game\MassMailMgr.cpp" />
+    <ClCompile Include="..\..\src\game\MiscHandler.cpp" />
+    <ClCompile Include="..\..\src\game\MotionMaster.cpp" />
+>>>>>>> 4d08a49a436e7e402511ed96aad61d6cdfd7ee0e
     <ClCompile Include="..\..\src\game\MovementGenerator.cpp" />
     <ClCompile Include="..\..\src\game\MovementHandler.cpp" />
     <ClCompile Include="..\..\src\game\NPCHandler.cpp" />
@@ -456,7 +464,10 @@
     <ClCompile Include="..\..\src\game\ObjectGuid.cpp" />
     <ClCompile Include="..\..\src\game\ObjectPosSelector.cpp" />
     <ClCompile Include="..\..\src\game\Opcodes.cpp" />
+<<<<<<< HEAD
     <ClCompile Include="..\..\src\game\PathFinder.cpp" />
+=======
+>>>>>>> 4d08a49a436e7e402511ed96aad61d6cdfd7ee0e
     <ClCompile Include="..\..\src\game\pchdef.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pchdef.h</PrecompiledHeaderFile>
@@ -472,6 +483,7 @@
     <ClCompile Include="..\..\src\game\PetHandler.cpp" />
     <ClCompile Include="..\..\src\game\PetitionsHandler.cpp" />
     <ClCompile Include="..\..\src\game\Player.cpp" />
+<<<<<<< HEAD
     <ClCompile Include="..\..\src\game\playerbot\PlayerbotAI.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\PlayerbotClassAI.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\PlayerbotDeathKnightAI.cpp" />
@@ -488,6 +500,12 @@
     <ClCompile Include="..\..\src\game\PlayerDump.cpp" />
     <ClCompile Include="..\..\src\game\PointMovementGenerator.cpp" />
     <ClCompile Include="..\..\src\game\PoolManager.cpp" />
+=======
+    <ClCompile Include="..\..\src\game\PlayerDump.cpp" />
+    <ClCompile Include="..\..\src\game\PointMovementGenerator.cpp" />
+    <ClCompile Include="..\..\src\game\PoolManager.cpp" />
+    <ClCompile Include="..\..\src\game\PossessedSummon.cpp" />
+>>>>>>> 4d08a49a436e7e402511ed96aad61d6cdfd7ee0e
     <ClCompile Include="..\..\src\game\QueryHandler.cpp" />
     <ClCompile Include="..\..\src\game\QuestDef.cpp" />
     <ClCompile Include="..\..\src\game\QuestHandler.cpp" />
@@ -611,11 +629,15 @@
     <ClInclude Include="..\..\src\game\ItemEnchantmentMgr.h" />
     <ClInclude Include="..\..\src\game\ItemPrototype.h" />
     <ClInclude Include="..\..\src\game\Language.h" />
+<<<<<<< HEAD
     <ClInclude Include="..\..\src\game\LFG.h" />
+=======
+>>>>>>> 4d08a49a436e7e402511ed96aad61d6cdfd7ee0e
     <ClInclude Include="..\..\src\game\LootMgr.h" />
     <ClInclude Include="..\..\src\game\Mail.h" />
     <ClInclude Include="..\..\src\game\Map.h" />
     <ClInclude Include="..\..\src\game\MapManager.h" />
+<<<<<<< HEAD
     <ClInclude Include="..\..\src\game\MapUpdater.h" />
     <ClInclude Include="..\..\src\game\MapPersistentStateMgr.h" />
     <ClInclude Include="..\..\src\game\MapReference.h" />
@@ -624,6 +646,14 @@
     <ClInclude Include="..\..\src\game\MotionMaster.h" />
     <ClInclude Include="..\..\src\game\MoveMap.h" />
     <ClInclude Include="..\..\src\game\MoveMapSharedDefines.h" />
+=======
+    <ClInclude Include="..\..\src\game\MapPersistentStateMgr.h" />
+    <ClInclude Include="..\..\src\game\MapReference.h" />
+    <ClInclude Include="..\..\src\game\MapRefManager.h" />
+    <ClInclude Include="..\..\src\game\MapUpdater.h" />
+    <ClInclude Include="..\..\src\game\MassMailMgr.h" />
+    <ClInclude Include="..\..\src\game\MotionMaster.h" />
+>>>>>>> 4d08a49a436e7e402511ed96aad61d6cdfd7ee0e
     <ClInclude Include="..\..\src\game\MovementGenerator.h" />
     <ClInclude Include="..\..\src\game\NPCHandler.h" />
     <ClInclude Include="..\..\src\game\NullCreatureAI.h" />
@@ -635,11 +665,15 @@
     <ClInclude Include="..\..\src\game\ObjectPosSelector.h" />
     <ClInclude Include="..\..\src\game\Opcodes.h" />
     <ClInclude Include="..\..\src\game\Path.h" />
+<<<<<<< HEAD
     <ClInclude Include="..\..\src\game\PathFinder.h" />
+=======
+>>>>>>> 4d08a49a436e7e402511ed96aad61d6cdfd7ee0e
     <ClInclude Include="..\..\src\game\pchdef.h" />
     <ClInclude Include="..\..\src\game\Pet.h" />
     <ClInclude Include="..\..\src\game\PetAI.h" />
     <ClInclude Include="..\..\src\game\Player.h" />
+<<<<<<< HEAD
     <ClInclude Include="..\..\src\game\playerbot\PlayerbotAI.h" />
     <ClInclude Include="..\..\src\game\playerbot\PlayerbotClassAI.h" />
     <ClInclude Include="..\..\src\game\playerbot\PlayerbotDeathKnightAI.h" />
@@ -656,6 +690,12 @@
     <ClInclude Include="..\..\src\game\PlayerDump.h" />
     <ClInclude Include="..\..\src\game\PointMovementGenerator.h" />
     <ClInclude Include="..\..\src\game\PoolManager.h" />
+=======
+    <ClInclude Include="..\..\src\game\PlayerDump.h" />
+    <ClInclude Include="..\..\src\game\PointMovementGenerator.h" />
+    <ClInclude Include="..\..\src\game\PoolManager.h" />
+    <ClInclude Include="..\..\src\game\PossessedSummon.h" />
+>>>>>>> 4d08a49a436e7e402511ed96aad61d6cdfd7ee0e
     <ClInclude Include="..\..\src\game\QuestDef.h" />
     <ClInclude Include="..\..\src\game\RandomMovementGenerator.h" />
     <ClInclude Include="..\..\src\game\ReactorAI.h" />
@@ -702,9 +742,12 @@
     <ClInclude Include="..\..\src\game\vmap\WorldModel.h" />
   </ItemGroup>
   <ItemGroup>
+<<<<<<< HEAD
     <ProjectReference Include="..\..\dep\recastnavigation\Detour\win\VC100\Detour.vcxproj">
       <Project>{72bdf975-4d4a-42c7-b2c4-f9ed90a2abb6}</Project>
     </ProjectReference>
+=======
+>>>>>>> 4d08a49a436e7e402511ed96aad61d6cdfd7ee0e
     <ProjectReference Include="shared.vcxproj">
       <Project>{90297c34-f231-4df4-848e-a74bcc0e40ed}</Project>
     </ProjectReference>
