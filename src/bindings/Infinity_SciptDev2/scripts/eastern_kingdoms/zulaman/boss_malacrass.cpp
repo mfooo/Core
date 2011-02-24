@@ -636,7 +636,7 @@ struct MANGOS_DLL_DECL boss_alyson_antilleAI : public boss_hexlord_addAI
 
 enum
 {
-    SPELL_FIREBOLT        43584
+    SPELL_FIREBOLT       = 43584
 };
 
 struct MANGOS_DLL_DECL boss_gazakrothAI : public boss_hexlord_addAI
@@ -739,7 +739,7 @@ struct MANGOS_DLL_DECL boss_lord_raadanAI : public boss_hexlord_addAI
 
 enum
 {
-    SPELL_PSYCHIC_WAIL   43590
+    SPELL_PSYCHIC_WAIL = 43590
 };
 
 struct MANGOS_DLL_DECL boss_darkheartAI : public boss_hexlord_addAI
@@ -776,7 +776,7 @@ struct MANGOS_DLL_DECL boss_darkheartAI : public boss_hexlord_addAI
 
 enum
 {
-    SPELL_VENOM_SPIT    43579
+    SPELL_VENOM_SPIT   = 43579
 };
 
 struct MANGOS_DLL_DECL boss_slitherAI : public boss_hexlord_addAI
