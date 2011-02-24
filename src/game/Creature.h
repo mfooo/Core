@@ -678,7 +678,6 @@ class MANGOS_DLL_SPEC Creature : public Unit
         bool m_regenHealth;
         bool m_AI_locked;
         bool m_isDeadByDefault;
-        bool m_needNotify;
 
         SpellSchoolMask m_meleeDamageSchoolMask;
         uint32 m_originalEntry;

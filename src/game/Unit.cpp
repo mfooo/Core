@@ -221,7 +221,7 @@ Unit::Unit()
     m_AuraFlags = 0;
 
     m_Visibility = VISIBILITY_ON;
-    m_AINotifySheduled = false;
+    m_AINotifyScheduled = false;
 
     m_detectInvisibilityMask = 0;
     m_invisibilityMask = 0;
@@ -334,6 +334,7 @@ void Unit::Update( uint32 update_diff, uint32 p_time )
     sWorld.m_spellUpdateLock.release();
 
     CleanupDeletedAuras();
+    sWorld.m_spellUpdateLock.release();
 
     if (m_lastManaUseTimer)
     {
@@ -10131,6 +10132,7 @@ uint32 Unit::GetCreatePowers( Powers power ) const
 void Unit::AddToWorld()
 {
     Object::AddToWorld();
+    ScheduleAINotify(0);
 }
 
 void Unit::RemoveFromWorld()
@@ -10138,6 +10140,7 @@ void Unit::RemoveFromWorld()
     // cleanup
     if (IsInWorld())
     {
+        sWorld.m_spellUpdateLock.acquire();
         Uncharm();
         RemoveNotOwnSingleTargetAuras();
         RemoveGuardians();
@@ -10147,6 +10150,7 @@ void Unit::RemoveFromWorld()
         RemoveAllDynObjects();
         CleanupDeletedAuras();
         GetViewPoint().Event_RemovedFromWorld();
+        sWorld.m_spellUpdateLock.release();
     }
 
     Object::RemoveFromWorld();
@@ -12231,7 +12235,7 @@ class RelocationNotifyEvent : public BasicEvent
 public:
     RelocationNotifyEvent(Unit& owner) : BasicEvent(), m_owner(owner)
     {
-        m_owner._SetAINotifySheduled(true);
+        m_owner._SetAINotifyScheduled(true);
     }
 
     bool Execute(uint64 /*e_time*/, uint32 /*p_time*/)
@@ -12247,13 +12251,13 @@ public:
             MaNGOS::CreatureRelocationNotifier notify((Creature&)m_owner);
             Cell::VisitAllObjects(&m_owner,notify,radius);
         }
-        m_owner._SetAINotifySheduled(false);
+        m_owner._SetAINotifyScheduled(false);
         return true;
     }
 
     void Abort(uint64)
     {
-        m_owner._SetAINotifySheduled(false);
+        m_owner._SetAINotifyScheduled(false);
     }
 
 private:
@@ -12262,7 +12266,7 @@ private:
 
 void Unit::ScheduleAINotify(uint32 delay)
 {
-    if (!IsAINotifySheduled())
+    if (!IsAINotifyScheduled())
         m_Events.AddEvent(new RelocationNotifyEvent(*this), m_Events.CalculateTime(delay));
 }
 

@@ -321,8 +321,6 @@ bool Map::Add(Player *player)
     player->GetViewPoint().Event_AddedToWorld(&(*grid)(cell.CellX(), cell.CellY()));
     UpdateObjectVisibility(player,cell,p);
 
-    AddNotifier(player,cell,p);
-
     if (i_data)
         i_data->OnPlayerEnter(player);
 
@@ -363,8 +361,6 @@ Map::Add(T *obj)
 
     obj->GetViewPoint().Event_AddedToWorld(&(*grid)(cell.CellX(), cell.CellY()));
     UpdateObjectVisibility(obj,cell,p);
-
-    AddNotifier(obj,cell,p);
 }
 
 void Map::MessageBroadcast(Player *player, WorldPacket *msg, bool to_self)
@@ -499,7 +495,7 @@ void Map::Update(const uint32 &t_diff)
     {
         Player* plr = m_mapRefIter->getSource();
 
-        if (!plr || !plr->IsInWorld() || !plr->IsPositionValid())
+       if (!plr || !plr->IsInWorld() || !plr->IsPositionValid())
             continue;
 
         //lets update mobs/objects in ALL visible cells around player!
@@ -554,6 +550,7 @@ void Map::Update(const uint32 &t_diff)
                     {
                         markCell(cell_id);
                         CellPair pair(x,y);
+                        Cell cell(pair);
                         cell.SetNoCreate();
                         Visit(cell, grid_object_update);
                         Visit(cell, world_object_update);
@@ -731,7 +728,6 @@ Map::CreatureRelocation(Creature *creature, float x, float y, float z, float ang
     CellPair new_val = MaNGOS::ComputeCellPair(x, y);
     Cell new_cell(new_val);
 
-    // delay creature move for grid/cell to grid/cell moves
     if (old_cell.DiffCell(new_cell) || old_cell.DiffGrid(new_cell))
     {
         DEBUG_FILTER_LOG(LOG_FILTER_CREATURE_MOVES, "Creature (GUID: %u Entry: %u) added to moving list from grid[%u,%u]cell[%u,%u] to grid[%u,%u]cell[%u,%u].", creature->GetGUIDLow(), creature->GetEntry(), old_cell.GridX(), old_cell.GridY(), old_cell.CellX(), old_cell.CellY(), new_cell.GridX(), new_cell.GridY(), new_cell.CellX(), new_cell.CellY());
@@ -856,7 +852,7 @@ bool Map::CreatureRespawnRelocation(Creature *c)
     {
         c->Relocate(resp_x, resp_y, resp_z, resp_o);
         c->GetMotionMaster()->Initialize();                 // prevent possible problems with default move generators
-        AddNotifier(c, false);
+        c->OnRelocated();
         return true;
     }
     else
@@ -971,19 +967,6 @@ void Map::UpdateObjectVisibility( WorldObject* obj, Cell cell, CellPair cellpair
     MaNGOS::VisibleChangesNotifier notifier(*obj);
     TypeContainerVisitor<MaNGOS::VisibleChangesNotifier, WorldTypeMapContainer > player_notifier(notifier);
     cell.Visit(cellpair, player_notifier, *this, *obj, GetVisibilityDistance());
-}
-
-void Map::PlayerRelocationNotify( Player* player, Cell cell, CellPair cellpair )
-{
-    MaNGOS::PlayerRelocationNotifier relocationNotifier(*player);
-
-    TypeContainerVisitor<MaNGOS::PlayerRelocationNotifier, GridTypeMapContainer >  p2grid_relocation(relocationNotifier);
-    TypeContainerVisitor<MaNGOS::PlayerRelocationNotifier, WorldTypeMapContainer > p2world_relocation(relocationNotifier);
-
-    float radius = MAX_CREATURE_ATTACK_RADIUS * sWorld.getConfig(CONFIG_FLOAT_RATE_CREATURE_AGGRO);
-
-    cell.Visit(cellpair, p2grid_relocation, *this, *player, radius);
-    cell.Visit(cellpair, p2world_relocation, *this, *player, radius);
 }
 
 void Map::SendInitSelf( Player * player )

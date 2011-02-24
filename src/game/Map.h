@@ -263,8 +263,6 @@ class MANGOS_DLL_SPEC Map : public GridRefManager<NGridType>
         void SendInitTransports( Player * player );
         void SendRemoveTransports( Player * player );
 
-        void PlayerRelocationNotify(Player* player, Cell cell, CellPair cellpair);
-
         bool CreatureCellRelocation(Creature *creature, Cell new_cell);
 
         bool loaded(const GridPair &) const;
@@ -344,7 +342,7 @@ class MANGOS_DLL_SPEC Map : public GridRefManager<NGridType>
             void AddNotifier(T*, Cell const&, CellPair const&);
 
         template<class T>
-            void RemoveFromGrid(T*, NGridType *, Cell const&);
+             void RemoveFromGrid(T*, NGridType *, Cell const&);
 };
 
 class MANGOS_DLL_SPEC WorldMap : public Map
