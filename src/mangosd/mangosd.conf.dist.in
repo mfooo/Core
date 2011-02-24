@@ -1316,7 +1316,7 @@ GM.AllowAchievementGain  = 1
 #        Default: 10 (yards)
 #
 #    Visibility.AIRelocationNotifyDelay
-#        Time(in milliseconds) between the creature/player relocation and the nearby creature's AI reaction
+#        Delay time between creature AI reactions on nearby movements
 #        Default: 1000 (milliseconds)
 #
 ###################################################################################################################

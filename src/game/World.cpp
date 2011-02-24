@@ -85,6 +85,7 @@ float World::m_VisibleObjectGreyDistance      = 0;
 uint32 World::m_relocation_ai_notify_delay = 1000;
 float World::m_relocation_lower_limit_sq = 10.f * 10.f;
 
+
 extern Config botConfig;
 
 //PVP Announcer
@@ -833,12 +834,11 @@ void World::LoadConfigSettings(bool reload)
 
     setConfig(CONFIG_BOOL_PET_UNSUMMON_AT_MOUNT,      "PetUnsummonAtMount", true);
 
-    m_relocation_ai_notify_delay = sConfig.GetIntDefault("Visibility.AIRelocationNotifyDelay", DEFAULT_VISIBILITY_NOTIFY_PERIOD);
-    m_relocation_lower_limit_sq  = pow(sConfig.GetFloatDefault("Visibility.RelocationLowerLimit",10), 2);
-
     setConfig(CONFIG_BOOL_ALLOW_FLIGHT_ON_OLD_MAPS, "AllowFlightOnOldMaps", false);
-
     setConfig(CONFIG_BOOL_ARMORY_SUPPORT, "WOWArmorySupport", false);
+
+    m_relocation_ai_notify_delay = sConfig.GetIntDefault("Visibility.AIRelocationNotifyDelay", 1000u);
+    m_relocation_lower_limit_sq  = pow(sConfig.GetFloatDefault("Visibility.RelocationLowerLimit",10), 2);
 
     m_VisibleUnitGreyDistance = sConfig.GetFloatDefault("Visibility.Distance.Grey.Unit", 1);
     if(m_VisibleUnitGreyDistance >  MAX_VISIBILITY_DISTANCE)

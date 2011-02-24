@@ -132,7 +132,6 @@ class MANGOS_DLL_SPEC Map : public GridRefManager<NGridType>
         void CreatureRelocation(Creature *creature, float x, float y, float z, float orientation);
 
         template<class T, class CONTAINER> void Visit(const Cell& cell, TypeContainerVisitor<T, CONTAINER> &visitor);
-        template<class T, class CONTAINER> void VisitAndActivate(const Cell& cell, TypeContainerVisitor<T, CONTAINER> &visitor);
 
         bool IsRemovalGrid(float x, float y) const
         {
@@ -257,10 +256,6 @@ class MANGOS_DLL_SPEC Map : public GridRefManager<NGridType>
     private:
         void LoadMapAndVMap(int gx, int gy);
 
-        //these functions used to process player/mob aggro reactions and
-        //visibility calculations. Highly optimized for massive calculations
-        void ProcessRelocationNotifies(uint32 diff);
-
         void SetTimer(uint32 t) { i_gridExpiry = t < MIN_GRID_DELAY ? MIN_GRID_DELAY : t; }
 
         void SendInitSelf( Player * player );
@@ -344,7 +339,10 @@ class MANGOS_DLL_SPEC Map : public GridRefManager<NGridType>
             void AddToGrid(T*, NGridType *, Cell const&);
 
         template<class T>
-            void RemoveFromGrid(T*, NGridType *, Cell const&);
+            void AddNotifier(T*, Cell const&, CellPair const&);
+
+        template<class T>
+             void RemoveFromGrid(T*, NGridType *, Cell const&);
 };
 
 class MANGOS_DLL_SPEC WorldMap : public Map
@@ -424,24 +422,6 @@ Map::Visit(const Cell& cell, TypeContainerVisitor<T, CONTAINER> &visitor)
     {
         EnsureGridLoaded(cell);
         getNGrid(x, y)->Visit(cell_x, cell_y, visitor);
-    }
-}
-
-template<class T, class CONTAINER>
-inline void
-Map::VisitAndActivate(const Cell& cell, TypeContainerVisitor<T, CONTAINER> &visitor)
-{
-    const uint32 x = cell.GridX();
-    const uint32 y = cell.GridY();
-    const uint32 cell_x = cell.CellX();
-    const uint32 cell_y = cell.CellY();
-
-    if( !cell.NoCreate() || loaded(GridPair(x,y)) )
-    {
-        EnsureGridLoaded(cell);
-        NGridType * grid = getNGrid(x, y);
-        grid->SetGridState(GRID_STATE_ACTIVE);
-        grid->Visit(cell_x, cell_y, visitor);
     }
 }
 
