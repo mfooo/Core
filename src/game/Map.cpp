@@ -2939,6 +2939,26 @@ void Map::ScriptsProcess()
 
                 break;
             }
+            // added by Lorenor
+            case SCRIPT_COMMAND_ADD_AURA:
+            {
+                Object* cmdTarget = step.script->addAura.isSourceTarget ? source : target;
+
+                if (!cmdTarget)
+                {
+                    sLog.outError("SCRIPT_COMMAND_ADD_AURA (script id %u) call for NULL %s.", step.script->id, step.script->addAura.isSourceTarget ? "source" : "target");
+                    break;
+                }
+
+                if (!cmdTarget->isType(TYPEMASK_UNIT))
+                {
+                    sLog.outError("SCRIPT_COMMAND_ADD_AURA (script id %u) %s isn't unit (TypeId: %u), skipping.", step.script->id, step.script->addAura.isSourceTarget ? "source" : "target",cmdTarget->GetTypeId());
+                    break;
+                }
+
+                ((Unit*)cmdTarget)->_AddAura(step.script->addAura.spellId, step.script->addAura.auraDuration);
+                break;
+            }
             default:
                 sLog.outError("Unknown SCRIPT_COMMAND_ %u called for script id %u.",step.script->command, step.script->id);
                 break;
