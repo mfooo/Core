@@ -226,6 +226,7 @@
     <ClCompile Include="..\scripts\custom\boss_pvp.cpp" />
     <ClCompile Include="..\scripts\custom\boss_razor.cpp" />
     <ClCompile Include="..\scripts\custom\custom_boss.cpp" />
+    <ClCompile Include="..\scripts\custom\custom_boss_chen.cpp" />
     <ClCompile Include="..\scripts\custom\custom_gameobjects.cpp" />
     <ClCompile Include="..\scripts\custom\custom_items.cpp" />
     <ClCompile Include="..\scripts\custom\custom_npc_buffmaster.cpp" />
