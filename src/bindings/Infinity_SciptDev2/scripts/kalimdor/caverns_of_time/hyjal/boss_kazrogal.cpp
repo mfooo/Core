@@ -33,12 +33,15 @@ EndScriptData */
 #define SAY_SLAY3                   "Shaza-Kiel!" 
 #define SAY_DEATH                   "Ihr habt euren Untergang besiegelt!"
 
-#define SPELL_MANA_MARK				31447
-#define SPELL_EXPLOSION_MARK		31463
-#define SPELL_CLEAVE				31436
-#define SPELL_CRIPPLE				31477
-#define SPELL_WAR_STOMP				31480
-#define SPELL_DARKNESS              15259
+enum
+{
+    SPELL_MANA_MARK	               = 31447,
+    SPELL_EXPLOSION_MARK           = 31463,
+    SPELL_CLEAVE                   = 31436,
+    SPELL_CRIPPLE                  = 31477,
+    SPELL_WAR_STOMP                = 31480,
+    SPELL_DARKNESS                 = 15259
+};
 
 struct MANGOS_DLL_DECL boss_kazrogalAI : public ScriptedAI
 {
