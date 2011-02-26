@@ -225,4 +225,8 @@ pkgdata_DATA = \
 	r1972_scriptdev2.sql \
 	r1973_mangos.sql \
 	r1974_mangos.sql \
-	r1975_scriptdev2.sql
+	r1975_scriptdev2.sql \
+    r1979_scriptdev2.sql \
+    r1982_mangos.sql \
+    r1984_mangos.sql \
+    r1984_scriptdev2.sql
