@@ -1630,7 +1630,7 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
                 case 64234:                                 // XT002's Gravitiy Bomb (h)
                 case 61916:                                 // Lightning Whirl (10 man)
                 case 63482:                                 // Lightning Whirl (25 man)
-                case 55479:                                 // Force Obedience (Naxxramas - Razovius encounter)
+				case 55479:                                 // Force Obedience (Naxxramas - Razovius encounter)
                 case 66001:                                 // Touch of Darkness
                 case 67281:
                 case 67282:
@@ -2207,8 +2207,8 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
         }
         case TARGET_DUELVSPLAYER_COORDINATES:
         {
-            if(m_spellInfo->Id == 71610)
-                break;
+            if(m_spellInfo->Id == 71610) 
+                break; 
             else if(Unit* currentTarget = m_targets.getUnitTarget())
                 m_targets.setDestination(currentTarget->GetPositionX(), currentTarget->GetPositionY(), currentTarget->GetPositionZ());
             break;
@@ -2330,10 +2330,6 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
                     // target amount stored in parent spell dummy effect but hard to access
                     FillRaidOrPartyManaPriorityTargets(targetUnitMap, m_caster, m_caster, radius, 3, true, false, true);
                     break;
-                case 45662:                                 // Encapsulate
-                    // hack, to aoivd other hacks in spellbonusdmg-, crit-, etc. calc.
-                    FillAreaTargets(targetUnitMap, m_targets.m_destX, m_targets.m_destY, radius, PUSH_SELF_CENTER, SPELL_TARGETS_HOSTILE);
-                    break;
                 case 71447:                                 // Bloodbolt Splash 10N
                 case 71481:                                 // Bloodbolt Splash 25N
                 case 71482:                                 // Bloodbolt Splash 10H
@@ -2348,42 +2344,42 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
             }
             break;
         case TARGET_ALL_FRIENDLY_UNITS_IN_AREA:
-            // Echoes of Light
-            if (m_spellInfo->Id == 71610)
-            {
-                CellPair  p(MaNGOS::ComputeCellPair(m_caster->GetPositionX(),  m_caster->GetPositionY()));
-                Cell cell(p);
-                cell.SetNoCreate();
-                std::list<Unit*> tempTargetUnitMap;
-                {
-                    MaNGOS::AnyFriendlyUnitInObjectRangeCheck  u_check(m_caster, radius);
-                    MaNGOS::UnitListSearcher<MaNGOS::AnyFriendlyUnitInObjectRangeCheck>  searcher(tempTargetUnitMap, u_check);
-
-                    TypeContainerVisitor<MaNGOS::UnitListSearcher<MaNGOS::AnyFriendlyUnitInObjectRangeCheck>,  WorldTypeMapContainer > world_unit_searcher(searcher);
-                    TypeContainerVisitor<MaNGOS::UnitListSearcher<MaNGOS::AnyFriendlyUnitInObjectRangeCheck>,  GridTypeMapContainer >  grid_unit_searcher(searcher);
-
-                    cell.Visit(p, world_unit_searcher,  *m_caster->GetMap(), *m_caster, radius);
-                    cell.Visit(p, grid_unit_searcher,  *m_caster->GetMap(), *m_caster, radius);
-                }
-
-                if(tempTargetUnitMap.empty())
+            // Echoes of Light 
+             if (m_spellInfo->Id == 71610) 
+             { 
+                 CellPair  p(MaNGOS::ComputeCellPair(m_caster->GetPositionX(),  m_caster->GetPositionY())); 
+                 Cell cell(p); 
+                 cell.SetNoCreate(); 
+                 std::list<Unit*> tempTargetUnitMap; 
+                 { 
+                     MaNGOS::AnyFriendlyUnitInObjectRangeCheck  u_check(m_caster, radius); 
+                     MaNGOS::UnitListSearcher<MaNGOS::AnyFriendlyUnitInObjectRangeCheck>  searcher(tempTargetUnitMap, u_check); 
+  
+                     TypeContainerVisitor<MaNGOS::UnitListSearcher<MaNGOS::AnyFriendlyUnitInObjectRangeCheck>,  WorldTypeMapContainer > world_unit_searcher(searcher); 
+                     TypeContainerVisitor<MaNGOS::UnitListSearcher<MaNGOS::AnyFriendlyUnitInObjectRangeCheck>,  GridTypeMapContainer >  grid_unit_searcher(searcher); 
+ 
+                    cell.Visit(p, world_unit_searcher,  *m_caster->GetMap(), *m_caster, radius); 
+                    cell.Visit(p, grid_unit_searcher,  *m_caster->GetMap(), *m_caster, radius); 
+                } 
+ 
+                if(tempTargetUnitMap.empty()) 
+                    break; 
+ 
+                tempTargetUnitMap.sort(TargetDistanceOrder(m_caster)); 
+ 
+                //Now to get us a random target that's in the initial  range of the spell 
+                uint32 t = 0; 
+                std::list<Unit*>::iterator itr =  tempTargetUnitMap.begin(); 
+                while(itr != tempTargetUnitMap.end() &&  (*itr)->IsWithinDist(m_caster, radius)) 
+                    ++t, ++itr; 
+ 
+                if(!t) 
                     break;
-
-                tempTargetUnitMap.sort(TargetDistanceOrder(m_caster));
-
-                //Now to get us a random target that's in the initial  range of the spell
-                uint32 t = 0;
-                std::list<Unit*>::iterator itr =  tempTargetUnitMap.begin();
-                while(itr != tempTargetUnitMap.end() &&  (*itr)->IsWithinDist(m_caster, radius))
-                    ++t, ++itr;
-
-                if(!t)
-                    break;
-
-                itr = tempTargetUnitMap.begin();
-                std::advance(itr, rand() % t);
-                Unit *pUnitTarget = *itr;
-                targetUnitMap.push_back(pUnitTarget);
+ 
+                itr = tempTargetUnitMap.begin(); 
+                std::advance(itr, rand() % t); 
+                Unit *pUnitTarget = *itr; 
+                targetUnitMap.push_back(pUnitTarget); 
             }
             // Death Pact (in fact selection by player selection)
             else if (m_spellInfo->Id == 48743)
@@ -3325,9 +3321,6 @@ void Spell::cast(bool skipCheck)
             // Fingers of Frost
             else if (m_spellInfo->Id == 44544)
                 AddPrecastSpell(74396);                     // Fingers of Frost
-            // Mirror Image (glyph)
-            else if (m_spellInfo->Id == 55342 && m_caster->HasAura(63093))
-                AddPrecastSpell(65047); // summon one more
             break;
         }
         case SPELLFAMILY_WARRIOR:
@@ -3345,7 +3338,7 @@ void Spell::cast(bool skipCheck)
             else if (m_spellInfo->Id == 64382)
                 AddTriggeredSpell(64380);                     // Shattering Throw
 
-			// Item - Warrior T10 Melee 4P Bonus
+            // Item - Warrior T10 Melee 4P Bonus
             else if (m_spellInfo->Id == 46916 || m_spellInfo->Id == 52437)
 				if (Aura *aur = m_caster->GetAura(70847, EFFECT_INDEX_0))
                     if (roll_chance_i(aur->GetModifier()->m_amount))
@@ -3382,8 +3375,7 @@ void Spell::cast(bool skipCheck)
             // Faerie Fire (Feral)
             if (m_spellInfo->Id == 16857 && m_caster->GetShapeshiftForm() != FORM_CAT)
                 AddTriggeredSpell(60089);
-
-			// Item - Druid T10 Balance 2P Bonus
+             // Item - Druid T10 Balance 2P Bonus
             else if (m_spellInfo->Id == 16870 && m_caster->HasAura(70718))
                 AddTriggeredSpell(70721);
             // Berserk (Bear Mangle part)
@@ -3651,22 +3643,24 @@ void Spell::_handle_finish_phase()
 
 void Spell::SendSpellCooldown()
 {
-    // Store cooldown only for Players or Creatures controlled by Players in any way.
-    if (!m_caster->isCharmedOwnedByPlayerOrPlayer())
+    if(m_caster->GetTypeId() != TYPEID_PLAYER)
         return;
 
+    Player* _player = (Player*)m_caster;
+
     // mana/health/etc potions, disabled by client (until combat out as declarate)
-    if (m_CastItem && m_CastItem->IsPotion() && m_caster->GetTypeId() == TYPEID_PLAYER)
+    if (m_CastItem && m_CastItem->IsPotion())
     {
         // need in some way provided data for Spell::finish SendCooldownEvent
-        ((Player*)m_caster)->SetLastPotionId(m_CastItem->GetEntry());
+        _player->SetLastPotionId(m_CastItem->GetEntry());
         return;
     }
 
     // (1) have infinity cooldown but set at aura apply, (2) passive cooldown at triggering
     if(m_spellInfo->Attributes & (SPELL_ATTR_DISABLED_WHILE_ACTIVE | SPELL_ATTR_PASSIVE))
         return;
-    m_caster->AddSpellAndCategoryCooldowns(m_spellInfo, m_CastItem ? m_CastItem->GetEntry() : 0, this);
+
+    _player->AddSpellAndCategoryCooldowns(m_spellInfo, m_CastItem ? m_CastItem->GetEntry() : 0, this);
 }
 
 void Spell::update(uint32 difftime)
@@ -7619,6 +7613,57 @@ void Spell::ClearCastItem()
     m_CastItem = NULL;
 }
 
+// Used only for snake trap
+void Spell::DoSummonSnakes(SpellEffectIndex eff_idx)
+{
+    uint32 creature_entry = m_spellInfo->EffectMiscValue[eff_idx];
+    if (!creature_entry || !m_caster)
+        return;
+
+    // Find trap GO and get it coordinates to spawn snakes
+    GameObject* pTrap = m_caster->GetMap()->GetGameObject(m_originalCasterGUID);
+    if (!pTrap)
+    {
+        sLog.outError("EffectSummonSnakes faild to find trap for caster %s (GUID: %u)",m_caster->GetName(),m_caster->GetGUID());
+        return;
+    }
+
+    float position_x, position_y, position_z;
+    pTrap->GetPosition(position_x, position_y, position_z);
+
+    // Find summon duration based on DBC
+    int32 duration = GetSpellDuration(m_spellInfo);
+    if(Player* modOwner = m_caster->GetSpellModOwner())
+        modOwner->ApplySpellMod(m_spellInfo->Id, SPELLMOD_DURATION, duration);
+
+    int32 amount = damage > 0 ? damage : 1;
+
+    for(int32 count = 0; count < amount; ++count)
+    {
+        // Summon snakes
+        Creature *pSummon = m_caster->SummonCreature(creature_entry, position_x, position_y, position_z, m_caster->GetOrientation(), TEMPSUMMON_TIMED_DESPAWN, duration);
+        if (!pSummon)
+            return;
+        // Valid position
+        if (!pSummon->IsPositionValid())
+        {
+            sLog.outError("EffectSummonSnakes failed to summon snakes for Unit %s (GUID: %u) bacause of invalid position (x = %f, y = %f, z = %f map = %u)"
+                ,m_caster->GetName(),m_caster->GetGUID(), position_x, position_y, position_z, m_caster->GetMap());
+            delete pSummon;
+            continue;
+        }
+
+        // Apply stats
+        pSummon->SetUInt32Value(UNIT_CREATED_BY_SPELL, m_spellInfo->Id);
+        pSummon->SetUInt32Value(UNIT_FIELD_FLAGS, UNIT_FLAG_PVP_ATTACKABLE | UNIT_FLAG_PET_IN_COMBAT | UNIT_FLAG_PVP);
+        pSummon->SetCreatorGuid(m_caster->GetObjectGuid());
+        pSummon->SetOwnerGuid(m_caster->GetObjectGuid());
+        pSummon->setFaction(m_caster->getFaction());
+        pSummon->SetLevel(m_caster->getLevel());
+        pSummon->SetMaxHealth(m_caster->getLevel()+ urand(20,30));
+    }
+}
+
 bool Spell::HasGlobalCooldown()
 {
     // global cooldown have only player or controlled units
@@ -7675,18 +7720,4 @@ void Spell::CancelGlobalCooldown()
         m_caster->GetCharmInfo()->GetGlobalCooldownMgr().CancelGlobalCooldown(m_spellInfo);
     else if (m_caster->GetTypeId() == TYPEID_PLAYER)
         ((Player*)m_caster)->GetGlobalCooldownMgr().CancelGlobalCooldown(m_spellInfo);
-}
-
-ObjectGuid Spell::GetTargetForPeriodicTriggerAura() const
-{
-    // dummy aura provides target
-    for (uint8 i = 0; i<MAX_EFFECT_INDEX; i++)
-        if (m_spellInfo->Effect[i] == SPELL_EFFECT_APPLY_AURA && m_spellInfo->EffectApplyAuraName[i] == SPELL_AURA_DUMMY)
-            for(std::list<TargetInfo>::const_iterator itr = m_UniqueTargetInfo.begin(); itr != m_UniqueTargetInfo.end(); ++itr)
-            {
-                if(itr->effectMask & (1 << i))
-                    return (*itr).targetGUID;
-            }
-
-    return ObjectGuid();
 }

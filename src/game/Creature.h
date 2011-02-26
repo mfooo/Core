@@ -386,7 +386,6 @@ enum CreatureSubtype
     CREATURE_SUBTYPE_PET,                                   // new Pet
     CREATURE_SUBTYPE_TOTEM,                                 // new Totem
     CREATURE_SUBTYPE_TEMPORARY_SUMMON,                      // new TemporarySummon
-    CREATURE_SUBTYPE_POSSESSED_SUMMON,                      // new PossessedSummon
 };
 
 class MANGOS_DLL_SPEC Creature : public Unit
@@ -418,7 +417,6 @@ class MANGOS_DLL_SPEC Creature : public Unit
         bool IsPet() const { return m_subtype == CREATURE_SUBTYPE_PET; }
         bool IsTotem() const { return m_subtype == CREATURE_SUBTYPE_TOTEM; }
         bool IsTemporarySummon() const { return m_subtype == CREATURE_SUBTYPE_TEMPORARY_SUMMON; }
-        bool isPossessedSummmon() const {return m_subtype == CREATURE_SUBTYPE_POSSESSED_SUMMON; }
 
         // Playerbot mod - adds functionality to load/unload bots from NPC, also need to apply SQL scripts
         void LoadBotMenu(Player *pPlayer);
@@ -499,12 +497,12 @@ class MANGOS_DLL_SPEC Creature : public Unit
             return (getLevel() / 2 + uint32(GetStat(STAT_STRENGTH) / 20));
         }
 
-        SpellSchoolMask GetSchoolMaskForAttackType(WeaponAttackType attType = BASE_ATTACK) const { return m_meleeDamageSchoolMask; }
+        SpellSchoolMask GetSchoolMaskForAttackType() const { return m_meleeDamageSchoolMask; }
         void SetMeleeDamageSchool(SpellSchools school) { m_meleeDamageSchoolMask = SpellSchoolMask(1 << school); }
 
         void _AddCreatureSpellCooldown(uint32 spell_id, time_t end_time);
         void _AddCreatureCategoryCooldown(uint32 category, time_t apply_time);
-        void AddSpellAndCategoryCooldowns(SpellEntry const* spellInfo, uint32 itemId, Spell* spell = NULL, bool infinityCooldown = false);
+        void AddCreatureSpellCooldown(uint32 spellid);
         bool HasSpellCooldown(uint32 spell_id) const;
         bool HasCategoryCooldown(uint32 spell_id) const;
 

@@ -362,7 +362,7 @@ SpellSpecific GetSpellSpecific(uint32 spellId)
                             break;
                         // Drink
                         case SPELL_AURA_MOD_POWER_REGEN:
-                        case SPELL_AURA_OBS_MOD_ENERGY:
+                        case SPELL_AURA_OBS_MOD_MANA:
                             drink = true;
                             break;
                         default:
@@ -621,7 +621,7 @@ bool IsExplicitNegativeTarget(uint32 targetA)
     {
         case TARGET_CHAIN_DAMAGE:
         case TARGET_CURRENT_ENEMY_COORDINATES:
-        // case TARGET_SINGLE_ENEMY: <- Penace is positiv!
+        case TARGET_SINGLE_ENEMY:
             return true;
         default:
             break;
@@ -1477,7 +1477,7 @@ void SpellMgr::LoadSpellBonuses()
                 case SPELL_AURA_PERIODIC_HEAL:
                 case SPELL_AURA_OBS_MOD_HEALTH:
                 case SPELL_AURA_PERIODIC_MANA_LEECH:
-                case SPELL_AURA_OBS_MOD_ENERGY:
+                case SPELL_AURA_OBS_MOD_MANA:
                 case SPELL_AURA_POWER_BURN_MANA:
                     need_dot = true;
                     ++x;
@@ -3994,8 +3994,8 @@ SpellCastResult SpellMgr::GetSpellAllowedInLocationError(SpellEntry const *spell
         case 69065:                                         // Impaled
         case 69126:                                         // Pungent blight - first aura
         case 69152:                                         // Gazeous blight - first aura
-        case 69157:                                         // Pungent blight - second aura
-        case 69195:                                         // Pungent blight
+        case 69157:                                         // Pungent blight - second aura 
+        case 69195:                                         // Pungent blight 
         case 72293:                                         // Mark of the Fallen Champion
             return map_id == 631 ? SPELL_CAST_OK : SPELL_FAILED_INCORRECT_AREA;
     }

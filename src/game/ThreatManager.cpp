@@ -403,8 +403,6 @@ void ThreatManager::addThreat(Unit* pVictim, float pThreat, bool crit, SpellScho
 
     float threat = ThreatCalcHelper::CalcThreat(pVictim, iOwner, pThreat, crit, schoolMask, pThreatSpell);
 
-	threat *= 100.0f;
-
     if (threat > 0.0f)
     {
         if (float redirectedMod = pVictim->getHostileRefManager().GetThreatRedirectionMod())

@@ -1506,7 +1506,7 @@ class MANGOS_DLL_SPEC Player : public Unit
         void UpdateItemDuration(uint32 time, bool realtimeonly = false);
         void AddEnchantmentDurations(Item *item);
         void RemoveEnchantmentDurations(Item *item);
-        void RemoveAllEnchantments(EnchantmentSlot slot, bool isArenaRemove = false);
+        void RemoveAllEnchantments(EnchantmentSlot slot);
         void AddEnchantmentDuration(Item *item,EnchantmentSlot slot,uint32 duration);
         void ApplyEnchantment(Item *item,EnchantmentSlot slot,bool apply, bool apply_dur = true, bool ignore_condition = false);
         void ApplyEnchantment(Item *item,bool apply);
@@ -1860,7 +1860,7 @@ class MANGOS_DLL_SPEC Player : public Unit
         }
         void AddSpellAndCategoryCooldowns(SpellEntry const* spellInfo, uint32 itemId, Spell* spell = NULL, bool infinityCooldown = false );
         void AddSpellCooldown(uint32 spell_id, uint32 itemid, time_t end_time);
-        void SendCooldownEvent(SpellEntry const *spellInfo, uint32 itemId = 0, Spell* spell = NULL, Unit* cooldownTarget = NULL);
+        void SendCooldownEvent(SpellEntry const *spellInfo, uint32 itemId = 0, Spell* spell = NULL);
         void ProhibitSpellSchool(SpellSchoolMask idSchoolMask, uint32 unTimeMs );
         void RemoveSpellCooldown(uint32 spell_id, bool update = false);
         void RemoveSpellCategoryCooldown(uint32 cat, bool update = false);
@@ -2191,15 +2191,7 @@ class MANGOS_DLL_SPEC Player : public Unit
         void SetCanBlock(bool value);
         bool CanDualWield() const { return m_canDualWield; }
         void SetCanDualWield(bool value) { m_canDualWield = value; }
-        bool CanTitanGrip() const
-        {
-            Item *mainItem = GetItemByPos( INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_MAINHAND );
-            
-            if (mainItem && ( mainItem->GetProto()->SubClass == ITEM_SUBCLASS_WEAPON_POLEARM || mainItem->GetProto()->SubClass == ITEM_SUBCLASS_WEAPON_STAFF ))
-                return false;
-
-            return m_canTitanGrip ; 
-        }
+        bool CanTitanGrip() const { return m_canTitanGrip; }
         void SetCanTitanGrip(bool value) { m_canTitanGrip = value; }
         bool CanTameExoticPets() const { return isGameMaster() || HasAuraType(SPELL_AURA_ALLOW_TAME_PET_TYPE); }
 

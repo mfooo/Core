@@ -1823,9 +1823,9 @@ uint8 Pet::GetMaxTalentPointsForLevel(uint32 level)
     return points;
 }
 
-void Pet::ToggleAutocast(uint32 spellid, bool apply, bool force)
+void Pet::ToggleAutocast(uint32 spellid, bool apply)
 {
-    if(IsPassiveSpell(spellid) || (!isControlled() && !force))
+    if(IsPassiveSpell(spellid) || !isControlled())
         return;
 
     PetSpellMap::iterator itr = m_spells.find(spellid);
@@ -3081,70 +3081,35 @@ PetScalingData* Pet::CalculateScalingData(bool recalculate)
     if (!pScalingDataList || pScalingDataList->empty())                            // Zero values...
         return m_PetScalingData;
 
-    bool baseCoefficientsDone = false;
-    for (PetScalingDataList::const_iterator itr = pScalingDataList->begin(); itr != pScalingDataList->end(); )
+    for (PetScalingDataList::const_iterator itr = pScalingDataList->begin(); itr != pScalingDataList->end(); ++itr)
     {
          const PetScalingData* pData = &*itr;
 
          if (!pData->creatureID || (owner && (!pData->requiredAura || owner->HasSpell(pData->requiredAura) || owner->HasAura(pData->requiredAura) || HasSpell(pData->requiredAura) || HasAura(pData->requiredAura))))
          {
-             // the basic coefficients
-             if (!baseCoefficientsDone && !pData->requiredAura)
+             m_PetScalingData->healthBasepoint  += pData->healthBasepoint;
+             m_PetScalingData->healthScale      += pData->healthScale;
+             m_PetScalingData->powerBasepoint   += pData->powerBasepoint;
+             m_PetScalingData->powerScale       += pData->powerScale;
+             m_PetScalingData->APBasepoint      += pData->APBasepoint;
+             m_PetScalingData->APBaseScale      += pData->APBaseScale;
+             m_PetScalingData->attackpowerScale += pData->attackpowerScale;
+             m_PetScalingData->damageScale      += pData->damageScale;
+             m_PetScalingData->spelldamageScale += pData->spelldamageScale;
+             m_PetScalingData->spellHitScale    += pData->spellHitScale;
+             m_PetScalingData->meleeHitScale    += pData->meleeHitScale;
+             m_PetScalingData->expertizeScale   += pData->expertizeScale;
+             m_PetScalingData->attackspeedScale += pData->attackspeedScale;
+             m_PetScalingData->critScale        += pData->critScale;
+             m_PetScalingData->powerregenScale  += pData->powerregenScale;
+             for (int i = 0; i < MAX_STATS; i++)
              {
-                 m_PetScalingData->healthBasepoint  += pData->healthBasepoint;
-                 m_PetScalingData->healthScale      += pData->healthScale;
-                 m_PetScalingData->powerBasepoint   += pData->powerBasepoint;
-                 m_PetScalingData->powerScale       += pData->powerScale;
-                 m_PetScalingData->APBasepoint      += pData->APBasepoint;
-                 m_PetScalingData->APBaseScale      += pData->APBaseScale;
-                 m_PetScalingData->attackpowerScale += pData->attackpowerScale;
-                 m_PetScalingData->damageScale      += pData->damageScale;
-                 m_PetScalingData->spelldamageScale += pData->spelldamageScale;
-                 m_PetScalingData->spellHitScale    += pData->spellHitScale;
-                 m_PetScalingData->meleeHitScale    += pData->meleeHitScale;
-                 m_PetScalingData->expertizeScale   += pData->expertizeScale;
-                 m_PetScalingData->attackspeedScale += pData->attackspeedScale;
-                 m_PetScalingData->critScale        += pData->critScale;
-                 m_PetScalingData->powerregenScale  += pData->powerregenScale;
-                 for (int i = 0; i < MAX_STATS; i++)
-                 {
-                      m_PetScalingData->statScale[i] += pData->statScale[i];
-                 }
-                 for (int i = 0; i < MAX_SPELL_SCHOOL; i++)
-                 {
-                      m_PetScalingData->resistanceScale[i] += pData->resistanceScale[i];
-                 }
+                  m_PetScalingData->statScale[i] += pData->statScale[i];
              }
-             // bonus coefficients by special auras
-             if (baseCoefficientsDone && pData->requiredAura)
+             for (int i = 0; i < MAX_SPELL_SCHOOL; i++)
              {
-                 m_PetScalingData->attackpowerScale *= float(pData->attackpowerScale + 100)/100;
-                 m_PetScalingData->damageScale      *= float(pData->damageScale + 100)/100;
-                 m_PetScalingData->spelldamageScale *= float(pData->spelldamageScale + 100)/100;
-                 m_PetScalingData->spellHitScale    *= float(pData->spellHitScale + 100)/100;
-                 m_PetScalingData->meleeHitScale    *= float(pData->meleeHitScale + 100)/100;
-                 m_PetScalingData->expertizeScale   *= float(pData->expertizeScale + 100)/100;
-                 m_PetScalingData->attackspeedScale *= float(pData->attackspeedScale + 100)/100;
-                 m_PetScalingData->critScale        *= float(pData->critScale + 100)/100;
-                 m_PetScalingData->powerregenScale  *= float(pData->powerregenScale + 100)/100;
-                 for (int i = 0; i < MAX_STATS; i++)
-                 {
-                      m_PetScalingData->statScale[i] *= float(pData->statScale[i] + 100)/100;
-                 }
-                 for (int i = 0; i < MAX_SPELL_SCHOOL; i++)
-                 {
-                      m_PetScalingData->resistanceScale[i] *= float(pData->resistanceScale[i] + 100)/100;
-                 }
+                  m_PetScalingData->resistanceScale[i] += pData->resistanceScale[i];
              }
-         }
-
-         ++itr;
-
-         // second loop for the bonus coefficients
-         if (itr ==  pScalingDataList->end() && !baseCoefficientsDone)
-         {
-            itr = pScalingDataList->begin();
-            baseCoefficientsDone = true;
          }
     }
     return m_PetScalingData;

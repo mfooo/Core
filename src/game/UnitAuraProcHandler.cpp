@@ -1315,10 +1315,10 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura
                     }
                     return SPELL_AURA_PROC_FAILED;
                 }
-                // Arcane Blast proc-off only from arcane school and not from self
-                case 36032:
-                {
-                    if(procSpell->EffectTriggerSpell[1] == 36032 || GetSpellSchoolMask(procSpell) != SPELL_SCHOOL_MASK_ARCANE)
+                // Arcane Blast proc-off only from arcane school and not from self 
+                case 36032: 
+                { 
+                    if(procSpell->EffectTriggerSpell[1] == 36032 || GetSpellSchoolMask(procSpell) != SPELL_SCHOOL_MASK_ARCANE) 
                         return SPELL_AURA_PROC_FAILED;
                 }
                 // Glyph of Ice Block
@@ -1367,18 +1367,8 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura
                     if (!IsPositiveSpell(procSpell->Id))
                         return SPELL_AURA_PROC_FAILED;
 
-                    if (!pVictim || !pVictim->isAlive())
-                        return SPELL_AURA_PROC_FAILED;	
-
-                     basepoints[0] = damage * 15 / 100;	
-
-                    if (Aura* aura = pVictim->GetAura(64413, EFFECT_INDEX_0))
-                        basepoints[0] += aura->GetModifier()->m_amount;
-
-                    if (basepoints[0] > 20000)
-                        basepoints[0] = 20000;	
-
                     triggered_spell_id = 64413;
+                    basepoints[0] = damage * 15 / 100;
                     break;
                 }
             }
@@ -1741,7 +1731,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura
                     // triggered_spell_id in spell data
                     break;
                 }
-               // Item - Priest T10 Healer 4P Bonus
+                // Item - Priest T10 Healer 4P Bonus
                 case 70799:
                 {
                     if (GetTypeId() != TYPEID_PLAYER)
@@ -1917,8 +1907,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura
                     basepoints[0] = int32( basepoints[0] / 2);
                     triggered_spell_id = 71023;
                     break;
-
-                }	
+                }			
             }
             // King of the Jungle
             if (dummySpell->SpellIconID == 2850)
@@ -2069,8 +2058,8 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura
                 if(!procSpell)
                     return SPELL_AURA_PROC_FAILED;
 
-                //do not proc from spells that do not need combo points
-                if(!NeedsComboPoints(procSpell))
+                //do not proc from spells that do not need combo points 
+                if(!NeedsComboPoints(procSpell)) 
                     return SPELL_AURA_PROC_FAILED;
 
                 // energy cost save
@@ -2198,14 +2187,6 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura
                 case 20185:
                 {
                     if (pVictim == this)
-                       return SPELL_AURA_PROC_FAILED;
-
-                    // PPM per victim
-                    float ppmJoL = 15.0f; // must be hard-coded + 100% proc chance in DB
-                    WeaponAttackType attType = BASE_ATTACK; // TODO: attack type based? 
-                    uint32 WeaponSpeed = pVictim->GetAttackTime(attType);
-                    float chanceForVictim = pVictim->GetPPMProcChance(WeaponSpeed, ppmJoL);
-                    if (!roll_chance_f(chanceForVictim))
                        return SPELL_AURA_PROC_FAILED;
 
                     basepoints[0] = int32( pVictim->GetMaxHealth() * triggeredByAura->GetModifier()->m_amount / 100 );
@@ -3938,15 +3919,15 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
                 if (procSpell->Id != 47633)
                     return SPELL_AURA_PROC_FAILED;
             }
-            // Glyph of Death Grip
-            if (auraSpellInfo->Id == 62259)
-            {
-                // remove cooldown of Death Grip
-                if (GetTypeId()==TYPEID_PLAYER)
-                    ((Player*)this)->RemoveSpellCooldown(49576, true);
-                return SPELL_AURA_PROC_OK;
-            }
-			// Item - Death Knight T10 Melee 4P Bonus
+			//Glyph of Death Grip
+			if (auraSpellInfo->Id == 62259)
+			{
+				//remove cooldown of Death Grip
+				if (GetTypeId() == TYPEID_PLAYER)
+					((Player*)this)->RemoveSpellCooldown(49576, true);
+				return SPELL_AURA_PROC_OK;
+			}
+            // Item - Death Knight T10 Melee 4P Bonus
             else if (auraSpellInfo->Id == 70656)
             {
                 if (GetTypeId() != TYPEID_PLAYER || getClass() != CLASS_DEATH_KNIGHT)

@@ -7739,9 +7739,9 @@ const char *ObjectMgr::GetMangosString(int32 entry, int locale_idx) const
     return "<error>";
 }
 
-const char * GetMangosString(int32 entry, int locale_idx)
-{
-	return sObjectMgr.GetMangosString(entry, locale_idx);
+const char * GetMangosString(int32 entry, int locale_idx) 
+{ 
+  return sObjectMgr.GetMangosString(entry, locale_idx); 
 }
 
 void ObjectMgr::LoadSpellDisabledEntrys()

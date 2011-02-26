@@ -25,12 +25,9 @@
     <Filter Include="vmaps">
       <UniqueIdentifier>{948284d3-9d89-4609-8cdd-28a213edb53e}</UniqueIdentifier>
     </Filter>
-<<<<<<< HEAD
     <Filter Include="Playerbot">
       <UniqueIdentifier>{54e1b297-6787-4c05-b037-7f0078304640}</UniqueIdentifier>
     </Filter>
-=======
->>>>>>> 4d08a49a436e7e402511ed96aad61d6cdfd7ee0e
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\game\AccountMgr.cpp">
@@ -171,12 +168,9 @@
     <ClCompile Include="..\..\src\game\MapManager.cpp">
       <Filter>World/Handlers</Filter>
     </ClCompile>
-<<<<<<< HEAD
     <ClCompile Include="..\..\src\game\MapUpdater.cpp">
       <Filter>World/Handlers</Filter>
     </ClCompile>
-=======
->>>>>>> 4d08a49a436e7e402511ed96aad61d6cdfd7ee0e
     <ClCompile Include="..\..\src\game\MapPersistentStateMgr.cpp">
       <Filter>World/Handlers</Filter>
     </ClCompile>
@@ -463,15 +457,12 @@
     <ClCompile Include="..\..\src\game\CharacterDatabaseCleaner.cpp">
       <Filter>Tool</Filter>
     </ClCompile>
-<<<<<<< HEAD
     <ClCompile Include="..\..\src\game\PathFinder.cpp">
       <Filter>Motion generators</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\game\MoveMap.cpp">
       <Filter>World/Handlers</Filter>
     </ClCompile>
-=======
->>>>>>> 4d08a49a436e7e402511ed96aad61d6cdfd7ee0e
     <ClCompile Include="..\..\src\game\Camera.cpp">
       <Filter>Object</Filter>
     </ClCompile>
@@ -511,7 +502,6 @@
     <ClCompile Include="..\..\src\game\vmap\WorldModel.cpp">
       <Filter>vmaps</Filter>
     </ClCompile>
-<<<<<<< HEAD
     <ClCompile Include="..\..\src\game\playerbot\PlayerbotAI.cpp">
       <Filter>Playerbot</Filter>
     </ClCompile>
@@ -550,10 +540,6 @@
     </ClCompile>
     <ClCompile Include="..\..\src\game\playerbot\PlayerbotWarriorAI.cpp">
       <Filter>Playerbot</Filter>
-=======
-    <ClCompile Include="..\..\src\game\MapUpdater.cpp">
-      <Filter>World/Handlers</Filter>
->>>>>>> 4d08a49a436e7e402511ed96aad61d6cdfd7ee0e
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -662,12 +648,9 @@
     <ClInclude Include="..\..\src\game\MapManager.h">
       <Filter>World/Handlers</Filter>
     </ClInclude>
-<<<<<<< HEAD
     <ClInclude Include="..\..\src\game\MapUpdater.h">
       <Filter>World/Handlers</Filter>
     </ClInclude>
-=======
->>>>>>> 4d08a49a436e7e402511ed96aad61d6cdfd7ee0e
     <ClInclude Include="..\..\src\game\MapPersistentStateMgr.h">
       <Filter>World/Handlers</Filter>
     </ClInclude>
@@ -957,12 +940,9 @@
     <ClInclude Include="..\..\src\game\CharacterDatabaseCleaner.h">
       <Filter>Tool</Filter>
     </ClInclude>
-<<<<<<< HEAD
     <ClInclude Include="..\..\src\game\PathFinder.h">
       <Filter>Motion generators</Filter>
     </ClInclude>
-=======
->>>>>>> 4d08a49a436e7e402511ed96aad61d6cdfd7ee0e
     <ClInclude Include="..\..\src\game\Camera.h">
       <Filter>Object</Filter>
     </ClInclude>
@@ -975,15 +955,12 @@
     <ClInclude Include="..\..\src\game\AuctionHouseBot.h">
       <Filter>Object</Filter>
     </ClInclude>
-<<<<<<< HEAD
     <ClInclude Include="..\..\src\game\MoveMap.h">
       <Filter>World/Handlers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\game\MoveMapSharedDefines.h">
       <Filter>World/Handlers</Filter>
     </ClInclude>
-=======
->>>>>>> 4d08a49a436e7e402511ed96aad61d6cdfd7ee0e
     <ClInclude Include="..\..\src\game\vmap\BIH.h">
       <Filter>vmaps</Filter>
     </ClInclude>
@@ -1014,7 +991,6 @@
     <ClInclude Include="..\..\src\game\vmap\WorldModel.h">
       <Filter>vmaps</Filter>
     </ClInclude>
-<<<<<<< HEAD
     <ClInclude Include="..\..\src\game\playerbot\PlayerbotWarriorAI.h">
       <Filter>Playerbot</Filter>
     </ClInclude>
@@ -1055,9 +1031,6 @@
       <Filter>Playerbot</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\game\LFG.h">
-=======
-    <ClInclude Include="..\..\src\game\MapUpdater.h">
->>>>>>> 4d08a49a436e7e402511ed96aad61d6cdfd7ee0e
       <Filter>World/Handlers</Filter>
     </ClInclude>
   </ItemGroup>

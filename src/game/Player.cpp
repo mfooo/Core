@@ -7479,16 +7479,13 @@ void Player::_ApplyItemMods(Item *item, uint8 slot,bool apply)
     if(slot >= INVENTORY_SLOT_BAG_END || !item)
         return;
 
+    // not apply/remove mods for broken item
+    if(item->IsBroken())
+        return;
+
     ItemPrototype const *proto = item->GetProto();
 
     if(!proto)
-        return;
-
-    if(proto->Socket[0].Color)                              //only (un)equipping of items with sockets can influence metagems, so no need to waste time with normal items
-        CorrectMetaGemEnchants(slot, apply);
-
-    // not apply/remove mods for broken item
-    if(item->IsBroken())
         return;
 
     DETAIL_LOG("applying mods for item %u ",item->GetGUIDLow());
@@ -7504,6 +7501,9 @@ void Player::_ApplyItemMods(Item *item, uint8 slot,bool apply)
 
     ApplyItemEquipSpell(item,apply);
     ApplyEnchantment(item, apply);
+
+    if(proto->Socket[0].Color)                              //only (un)equipping of items with sockets can influence metagems, so no need to waste time with normal items
+        CorrectMetaGemEnchants(slot, apply);
 
     DEBUG_LOG("_ApplyItemMods complete.");
 }
@@ -9480,7 +9480,7 @@ uint8 Player::FindEquipSlot( ItemPrototype const* proto, uint32 slot, bool swap 
             break;
         case INVTYPE_2HWEAPON:
             slots[0] = EQUIPMENT_SLOT_MAINHAND;
-            if (CanDualWield() && CanTitanGrip() && proto && proto->SubClass != ITEM_SUBCLASS_WEAPON_POLEARM && proto->SubClass != ITEM_SUBCLASS_WEAPON_STAFF)
+            if (CanDualWield() && CanTitanGrip())
                 slots[1] = EQUIPMENT_SLOT_OFFHAND;
             break;
         case INVTYPE_TABARD:
@@ -13220,7 +13220,7 @@ void Player::RemoveEnchantmentDurations(Item *item)
     }
 }
 
-void Player::RemoveAllEnchantments(EnchantmentSlot slot, bool isArenaRemove)
+void Player::RemoveAllEnchantments(EnchantmentSlot slot)
 {
     // remove enchantments from equipped items first to clean up the m_enchantDuration list
     for(EnchantDurationList::iterator itr = m_enchantDuration.begin(), next; itr != m_enchantDuration.end(); itr = next)
@@ -13228,20 +13228,6 @@ void Player::RemoveAllEnchantments(EnchantmentSlot slot, bool isArenaRemove)
         next = itr;
         if (itr->slot == slot)
         {
-            if(isArenaRemove && itr->item) // Do not remove poisons at arenas
-            {
-                uint32 enchant_id = itr->item->GetEnchantmentId(slot);
-                if(enchant_id)
-                {
-                    SpellItemEnchantmentEntry const *pEnchant = sSpellItemEnchantmentStore.LookupEntry(enchant_id);
-                    if(pEnchant && pEnchant->aura_id == 26) // 26 is poison
-                    {
-                        ++next;
-                        continue;
-                    }
-                }
-            }
-
             if (itr->item && itr->item->GetEnchantmentId(slot))
             {
                 // remove from stats
@@ -17911,7 +17897,7 @@ InstancePlayerBind* Player::BindToInstance(DungeonPersistentState *state, bool p
         else
         {
             if (!load)
-                CharacterDatabase.PExecute("REPLACE INTO character_instance (guid, instance, permanent) VALUES ('%u', '%u', '%u')",
+                CharacterDatabase.PExecute("INSERT INTO character_instance (guid, instance, permanent) VALUES ('%u', '%u', '%u')",
                     GetGUIDLow(), state->GetInstanceId(), permanent);
         }
 
@@ -20499,18 +20485,15 @@ void Player::AddSpellCooldown(uint32 spellid, uint32 itemid, time_t end_time)
     m_spellCooldowns[spellid] = sc;
 }
 
-void Player::SendCooldownEvent(SpellEntry const *spellInfo, uint32 itemId, Spell* spell, Unit* cooldownTarget)
+void Player::SendCooldownEvent(SpellEntry const *spellInfo, uint32 itemId, Spell* spell)
 {
-    if (!cooldownTarget)
-        cooldownTarget = this;
-
     // start cooldowns at server side, if any
-    cooldownTarget->AddSpellAndCategoryCooldowns(spellInfo,itemId,spell);
+    AddSpellAndCategoryCooldowns(spellInfo, itemId, spell);
 
     // Send activate cooldown timer (possible 0) at client side
     WorldPacket data(SMSG_COOLDOWN_EVENT, (4+8));
     data << uint32(spellInfo->Id);
-    data << cooldownTarget->GetObjectGuid();
+    data << GetObjectGuid();
     SendDirectMessage(&data);
 }
 

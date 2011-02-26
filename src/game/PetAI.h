@@ -30,8 +30,8 @@ class MANGOS_DLL_SPEC PetAI : public CreatureAI
     public:
 
         explicit PetAI(Creature *c);
-
-        ~PetAI();
+		
+		~PetAI();
 
         void MoveInLineOfSight(Unit *);
         void AttackStart(Unit *);

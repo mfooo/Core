@@ -404,14 +404,13 @@ class Spell
         void DoSummonCritter(SpellEffectIndex eff_idx, uint32 forceFaction = 0);
         void DoSummonSnakes(SpellEffectIndex eff_idx);
         void DoSummonVehicle(SpellEffectIndex eff_idx, uint32 forceFaction = 0);
-        void DoSummonPossessed(SpellEffectIndex eff_idx, uint32 forceFaction = 0);
 
         void WriteSpellGoTargets( WorldPacket * data );
         void WriteAmmoToPacket( WorldPacket * data );
 
         typedef std::list<Unit*> UnitList;
         void FillTargetMap();
-        bool FillCustomTargetMap(SpellEffectIndex effIndex, UnitList &targetUnitMap);
+        bool FillCustomTargetMap(SpellEffectIndex effIndex, UnitList &targetUnitMap); 
         void SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList &targetUnitMap);
 
         void FillAreaTargets(UnitList &targetUnitMap, float x, float y, float radius, SpellNotifyPushType pushType, SpellTargets spellTargets, WorldObject* originalCaster = NULL);
@@ -504,8 +503,6 @@ class Spell
         void ClearCastItem();
 
         static void SelectMountByAreaAndSkill(Unit* target, SpellEntry const* parentSpell, uint32 spellId75, uint32 spellId150, uint32 spellId225, uint32 spellId300, uint32 spellIdSpecial);
-        ObjectGuid GetTargetForPeriodicTriggerAura() const;
-
     protected:
         bool HasGlobalCooldown();
         void TriggerGlobalCooldown();
