@@ -1326,35 +1326,6 @@ struct MANGOS_DLL_DECL npc_eye_of_acherusAI : public ScriptedAI
 		}
     }
 
-    void JustDied(Unit* killer)
-    {
-        if(!m_creature || m_creature->GetTypeId() != TYPEID_UNIT)
-            return;
-
-        m_creature->RemoveAurasDueToSpell(530);
-
-		Player* owner = ObjectAccessor::FindPlayer(ownerGuid);
-
-        if(!owner)
-            return;
-
-        owner->RemoveAurasDueToSpell(51852);
-        owner->RemoveAurasDueToSpell(51923);
-		owner->RemoveAurasDueToSpell(51890);
-    }
-
-    void MovementInform(uint32 uiType, uint32 uiPointId)
-    {
-        if (uiType != POINT_MOTION_TYPE && uiPointId == 0)
-            return;
-
-            DoScriptText(-1666452, m_creature);
-            m_creature->SetDisplayId(25499);
-            //m_creature->SetDisplayId(26320);
-            m_creature->RemoveAurasDueToSpell(51923);
-            m_creature->CastSpell(m_creature, 51890, true);
-    }
-
      void JustDied(Unit *)
     {
         if (Unit* charmer = m_creature->GetCharmer())
