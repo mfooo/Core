@@ -5981,6 +5981,9 @@ void Aura::HandleAuraModTotalManaPercentRegen(bool apply, bool /*Real*/)
     if(m_modifier.periodictime == 0)
         m_modifier.periodictime = 1000;
 
+    if(GetSpellProto()->Id == 60069)            // Dispersion HACK
+        m_modifier.m_miscvalue = 0;	
+
     m_periodicTimer = m_modifier.periodictime;
     m_isPeriodic = apply;
 }
