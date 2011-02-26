@@ -1,4 +1,4 @@
-/* Copyright (C) 2006 - 2011 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
+/* Copyright (C) 2006 - 2010 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -40,24 +40,22 @@ static SHostageInfo HostageInfo[] =
 {
     {23790, 186648, -57, 1343, 40.77f, 3.2f}, // bear
     {23999, 187021, 400, 1414, 74.36f, 3.3f}, // eagle
-    {24001, 186672, -35, 1134,  18.7f, 1.9f}, // dragonhawk
+    {24001, 186672, -35, 1134, 18.71f, 1.9f}, // dragonhawk
     {24024, 186667, 413, 1117,  6.32f, 3.1f}  // lynx
-
+    
 };
 
 struct MANGOS_DLL_DECL instance_zulaman : public ScriptedInstance
 {
     instance_zulaman(Map *map) : ScriptedInstance(map) {Initialize();};
 
-    uint64 HexLordGateGUID;
-	uint64 HexLordGUID;
+    uint64 MalacrassGateGUID;
+	uint64 MalacrassGUID;
     uint64 ZulJinGateGUID;
     uint64 AkilzonDoorGUID;
     uint64 ZulJinDoorGUID;
     uint64 HalazziDoorGUID;
-	uint64 HalazziBackDoorGUID;
-	uint64 EntranceDoorGUID;
-	ScriptedInstance* pInstance;
+
     uint32 QuestTimer;
     uint16 BossKilled;
     uint16 QuestMinute;
@@ -68,29 +66,28 @@ struct MANGOS_DLL_DECL instance_zulaman : public ScriptedInstance
 
     void Initialize()
     {
-        uint64 HexLordGateGUID = 0;
-        uint64 HexLordGUID = 0;
+        uint64 MalacrassGateGUID = 0;
+        uint64 MalacrassGUID = 0;
         uint64 ZulJinGateGUID = 0;
         uint64 AkilzonDoorGUID = 0;
         uint64 HalazziDoorGUID = 0;
         uint64 ZulJinDoorGUID = 0;
-		uint64 HalazziBackDoorGUID = 0;
-		uint64 EntranceDoorGUID = 0;
+
         QuestTimer = 0;
         QuestMinute = 21;
         BossKilled = 0;
         ChestLooted = 0;
 
-        for (uint8 i = 0; i < ENCOUNTERS; i++)
+        for(uint8 i = 0; i < ENCOUNTERS; i++)
             Encounters[i] = NOT_STARTED;
-        for (uint8 i = 0; i < RAND_VENDOR; i++)
+        for(uint8 i = 0; i < RAND_VENDOR; i++)
             RandVendor[i] = NOT_STARTED;
     }
 
     bool IsEncounterInProgress() const
     {
-        for (uint8 i = 0; i < ENCOUNTERS; i++)
-            if (Encounters[i] == IN_PROGRESS) return true;
+        for(uint8 i = 0; i < ENCOUNTERS; i++)
+            if(Encounters[i] == IN_PROGRESS) return true;
 
         return false;
     }
@@ -99,14 +96,7 @@ struct MANGOS_DLL_DECL instance_zulaman : public ScriptedInstance
     {
         switch(identifier)
         {
-            case DATA_HEXLORDGUID:					return HexLordGUID;
-			case DATA_HEXLORDDOOR:					return ZulJinGateGUID;
-			case DATA_AKILZONDOOR:					return AkilzonDoorGUID;
-			case DATA_ZULJINDOOR:					return ZulJinDoorGUID;
-			case DATA_ENTRANCEDOOR:                 return EntranceDoorGUID;
-			case DATA_HALAZZIFRONTDOOR:             return HalazziDoorGUID;
-			case DATA_HEXLORDGATE:					return HexLordGateGUID;
-			case DATA_BOSSKILLED:					return BossKilled;
+            case DATA_MALACRASSGUID:                return MalacrassGUID;            
         }
         return 0;
     }
@@ -119,8 +109,8 @@ struct MANGOS_DLL_DECL instance_zulaman : public ScriptedInstance
             case 23576: break;//nalorakk
             case 23577: break;//halazzi
             case 23578: break;//jan'alai
-            case 24239: HexLordGUID = creature->GetGUID(); break;//hexlord
-            case 23863: break;//zul'jin
+            case 24239: MalacrassGUID = creature->GetGUID(); break;//Malacrass 
+            case 23863: break;//zul'jin     
         }
     }
 
@@ -130,38 +120,26 @@ struct MANGOS_DLL_DECL instance_zulaman : public ScriptedInstance
         {
             case 186303: HalazziDoorGUID = go->GetGUID(); break;
             case 186304: ZulJinGateGUID  = go->GetGUID(); break;
-            case 186305: HexLordGateGUID = go->GetGUID(); break;
+            case 186305: MalacrassGateGUID = go->GetGUID(); break;
             case 186858: AkilzonDoorGUID = go->GetGUID(); break;
             case 186859: ZulJinDoorGUID  = go->GetGUID(); break;
-			case 186728: EntranceDoorGUID  = go->GetGUID(); break;
         default: break;
         }
-		CheckInstanceStatus();
+        CheckInstanceStatus();
     }
-    void CheckInstanceStatus()
-    {
-		OpenDoor(HalazziDoorGUID, true);
 
-		OpenDoor(EntranceDoorGUID, false);
-        if (BossKilled >= 4)
-            OpenDoor(HexLordGateGUID, true);
-
-        if (BossKilled >= 5)
-            OpenDoor(ZulJinGateGUID, true);
-    }
     void OpenDoor(uint64 DoorGUID, bool open)
     {
-        if (GameObject* pGo = instance->GetGameObject(DoorGUID))
-        {
-            if (open)
-                pGo->SetGoState(GO_STATE_READY);          // Closed
-            else
-                pGo->SetGoState(GO_STATE_ACTIVE);         // Opened
-        }
+        if(GameObject *Door = instance->GetGameObject(DoorGUID))
+			if (open)
+				Door->SetGoState(GO_STATE_ACTIVE);
+			else
+				Door->SetGoState(GO_STATE_READY);
     }
+
     void SummonHostage(uint8 num)
     {
-        if (!QuestMinute)
+        if(!QuestMinute)
             return;
 
         Map::PlayerList const &PlayerList = instance->GetPlayers();
@@ -169,22 +147,30 @@ struct MANGOS_DLL_DECL instance_zulaman : public ScriptedInstance
             return;
 
         Map::PlayerList::const_iterator i = PlayerList.begin();
-        if (Player* i_pl = i->getSource())
+        if(Player* i_pl = i->getSource())
         {
-            if (Unit* Hostage = i_pl->SummonCreature(HostageInfo[num].npc, HostageInfo[num].x, HostageInfo[num].y, HostageInfo[num].z, HostageInfo[num].o, TEMPSUMMON_DEAD_DESPAWN, 0))
+            if(Unit* Hostage = i_pl->SummonCreature(HostageInfo[num].npc, HostageInfo[num].x, HostageInfo[num].y, HostageInfo[num].z, HostageInfo[num].o, TEMPSUMMON_DEAD_DESPAWN, 0))
             {
                 Hostage->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                 Hostage->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
             }
-        }
+        } 
     }
 
+    void CheckInstanceStatus()
+    {
+        if(BossKilled >= 4)
+            OpenDoor(MalacrassGateGUID, true);
+
+        if(BossKilled >= 5)
+            OpenDoor(ZulJinGateGUID, true);
+    }
 
     void UpdateWorldState(uint32 field, uint32 value)
     {
         WorldPacket data(SMSG_UPDATE_WORLD_STATE, 8);
         data << field << value;
-		instance->SendToPlayers(&data);
+        ((DungeonMap*)instance)->SendToPlayers(&data);
     }
 
     const char* Save()
@@ -199,14 +185,14 @@ struct MANGOS_DLL_DECL instance_zulaman : public ScriptedInstance
 
     void Load(const char* load)
     {
-        if (!load) return;
+        if(!load) return;
         std::istringstream ss(load);
         //error_log("SD2: Zul'aman loaded, %s.", ss.str().c_str());
         char dataHead; // S
         uint16 data1, data2, data3;
         ss >> dataHead >> data1 >> data2 >> data3;
         //error_log("SD2: Zul'aman loaded, %d %d %d.", data1, data2, data3);
-        if (dataHead == 'S')
+        if(dataHead == 'S')
         {
             BossKilled = data1;
             ChestLooted = data2;
@@ -218,7 +204,7 @@ struct MANGOS_DLL_DECL instance_zulaman : public ScriptedInstance
     {
         switch(type)
         {
-        case TYPE_NALORAKK:
+        case DATA_NALORAKKEVENT:
             Encounters[0] = data;
             if(data == DONE)
             {
@@ -230,9 +216,9 @@ struct MANGOS_DLL_DECL instance_zulaman : public ScriptedInstance
                 SummonHostage(0);
             }
             break;
-        case TYPE_AKILZON:
+        case DATA_AKILZONEVENT:
             Encounters[1] = data;
-            DoUseDoorOrButton(AkilzonDoorGUID, data != IN_PROGRESS);
+            OpenDoor(AkilzonDoorGUID, data != IN_PROGRESS);
             if(data == DONE)
             {
                 if(QuestMinute)
@@ -243,27 +229,32 @@ struct MANGOS_DLL_DECL instance_zulaman : public ScriptedInstance
                 SummonHostage(1);
             }
             break;
-        case TYPE_JANALAI:
+        case DATA_JANALAIEVENT:
             Encounters[2] = data;
             if(data == DONE) SummonHostage(2);
             break;
-        case TYPE_HALAZZI:
+        case DATA_HALAZZIEVENT:
             Encounters[3] = data;
-            //DoUseDoorOrButton(HalazziDoorGUID, data != IN_PROGRESS);
-            if(data == DONE) SummonHostage(3);
+            if (data == DONE)
+            {
+                OpenDoor(HalazziDoorGUID, true);
+                SummonHostage(3);
+            }
+            else
+                OpenDoor(HalazziDoorGUID, false);
             break;
-        case TYPE_MALACRASS:
+        case DATA_MALACRASSEVENT:
             Encounters[4] = data;
             if(data == IN_PROGRESS)
-                DoUseDoorOrButton(HexLordGateGUID, false);
-			else if(data == NOT_STARTED)
-				CheckInstanceStatus();
+                OpenDoor(MalacrassGateGUID, false);
+            else if(data == NOT_STARTED)
+                CheckInstanceStatus();
             break;
-        case TYPE_ZULJIN:
+        case DATA_ZULJINEVENT:
             Encounters[5] = data;
-            DoUseDoorOrButton(ZulJinDoorGUID, data != IN_PROGRESS);
+            OpenDoor(ZulJinDoorGUID, data != IN_PROGRESS);
             break;
-        case TYPE_CHESTLOOTED:
+        case DATA_CHESTLOOTED:
             ChestLooted++;
             SaveToDB();
             break;
@@ -275,15 +266,15 @@ struct MANGOS_DLL_DECL instance_zulaman : public ScriptedInstance
             break;
         }
 
-        if (data == DONE)
+        if(data == DONE)
         {
             BossKilled++;
-            if (QuestMinute && BossKilled >= 4)
+            if(QuestMinute && BossKilled >= 4)
             {
                 QuestMinute = 0;
                 UpdateWorldState(3104, 0);
             }
-			CheckInstanceStatus();
+            CheckInstanceStatus();
             SaveToDB();
         }
     }
@@ -292,29 +283,29 @@ struct MANGOS_DLL_DECL instance_zulaman : public ScriptedInstance
     {
         switch(type)
         {
-        case TYPE_NALORAKK: return Encounters[0];
-        case TYPE_AKILZON:  return Encounters[1];
-        case TYPE_JANALAI:  return Encounters[2];
-        case TYPE_HALAZZI:  return Encounters[3];
-        case TYPE_MALACRASS:  return Encounters[4];
-        case TYPE_ZULJIN:   return Encounters[5];
-        case TYPE_CHESTLOOTED:   return ChestLooted;
+        case DATA_NALORAKKEVENT: return Encounters[0];
+        case DATA_AKILZONEVENT:  return Encounters[1];
+        case DATA_JANALAIEVENT:  return Encounters[2];
+        case DATA_HALAZZIEVENT:  return Encounters[3];
+        case DATA_MALACRASSEVENT:  return Encounters[4];
+        case DATA_ZULJINEVENT:   return Encounters[5];
+        case DATA_CHESTLOOTED:   return ChestLooted;
         case TYPE_RAND_VENDOR_1: return RandVendor[0];
-        case TYPE_RAND_VENDOR_2: return RandVendor[1];
+        case TYPE_RAND_VENDOR_2: return RandVendor[1];                
         default:                 return 0;
         }
     }
 
     void Update(uint32 diff)
     {
-        if (QuestMinute)
+        if(QuestMinute)
         {
-            if (QuestTimer < diff)
+            if(QuestTimer < diff)
             {
                 QuestMinute--;
                 SaveToDB();
                 QuestTimer += 60000;
-                if (QuestMinute)
+                if(QuestMinute)
                 {
                     UpdateWorldState(3104, 1);
                     UpdateWorldState(3106, QuestMinute);
