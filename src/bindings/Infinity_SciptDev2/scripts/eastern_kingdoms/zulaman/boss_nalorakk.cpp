@@ -1,4 +1,4 @@
-/* Copyright (C) 2006 - 2010 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
+/* Copyright (C) 2006 - 2011 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -23,36 +23,39 @@ EndScriptData */
 
 #include "precompiled.h"
 #include "zulaman.h"
+#include "Unit.h"
 
-#define SAY_WAVE1_AGGRO         -1568010
-#define SAY_WAVE2_STAIR1        -1568011
-#define SAY_WAVE3_STAIR2        -1568012
-#define SAY_WAVE4_PLATFORM      -1568013
+enum
+{
+    SAY_WAVE1_AGGRO       =  -1568010,//(-1568010,'Get da move on, guards! It be killin\' time!',12066,1,0,'nalorakk SAY_WAVE1_AGGRO'),
+    SAY_WAVE2_STAIR1      =  -1568011,//(-1568011,'Guards, go already! Who you more afraid of, dem... or me?',12067,1,0,'nalorakk SAY_WAVE2_STAIR1'),
+    SAY_WAVE3_STAIR2      =  -1568012,//(-1568012,'Ride now! Ride out dere and bring me back some heads!',12068,1,0,'nalorakk SAY_WAVE3_STAIR2'),
+    SAY_WAVE4_PLATFORM    =  -1568013,//(-1568013,'I be losin\' me patience! Go on: make dem wish dey was never born!',12069,1,0,'nalorakk SAY_WAVE4_PLATFORM'),
 
-#define SAY_EVENT1_SACRIFICE    -1568014
-#define SAY_EVENT2_SACRIFICE    -1568015
+    SAY_EVENT1_SACRIFICE  =  -1568014,//(-1568014,'What could be better than servin\' da bear spirit for eternity? Come closer now. Bring your souls to me!',12078,1,0,'nalorakk SAY_EVENT1_SACRIFICE'),
+    SAY_EVENT2_SACRIFICE  =  -1568015,//(-1568015,'Don\'t be delayin\' your fate. Come to me now. I make your sacrifice quick.',12079,1,0,'nalorakk SAY_EVENT2_SACRIFICE'),
 
-#define SAY_AGGRO               -1568016
-#define SAY_SURGE               -1568017
-#define SAY_TOBEAR              -1568018
-#define SAY_TOTROLL             -1568019
-#define SAY_BERSERK             -1568020
-#define SAY_SLAY1               -1568021
-#define SAY_SLAY2               -1568022
-#define SAY_DEATH               -1568023
+    SAY_AGGRO             =  -1568016,//(-1568016,'You be dead soon enough!',12070,1,0,'nalorakk SAY_AGGRO'),
+    SAY_SURGE             =  -1568017,//(-1568017,'I bring da pain!',12071,1,0,'nalorakk SAY_SURGE'),
+    SAY_TOBEAR            =  -1568018,//(-1568018,'You call on da beast, you gonna get more dan you bargain for!',12072,1,0,'nalorakk SAY_TOBEAR'),
+    SAY_TOTROLL           =  -1568019,//(-1568019,'Make way for Nalorakk!',12073,1,0,'nalorakk SAY_TOTROLL'),
+    SAY_BERSERK           =  -1568020,//(-1568020,'You had your chance, now it be too late!',12074,1,0,'nalorakk SAY_BERSERK'),
+    SAY_SLAY1             =  -1568021,//(-1568021,'Mua-ha-ha! Now whatchoo got to say?',12075,1,0,'nalorakk SAY_SLAY1'),
+    SAY_SLAY2             =  -1568022,//(-1568022,'Da Amani gonna rule again!',12076,1,0,'nalorakk SAY_SLAY2'),
+    SAY_DEATH             =  -1568023,//(-1568023,'I... be waitin\' on da udda side....',12077,1,0,'nalorakk SAY_DEATH');
 
-#define SPELL_BERSERK           45078
-
+    SPELL_BERSERK         =  45078,
 //Defines for Troll form
-#define SPELL_BRUTALSWIPE       42384
-#define SPELL_MANGLE            42389
-#define SPELL_SURGE             42402
-#define SPELL_BEARFORM          42377
-
+    SPELL_BRUTALSWIPE      = 42384,
+    SPELL_MANGLE           = 42389,
+    SPELL_MANGLEEFFECT     = 44955,
+    SPELL_SURGE            = 42402,
+    SPELL_BEARFORM         = 42377,
 //Defines for Bear form
-#define SPELL_LACERATINGSLASH   42395
-#define SPELL_RENDFLESH         42397
-#define SPELL_DEAFENINGROAR     42398
+    SPELL_LACERATINGSLASH  = 42395,
+    SPELL_RENDFLESH        = 42397,
+    SPELL_DEAFENINGROAR    = 42398
+};
 
 #define WEAPON_ID               33094
 
@@ -85,7 +88,7 @@ struct MANGOS_DLL_DECL boss_nalorakkAI : public ScriptedAI
     void Reset()
     {
         if(pInstance)
-            pInstance->SetData(DATA_NALORAKKEVENT, NOT_STARTED);
+            pInstance->SetData(TYPE_NALORAKK, NOT_STARTED);
 
         Surge_Timer = 15000 + rand()%5000;
         BrutalSwipe_Timer = 7000 + rand()%5000;
@@ -102,22 +105,28 @@ struct MANGOS_DLL_DECL boss_nalorakkAI : public ScriptedAI
 
     void Aggro(Unit *who)
     {
-        if(pInstance)
-            pInstance->SetData(DATA_NALORAKKEVENT, IN_PROGRESS);
+        if (pInstance)
+            pInstance->SetData(TYPE_NALORAKK, IN_PROGRESS);
 
         DoScriptText(SAY_AGGRO, m_creature);
         m_creature->SetInCombatWithZone();
     }
 
-    void JustDied(Unit* Killer)    
-    {	
-        if(pInstance)
-            pInstance->SetData(DATA_NALORAKKEVENT, DONE);
+    void JustDied(Unit* Killer)
+    {
+        if (pInstance)
+		{
+            pInstance->SetData(TYPE_NALORAKK, DONE);
+			if (pInstance->GetData64(DATA_BOSSKILLED)>=4) {
+				if (GameObject* pEncounterDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_HEXLORDGATE)))
+					pEncounterDoor->SetGoState(GO_STATE_ACTIVE);
+			}
+		}
 
         DoScriptText(SAY_DEATH, m_creature);
     }
 
-    void KilledUnit(Unit* victim)    
+    void KilledUnit(Unit* victim)
     {
         switch(rand()%2)
         {
@@ -130,8 +139,8 @@ struct MANGOS_DLL_DECL boss_nalorakkAI : public ScriptedAI
     {
         if (ChargeTargetGUID)
         {
-            if (Unit* pTarget = m_creature->GetMap()->GetUnit(ChargeTargetGUID))
-                m_creature->CastSpell(pTarget, SPELL_SURGE, true);
+            if (Unit* target = m_creature->GetMap()->GetUnit( ChargeTargetGUID))
+                m_creature->CastSpell(target, SPELL_SURGE, true);
             ChargeTargetGUID = 0;
         }
     }
@@ -144,33 +153,33 @@ struct MANGOS_DLL_DECL boss_nalorakkAI : public ScriptedAI
         Map::PlayerList const &PlayerList = map->GetPlayers();
         if (PlayerList.isEmpty())
             return NULL;
-        
+
         std::list<Player*> temp;
         std::list<Player*>::iterator j;
-		
-        for(Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
-			if((range == 0.0f || m_creature->IsWithinDistInMap(i->getSource(), range))
-				&& (!alive || i->getSource()->isTargetableForAttack()))
-				temp.push_back(i->getSource());
 
-		if (temp.size()) {
-			j = temp.begin();
+        for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
+           if ((range == 0.0f || m_creature->IsWithinDistInMap(i->getSource(), range))
+                && (!alive || i->getSource()->isTargetableForAttack()))
+                temp.push_back(i->getSource());
+
+        if (temp.size()) {
+            j = temp.begin();
 		    advance(j, rand()%temp.size());
 		    return (*j);
-		}
+        }
         return NULL;
 
     }
 
     void UpdateAI(const uint32 diff)
     {
-        if(isCharging)
+        if (isCharging)
         {
-            if(!ChargeTargetGUID)
+            if (!ChargeTargetGUID)
             {
-                m_creature->SetSpeedRate(MOVE_RUN, 1.2f);
+                m_creature->SetSpeedRate(MOVE_RUN, 1.2f, true);
                 m_creature->GetMotionMaster()->Clear();
-                if(m_creature->getVictim())
+                if (m_creature->getVictim())
                 {
                     m_creature->Attack(m_creature->getVictim(), true);
                     m_creature->GetMotionMaster()->MoveChase(m_creature->getVictim());
@@ -180,19 +189,19 @@ struct MANGOS_DLL_DECL boss_nalorakkAI : public ScriptedAI
             return;
         }
 
-        if(!m_creature->SelectHostileTarget() && !m_creature->getVictim())
+        if (!m_creature->SelectHostileTarget() && !m_creature->getVictim())
             return;
 
-        if(Berserk_Timer < diff)
+        if (Berserk_Timer < diff)
         {
             DoScriptText(SAY_BERSERK, m_creature);
             DoCast(m_creature, SPELL_BERSERK, true);
             Berserk_Timer = 600000;
         }else Berserk_Timer -= diff;
 
-        if(ShapeShift_Timer < diff)
+        if (ShapeShift_Timer < diff)
         {
-            if(inBearForm)
+            if (inBearForm)
             {
                 DoScriptText(SAY_TOTROLL, m_creature);
 
@@ -217,26 +226,30 @@ struct MANGOS_DLL_DECL boss_nalorakkAI : public ScriptedAI
             }
         }else ShapeShift_Timer -= diff;
 
-        if(!inBearForm)
+        if (!inBearForm)
         {
-            if(BrutalSwipe_Timer < diff)
+            if (BrutalSwipe_Timer < diff)
             {
                 DoCast(m_creature->getVictim(), SPELL_BRUTALSWIPE);
                 BrutalSwipe_Timer = 7000 + rand()%5000;
             }else BrutalSwipe_Timer -= diff;
 
-            if(Mangle_Timer < diff)
+            if (Mangle_Timer < diff)
             {
-                DoCast(m_creature->getVictim(), SPELL_MANGLE);
-                Mangle_Timer = 10000 + rand()%5000;
+               // if(!m_creature->getVictim()->HasAura(SPELL_MANGLEEFFECT, 0))
+               // {
+               DoCast(m_creature->getVictim(), SPELL_MANGLE);
+               Mangle_Timer = 10000 + rand()%5000;
+               // }
+               // else Mangle_Timer = 10000 + rand()%5000;
             }else Mangle_Timer -= diff;
 
-            if(Surge_Timer < diff)
+            if (Surge_Timer < diff)
             {
                 DoScriptText(SAY_SURGE, m_creature);
 
                 Unit *target = SelectRandomPlayer(45);
-                if(!target) target = m_creature->getVictim();
+                if (!target) target = m_creature->getVictim();
                 isCharging = true;
                 ChargeTargetGUID = target->GetGUID();
 
@@ -248,35 +261,39 @@ struct MANGOS_DLL_DECL boss_nalorakkAI : public ScriptedAI
 
                 Surge_Timer = 15000 + rand()%5000;
                 return;
-            }
-            else
-                Surge_Timer -= diff;
+            }else Surge_Timer -= diff;
         }
         else
         {
             if (LaceratingSlash_Timer < diff)
             {
-                DoCast(m_creature->getVictim(), SPELL_LACERATINGSLASH);
+                if (!m_creature->getVictim()->HasAura(SPELL_MANGLEEFFECT, EFFECT_INDEX_0))
+                    DoCast(m_creature->getVictim(), SPELL_LACERATINGSLASH);
+                else
+                {
+                    int32 bp0 = 3470;
+                    m_creature->CastCustomSpell(m_creature->getVictim(), SPELL_LACERATINGSLASH, &bp0, NULL, NULL, false);
+                }
                 LaceratingSlash_Timer = 18000 + rand()%5000;
-            }
-            else
-                LaceratingSlash_Timer -= diff;
+            }else LaceratingSlash_Timer -= diff;
 
             if (RendFlesh_Timer < diff)
             {
-                DoCast(m_creature->getVictim(), SPELL_RENDFLESH);
+                if (!m_creature->getVictim()->HasAura(SPELL_MANGLEEFFECT, EFFECT_INDEX_0))
+                    DoCast(m_creature->getVictim(), SPELL_RENDFLESH);
+                else
+                {
+                    int32 bp1 = 4670;
+                    m_creature->CastCustomSpell(m_creature->getVictim(), SPELL_RENDFLESH, NULL, &bp1, NULL, false);
+                }
                 RendFlesh_Timer = 5000 + rand()%5000;
-            }
-            else
-                RendFlesh_Timer -= diff;
+            }else RendFlesh_Timer -= diff;
 
             if (DeafeningRoar_Timer < diff)
             {
                 DoCast(m_creature->getVictim(), SPELL_DEAFENINGROAR);
                 DeafeningRoar_Timer = 15000 + rand()%5000;
-            }
-            else
-                DeafeningRoar_Timer -= diff;
+            }else DeafeningRoar_Timer -= diff;
         }
 
         DoMeleeAttackIfReady();
