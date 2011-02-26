@@ -313,6 +313,7 @@ void Unit::Update( uint32 update_diff, uint32 p_time )
     if(!IsInWorld())
         return;
 
+    sWorld.m_spellUpdateLock.acquire();
     /*if(p_time > m_AurasCheck)
     {
     m_AurasCheck = 2000;
@@ -324,17 +325,15 @@ void Unit::Update( uint32 update_diff, uint32 p_time )
     // Spells must be processed with event system BEFORE they go to _UpdateSpells.
     // Or else we may have some SPELL_STATE_FINISHED spells stalled in pointers, that is bad.
 
-    sWorld.m_spellUpdateLock.acquire();
     m_Events.Update( update_diff );
 
     if(!IsInWorld())
         return;
 
     _UpdateSpells(update_diff );
-    sWorld.m_spellUpdateLock.release();
 
     CleanupDeletedAuras();
-    sWorld.m_spellUpdateLock.release();
+	sWorld.m_spellUpdateLock.release();
 
     if (m_lastManaUseTimer)
     {
@@ -6427,7 +6426,7 @@ void Unit::AddGuardian( Pet* pet )
 
 void Unit::RemoveGuardian( Pet* pet )
 {
-    if(GetTypeId() == TYPEID_PLAYER)
+    if(GetTypeId() == TYPEID_PLAYER && ((Player*)this)->GetTemporaryUnsummonedPetNumber() != pet->GetCharmInfo()->GetPetNumber())
     {
         uint32 SpellID = pet->GetCreateSpellID();
         SpellEntry const *spellInfo = sSpellStore.LookupEntry(SpellID);
