@@ -5646,12 +5646,12 @@ void Spell::DoSummonGuardian(SpellEffectIndex eff_idx, uint32 forceFaction)
         }
         // Summon if dest location not present near caster
         else
-            m_caster->GetClosePoint(px, py, pz,spawnCreature->GetObjectBoundingRadius());
+            m_caster->GetClosePoint(px, py, pz,m_caster->GetObjectBoundingRadius());
 
         if (!spawnCreature->SetSummonPosition(px,py,pz))
         {
             sLog.outError("Guardian pet (guidlow %d, entry %d) not summoned. Suggested coordinates isn't valid (X: %f Y: %f)",
-                spawnCreature->GetGUIDLow(), spawnCreature->GetEntry(), spawnCreature->GetPositionX(), spawnCreature->GetPositionY());
+                spawnCreature->GetGUIDLow(), spawnCreature->GetEntry(), px, py);
             delete spawnCreature;
             return;
         }
@@ -7997,18 +7997,46 @@ void Spell::EffectScriptEffect(SpellEffectIndex eff_idx)
 
                     return;
                 }
+                case 58916:                                 // Gift of the Lich King
+                {
+                    if (!unitTarget || unitTarget->isAlive())
+                        return;
+
+                    m_caster->CastSpell(unitTarget, 58915, true);
+
+                    unitTarget->RemoveFromWorld();
+
+                    if (Unit* master = m_caster->GetCharmerOrOwner())
+                        master->CastSpell(master, 58987, true);
+
+                    return;
+                }
+                case 58917:                                 // Consume minions
+                {
+                    if (!unitTarget || unitTarget->GetTypeId() != TYPEID_UNIT)
+                        return;
+
+                    m_caster->CastSpell(unitTarget, 58919, true);
+                    return;
+                }
                 case 59910:                                 // Summon Minions
                 {
                     if (!unitTarget)
-                        return;
-                                                           // Summon Fetid Troll (1-5)
+					    return;
+
                     unitTarget->CastSpell(unitTarget, 59935, true);
                     unitTarget->CastSpell(unitTarget, 59938, true);
                     unitTarget->CastSpell(unitTarget, 59939, true);
                     unitTarget->CastSpell(unitTarget, 59940, true);
                     unitTarget->CastSpell(unitTarget, 59943, true);
                     return;
-                }                                                      // random spell learn instead placeholder
+                }
+                case 59803:                                 // Consume: Spell of Trollgore hero
+                {
+                    m_caster->CastSpell(m_caster,59805,true);
+                    return;
+                }
+                                                            // random spell learn instead placeholder
                 case 60893:                                 // Northrend Alchemy Research
                 case 61177:                                 // Northrend Inscription Research
                 case 61288:                                 // Minor Inscription Research
@@ -8024,6 +8052,7 @@ void Spell::EffectScriptEffect(SpellEffectIndex eff_idx)
 
                     return;
                 }
+
                 case 69200:                                 // Raging Spirit
                 {
                     if (!unitTarget)
@@ -8767,8 +8796,9 @@ void Spell::EffectScriptEffect(SpellEffectIndex eff_idx)
                         CancelGlobalCooldown();
                         return;
                     }
-                    ((Player*)m_caster)->RemoveSpellCooldown(triggered_spell_id,true);
                     finish(true);
+                    ((Player*)m_caster)->RemoveSpellCooldown(m_spellInfo->CalculateSimpleValue(EFFECT_INDEX_2),true);
+                    ((Player*)m_caster)->RemoveSpellCooldown(m_spellInfo->CalculateSimpleValue(EFFECT_INDEX_1),true);
                     CancelGlobalCooldown();
                     return;
                 }

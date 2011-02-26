@@ -334,7 +334,6 @@ void Unit::Update( uint32 update_diff, uint32 p_time )
     sWorld.m_spellUpdateLock.release();
 
     CleanupDeletedAuras();
-    sWorld.m_spellUpdateLock.release();
 
     if (m_lastManaUseTimer)
     {
@@ -6427,7 +6426,7 @@ void Unit::AddGuardian( Pet* pet )
 
 void Unit::RemoveGuardian( Pet* pet )
 {
-    if(GetTypeId() == TYPEID_PLAYER)
+    if(GetTypeId() == TYPEID_PLAYER && ((Player*)this)->GetTemporaryUnsummonedPetNumber() != pet->GetCharmInfo()->GetPetNumber())
     {
         uint32 SpellID = pet->GetCreateSpellID();
         SpellEntry const *spellInfo = sSpellStore.LookupEntry(SpellID);
@@ -10140,7 +10139,6 @@ void Unit::RemoveFromWorld()
     // cleanup
     if (IsInWorld())
     {
-        sWorld.m_spellUpdateLock.acquire();
         Uncharm();
         RemoveNotOwnSingleTargetAuras();
         RemoveGuardians();
@@ -10150,7 +10148,6 @@ void Unit::RemoveFromWorld()
         RemoveAllDynObjects();
         CleanupDeletedAuras();
         GetViewPoint().Event_RemovedFromWorld();
-        sWorld.m_spellUpdateLock.release();
     }
 
     Object::RemoveFromWorld();
