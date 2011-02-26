@@ -1,101 +1,91 @@
-/* Copyright (C) 2006 - 2010 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
+/* Copyright (C) 2006 - 2011 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
 
 /* ScriptData
-SDName: boss_malacrass
+SDName: Boss_Hex_Lord_Malacrass
 SD%Complete:
-SDComment: 
+SDComment:
 SDCategory: Zul'Aman
 EndScriptData */
 
 #include "precompiled.h"
 #include "zulaman.h"
 
-#define SAY_AGGRO               -1568024
-#define SAY_ENRAGE              -1568025
-#define SAY_KILL_ONE            -1568026
-#define SAY_KILL_TWO            -1568027
-#define SAY_SOUL_SIPHON         -1568028
-#define SAY_DRAIN_POWER         -1568029
-#define SAY_SPIRIT_BOLTS        -1568030
-#define SAY_ADD_DIED_ONE        -1568031
-#define SAY_ADD_DIED_TWO        -1568032
-#define SAY_ADD_DIED_THREE      -1568033
-#define SAY_DEATH_ONE           -1568034
-#define SAY_DEATH_TWO           -1568035
+enum
+{
+    SAY_AGGRO             =  -1568045,//(-1568045,'Da shadow gonna fall on you...',12041,1,0,0,'malacrass SAY_AGGRO'),
+    SAY_ENRAGE            =  -1568046,//(-1568046,'Ya don\'t kill me yet, ya don\'t get another chance!',12042,1,0,0,'malacrass SAY_ENRAGE'),
+    SAY_KILL_ONE          =  -1568047,//(-1568047,'Dis a nightmare ya don\' wake up from!',12043,1,0,0,'malacrass SAY_KILL1'),
+    SAY_KILL_TWO          =  -1568047,//(-1568048,'Azzaga choogo zinn!',12044,1,0,0,'malacrass SAY_KILL2'),
+    SAY_SOUL_SIPHON       =  -1568049,//(-1568049,'Your will belong ta me now!',12045,1,0,0,'malacrass SAY_SOUL_SIPHON'),
+    SAY_DRAIN_POWER       =  -1568050,//(-1568050,'Darkness comin\' for you...',12046,1,0,0,'malacrass SAY_DRAIN_POWER'),
+    SAY_SPIRIT_BOLTS      =  -1568051,//(-1568051,'Your soul gonna bleed!',12047,1,0,0,'malacrass SAY_SPIRIT_BOLTS'),
+    SAY_ADD_DIED_ONE      =  -1568052,//(-1568052,'It not gonna make no difference.',12048,1,0,0,'malacrass SAY_ADD_DIED1'),
+    SAY_ADD_DIED_TWO      =  -1568053,//(-1568053,'You gonna die worse dan him.',12049,1,0,0,'malacrass SAY_ADD_DIED2'),
+    SAY_ADD_DIED_THREE    =  -1568054,//(-1568054,'Dat no bodda me.',12050,1,0,0,'malacrass SAY_ADD_DIED3'),
+    SAY_DEATH_ONE         =  -1568055,//(-1568055,'Dis not... da end of me...',12051,1,0,0,'malacrass SAY_DEATH'),
 
-#define SPELL_SPIRIT_BOLTS      43383
-#define SPELL_SIPHON_SOUL       43501
-#define SPELL_DRAIN_POWER       44131
+    SPELL_SPIRIT_BOLTS    =  43383,
+    SPELL_SIPHON_SOUL     =  43501,
+    SPELL_DRAIN_POWER     =  44131,
+//Defines for various powers he uses after using soul drain
+//Druid
+    SPELL_DR_THORNS       =  43420,
+    SPELL_DR_LIFEBLOOM    =  43421,
+    SPELL_DR_MOONFIRE     =  43545,
+//Hunter
+    SPELL_HU_EXPLOSIVE_TRAP = 43444,
+    SPELL_HU_FREEZING_TRAP  = 43447,
+    SPELL_HU_SNAKE_TRAP     = 43449,
+//Mage
+    SPELL_MG_FIREBALL       = 41383,
+    SPELL_MG_FROST_NOVA     = 43426,
+    SPELL_MG_ICE_LANCE      = 43427,
+    SPELL_MG_FROSTBOLT      = 43428,
+//Paladin
+    SPELL_PA_CONSECRATION   = 43429,
+    SPELL_PA_AVENGING_WRATH = 43430,
+    SPELL_PA_HOLY_LIGHT     = 43451,
+//Priest
+    SPELL_PR_HEAL           = 41372,
+    SPELL_PR_MIND_BLAST     = 41374,
+    SPELL_PR_SW_DEATH       = 41375,
+    SPELL_PR_PSYCHIC_SCREAM = 43432,
+    SPELL_PR_MIND_CONTROL   = 43550,
+    SPELL_PR_PAIN_SUPP      = 44416,
+//Rogue
+    SPELL_RO_WOUND_POISON   = 39665,
+    SPELL_RO_BLIND          = 43433,
+    SPELL_RO_SLICE_DICE     = 43457,
+//Shaman
+    SPELL_SH_CHAIN_LIGHT    = 43435,
+    SPELL_SH_FIRE_NOVA      = 43436,
+    SPELL_SH_HEALING_WAVE   = 43548,
+//Warlock
+    SPELL_WL_CURSE_OF_DOOM  = 43439,
+    SPELL_WL_RAIN_OF_FIRE   = 43440,
+    SPELL_WL_UNSTABLE_AFFL  = 35183,
+//Warrior
+    SPELL_WR_MORTAL_STRIKE  = 43441,
+    SPELL_WR_WHIRLWIND      = 43442,
+    SPELL_WR_SPELL_REFLECT  = 43443
+};  
 
 #define WEAPON_ID               33494
-
 #define MOB_TEMP_TRIGGER        23920
-
-//Defines for various powers he uses after using soul drain
-
-//Druid
-#define SPELL_DR_THORNS         43420
-#define SPELL_DR_LIFEBLOOM      43421
-#define SPELL_DR_MOONFIRE       43545
-
-//Hunter
-#define SPELL_HU_EXPLOSIVE_TRAP 43444
-#define SPELL_HU_FREEZING_TRAP  43447
-#define SPELL_HU_SNAKE_TRAP     43449
-
-//Mage
-#define SPELL_MG_FIREBALL       41383
-#define SPELL_MG_FROST_NOVA     43426
-#define SPELL_MG_ICE_LANCE      43427
-#define SPELL_MG_FROSTBOLT      43428
-
-//Paladin
-#define SPELL_PA_CONSECRATION   43429
-#define SPELL_PA_AVENGING_WRATH 43430
-#define SPELL_PA_HOLY_LIGHT     43451
-
-//Priest
-#define SPELL_PR_HEAL           41372
-#define SPELL_PR_MIND_BLAST     41374
-#define SPELL_PR_SW_DEATH       41375
-#define SPELL_PR_PSYCHIC_SCREAM 43432
-#define SPELL_PR_MIND_CONTROL   43550
-#define SPELL_PR_PAIN_SUPP      44416
-
-//Rogue
-#define SPELL_RO_WOUND_POISON   39665
-#define SPELL_RO_BLIND          43433
-#define SPELL_RO_SLICE_DICE     43457
-
-//Shaman
-#define SPELL_SH_CHAIN_LIGHT    43435
-#define SPELL_SH_FIRE_NOVA      43436
-#define SPELL_SH_HEALING_WAVE   43548
-
-//Warlock
-#define SPELL_WL_CURSE_OF_DOOM  43439
-#define SPELL_WL_RAIN_OF_FIRE   43440
-#define SPELL_WL_UNSTABLE_AFFL  35183
-
-//Warrior
-#define SPELL_WR_MORTAL_STRIKE  43441
-#define SPELL_WR_WHIRLWIND      43442
-#define SPELL_WR_SPELL_REFLECT  43443
-
 #define ORIENT                  1.5696f
 #define POS_Y                   921.2795f
 #define POS_Z                   33.8883f
@@ -140,7 +130,7 @@ static PlayerAbilityStruct PlayerAbility[][3] =
     // 1 warrior
     {{SPELL_WR_MORTAL_STRIKE, ABILITY_TARGET_VICTIM, 6000},
     {SPELL_WR_WHIRLWIND, ABILITY_TARGET_SELF, 10000},
-    {SPELL_WR_SPELL_REFLECT, ABILITY_TARGET_SELF, 10000}},    
+    {SPELL_WR_SPELL_REFLECT, ABILITY_TARGET_SELF, 10000}},
     // 2 paladin
     {{SPELL_PA_CONSECRATION, ABILITY_TARGET_SELF, 10000},
     {SPELL_PA_HOLY_LIGHT, ABILITY_TARGET_HEAL, 10000},
@@ -152,7 +142,7 @@ static PlayerAbilityStruct PlayerAbility[][3] =
     // 4 rogue
     {{SPELL_RO_WOUND_POISON, ABILITY_TARGET_VICTIM, 3000},
     {SPELL_RO_BLIND, ABILITY_TARGET_ENEMY, 10000},
-    {SPELL_RO_SLICE_DICE, ABILITY_TARGET_SELF, 10000}},    
+    {SPELL_RO_SLICE_DICE, ABILITY_TARGET_SELF, 10000}},
     // 5 priest
     {{SPELL_PR_PAIN_SUPP, ABILITY_TARGET_HEAL, 10000},
     {SPELL_PR_HEAL, ABILITY_TARGET_HEAL, 10000},
@@ -180,13 +170,13 @@ static PlayerAbilityStruct PlayerAbility[][3] =
     {SPELL_DR_MOONFIRE, ABILITY_TARGET_ENEMY, 8000}}
 };
 
-struct MANGOS_DLL_DECL boss_malacrassAI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_hex_lord_malacrassAI : public ScriptedAI
 {
-    boss_malacrassAI(Creature *c) : ScriptedAI(c)
+    boss_hex_lord_malacrassAI(Creature *c) : ScriptedAI(c)
     {
         pInstance = ((ScriptedInstance*)c->GetInstanceData());
         SelectAddEntry();
-        for(uint8 i = 0; i < 4; ++i)
+        for (uint8 i = 0; i < 4; ++i)
             AddGUID[i] = 0;
         Reset();
     }
@@ -211,8 +201,8 @@ struct MANGOS_DLL_DECL boss_malacrassAI : public ScriptedAI
 
     void Reset()
     {
-        if(pInstance)
-            pInstance->SetData(DATA_MALACRASSEVENT, NOT_STARTED);
+        if (pInstance)
+            pInstance->SetData(TYPE_MALACRASS, NOT_STARTED);
 
         SpiritBolts_Timer = 20000;
         bDrainPower = false;
@@ -222,6 +212,8 @@ struct MANGOS_DLL_DECL boss_malacrassAI : public ScriptedAI
         CheckAddState_Timer = 5000;
 
         SpawnAdds();
+		if (GameObject* pEncounterDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_HEXLORDDOOR)))
+			pEncounterDoor->SetGoState(GO_STATE_ACTIVE);
 
         m_creature->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID+0, WEAPON_ID);
         m_creature->SetByteValue(UNIT_FIELD_BYTES_2, 0, SHEATH_STATE_MELEE );
@@ -229,12 +221,16 @@ struct MANGOS_DLL_DECL boss_malacrassAI : public ScriptedAI
 
     void Aggro(Unit* who)
     {
-        if(pInstance)
-            pInstance->SetData(DATA_MALACRASSEVENT, IN_PROGRESS);
+        if (pInstance)
+		{
+            pInstance->SetData(TYPE_MALACRASS, IN_PROGRESS);
+            if (GameObject* pEncounterDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_HEXLORDDOOR)))
+                pEncounterDoor->SetGoState(GO_STATE_READY);
+		}
 
         DoScriptText(SAY_AGGRO, m_creature);
 
-        for(uint8 i = 0; i < 4; ++i)
+        for (uint8 i = 0; i < 4; ++i)
         {
             Unit* Temp = m_creature->GetMap()->GetUnit(AddGUID[i]);
             if (Temp && Temp->isAlive())
@@ -249,23 +245,18 @@ struct MANGOS_DLL_DECL boss_malacrassAI : public ScriptedAI
 
     void KilledUnit(Unit* victim)
     {
-        switch(rand()%2)
-        {
-            case 0: DoScriptText(SAY_KILL_ONE , m_creature); break;
-            case 1: DoScriptText(SAY_KILL_TWO , m_creature); break;
-        }
+         DoScriptText(SAY_KILL_ONE , m_creature);
     }
 
     void JustDied(Unit* victim)
     {
-        if(pInstance)
-            pInstance->SetData(DATA_MALACRASSEVENT, DONE);
-
-        switch(rand()%2)
-        {
-            case 0: DoScriptText(SAY_DEATH_ONE, m_creature); break;
-            case 1: DoScriptText(SAY_DEATH_TWO, m_creature); break;
-        }
+        if (pInstance)
+		{
+            pInstance->SetData(TYPE_MALACRASS, DONE);
+            if (GameObject* pEncounterDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_HEXLORDDOOR)))
+                pEncounterDoor->SetGoState(GO_STATE_ACTIVE);
+	}
+        DoScriptText(SAY_DEATH_ONE, m_creature);
 
         for (uint8 i = 0; i < 4 ; ++i)
         {
@@ -278,34 +269,32 @@ struct MANGOS_DLL_DECL boss_malacrassAI : public ScriptedAI
     void SelectAddEntry()
     {
         std::vector<uint32> AddList;
-        
+
         for(uint8 i = 0; i < 8; ++i)
             AddList.push_back(AddEntryList[i]);
-        
+
         uint8 i = 0;
-        while(AddList.size() > 4)
+        while (AddList.size() > 4)
         {
             AddList.erase(AddList.begin()+rand()%2+i);
             i++;
         }
 
         i=0;
-        for(std::vector<uint32>::iterator itr = AddList.begin(); itr != AddList.end(); ++itr, ++i)
+        for (std::vector<uint32>::iterator itr = AddList.begin(); itr != AddList.end(); ++itr, ++i)
             AddEntry[i] = *itr;
     }
 
     void SpawnAdds()
     {
-        for(uint8 i = 0; i < 4; ++i)
+        for (uint8 i = 0; i < 4; ++i)
         {
-            Creature* pCreature = m_creature->GetMap()->GetCreature(AddGUID[i]);
+            Creature *pCreature = ((Creature*)m_creature->GetMap()->GetUnit( AddGUID[i]));
             if (!pCreature || !pCreature->isAlive())
             {
-                if (pCreature)
-                    pCreature->SetDeathState(DEAD);
+                if (pCreature) pCreature->SetDeathState(DEAD);
                 pCreature = m_creature->SummonCreature(AddEntry[i], Pos_X[i], POS_Y, POS_Z, ORIENT, TEMPSUMMON_DEAD_DESPAWN, 0);
-                if (pCreature)
-                    AddGUID[i] = pCreature->GetGUID();
+                if (pCreature) AddGUID[i] = pCreature->GetGUID();
             }
             else
             {
@@ -331,33 +320,33 @@ struct MANGOS_DLL_DECL boss_malacrassAI : public ScriptedAI
         if(!m_creature->SelectHostileTarget() && !m_creature->getVictim())
             return;
 
-        if(CheckAddState_Timer < diff)
+        if (CheckAddState_Timer < diff)
         {
-            for(uint8 i = 0; i < 4; ++i)
+            for (uint8 i = 0; i < 4; ++i)
             {
                 Unit* Temp = m_creature->GetMap()->GetUnit(AddGUID[i]);
-                if(Temp && Temp->isAlive() && !Temp->getVictim())
+                if (Temp && Temp->isAlive() && !Temp->getVictim())
                     ((Creature*)Temp)->AI()->AttackStart(m_creature->getVictim());
             }
             CheckAddState_Timer = 5000;
         }else CheckAddState_Timer -= diff;
-		
-        if(m_creature->GetHealth() * 10 < m_creature->GetMaxHealth() * 8 && !bDrainPower)
+
+        if (m_creature->GetHealth() * 10 < m_creature->GetMaxHealth() * 8 && !bDrainPower)
             bDrainPower = true;
-        
-        if(bDrainPower)
+
+        if (bDrainPower)
         {
-            if(DrainPower_Timer < diff)
+            if (DrainPower_Timer < diff)
             {
                 DoScriptText(SAY_DRAIN_POWER, m_creature);
-                m_creature->CastSpell(m_creature, SPELL_DRAIN_POWER, true);                
+                m_creature->CastSpell(m_creature, SPELL_DRAIN_POWER, true);
                 DrainPower_Timer = 40000 + rand()%15000;    // must cast in 60 sec, or buff/debuff will disappear
             }else DrainPower_Timer -= diff;
         }
 
-        if(SpiritBolts_Timer < diff)
+        if (SpiritBolts_Timer < diff)
         {
-            if(DrainPower_Timer < 12000)    // channel 10 sec
+            if (DrainPower_Timer < 12000)    // channel 10 sec
                 SpiritBolts_Timer = 13000;  // cast drain power first
             else
             {
@@ -369,7 +358,7 @@ struct MANGOS_DLL_DECL boss_malacrassAI : public ScriptedAI
             }
         }else SpiritBolts_Timer -= diff;
 
-        if(SiphonSoul_Timer < diff)
+        if (SiphonSoul_Timer < diff)
         {
             Player* target = SelectRandomPlayer(50);
             Unit *trigger = DoSpawnCreature(MOB_TEMP_TRIGGER, 0, 0, 0, 0, TEMPSUMMON_TIMED_DESPAWN, 30000);
@@ -385,13 +374,13 @@ struct MANGOS_DLL_DECL boss_malacrassAI : public ScriptedAI
                 PlayerGUID = target->GetGUID();
                 PlayerAbility_Timer = 8000 + rand()%2000;
                 PlayerClass = target->getClass() - 1;
-                if(PlayerClass == 10) PlayerClass = 9; // druid
-                if(PlayerClass == 4 && target->HasSpell(15473)) PlayerClass = 5; // shadow priest
+                if (PlayerClass == 10) PlayerClass = 9; // druid
+                if (PlayerClass == 4 && target->HasSpell(15473)) PlayerClass = 5; // shadow priest
                 SiphonSoul_Timer = 99999;   // buff lasts 30 sec
             }
         }else SiphonSoul_Timer -= diff;
 
-        if(PlayerAbility_Timer < diff)
+        if (PlayerAbility_Timer < diff)
         {
             UseAbility();
             PlayerAbility_Timer = 8000 + rand()%2000;
@@ -402,8 +391,8 @@ struct MANGOS_DLL_DECL boss_malacrassAI : public ScriptedAI
 
     void UseAbility()
     {
-        uint32 random = rand()%3; 
-		
+        uint32 random = rand()%3;
+
 		//random = (PlayerClass == 7 ? rand()%4 : rand()%3);
         Unit *target = NULL;
         switch (PlayerAbility[PlayerClass][random].target)
@@ -439,16 +428,16 @@ struct MANGOS_DLL_DECL boss_malacrassAI : public ScriptedAI
         Map::PlayerList const &PlayerList = map->GetPlayers();
         if (PlayerList.isEmpty())
             return NULL;
-        
+
         std::list<Player*> temp;
         std::list<Player*>::iterator j;
-		
-        for(Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
-            if((range == 0.0f || m_creature->IsWithinDistInMap(i->getSource(), range))
+
+        for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
+            if ((range == 0.0f || m_creature->IsWithinDistInMap(i->getSource(), range))
                 && (!alive || i->getSource()->isAlive()))
                     temp.push_back(i->getSource());
 
-        if (temp.size()) 
+        if (temp.size())
         {
             j = temp.begin();
 		    advance(j, rand()%temp.size());
@@ -458,43 +447,52 @@ struct MANGOS_DLL_DECL boss_malacrassAI : public ScriptedAI
     }
 };
 
-struct MANGOS_DLL_DECL boss_malacrass_addAI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_hexlord_addAI : public ScriptedAI
 {
     ScriptedInstance* pInstance;
 
-    boss_malacrass_addAI(Creature* c) : ScriptedAI(c)
+    boss_hexlord_addAI(Creature* c) : ScriptedAI(c)
     {
         pInstance = ((ScriptedInstance*)c->GetInstanceData());
         Reset();
     }
 
     void Reset() {}
-
     void Aggro(Unit* who) {}
-
     void JustDied(Unit* killer)
 	{
-		if (pInstance)
-            if (Creature* Malacrass = m_creature->GetMap()->GetCreature(pInstance->GetData64(DATA_MALACRASSGUID)))
-	    		((boss_malacrassAI*)Malacrass->AI())->AddDied();
+		if (!pInstance)
+            return;
+
+        Creature* HexLord = (Creature*)m_creature->GetMap()->GetUnit(pInstance->GetData64(DATA_HEXLORDGUID));
+        if (HexLord)
+			((boss_hex_lord_malacrassAI*)HexLord->AI())->AddDied();
 	}
 
     void UpdateAI(const uint32 diff)
     {
-        if (pInstance && pInstance->GetData(DATA_MALACRASSEVENT) != IN_PROGRESS)
+        if (pInstance && pInstance->GetData(TYPE_MALACRASS) != IN_PROGRESS)
             EnterEvadeMode();
 
         DoMeleeAttackIfReady();
     }
 };
 
-#define SPELL_BLOODLUST       43578
-#define SPELL_CLEAVE          15496
 
-struct MANGOS_DLL_DECL boss_thurgAI : public boss_malacrass_addAI
+/****
+**BOSS Thurg
+****/
+
+enum
+{
+    SPELL_BLOODLUST      = 43578,
+    SPELL_CLEAVE         = 15496
+};
+
+struct MANGOS_DLL_DECL boss_thurgAI : public boss_hexlord_addAI
 {
 
-    boss_thurgAI(Creature *c) : boss_malacrass_addAI(c) {}
+    boss_thurgAI(Creature *c) : boss_hexlord_addAI(c) {}
 
     uint32 bloodlust_timer;
     uint32 cleave_timer;
@@ -504,18 +502,18 @@ struct MANGOS_DLL_DECL boss_thurgAI : public boss_malacrass_addAI
         bloodlust_timer = 15000;
         cleave_timer = 10000;
 
-        boss_malacrass_addAI::Reset();
+        boss_hexlord_addAI::Reset();
     }
 
     void UpdateAI(const uint32 diff)
     {
-        if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        if (!m_creature->SelectHostileTarget() || !m_creature->getVictim() )
             return;
 
-        if(bloodlust_timer < diff)
+        if (bloodlust_timer < diff)
         {
             std::list<Creature*> templist = DoFindFriendlyMissingBuff(50, SPELL_BLOODLUST);
-            if(!templist.empty()) 
+            if (!templist.empty())
             {
                 Unit* target = *(templist.begin());
                 m_creature->CastSpell(target, SPELL_BLOODLUST, false);
@@ -523,27 +521,34 @@ struct MANGOS_DLL_DECL boss_thurgAI : public boss_malacrass_addAI
             bloodlust_timer = 12000;
         }else bloodlust_timer -= diff;
 
-        if(cleave_timer < diff)
+        if (cleave_timer < diff)
         {
             m_creature->CastSpell(m_creature->getVictim(),SPELL_CLEAVE, false);
             cleave_timer = 12000; //3 sec cast
         }else cleave_timer -= diff;
 
-        boss_malacrass_addAI::UpdateAI(diff);
+        boss_hexlord_addAI::UpdateAI(diff);
     }
 };
 
-#define SPELL_FLASH_HEAL     43575
-#define SPELL_DISPEL_MAGIC   43577
+/****
+** boss Alyso
+****/
 
-struct MANGOS_DLL_DECL boss_alyson_antilleAI : public boss_malacrass_addAI
+enum
+{
+    SPELL_FLASH_HEAL    = 43575,
+    SPELL_DISPEL_MAGIC  = 43577
+};
+
+struct MANGOS_DLL_DECL boss_alyson_antilleAI : public boss_hexlord_addAI
 {
     //Holy Priest
-    boss_alyson_antilleAI(Creature *c) : boss_malacrass_addAI(c) {}
+    boss_alyson_antilleAI(Creature *c) : boss_hexlord_addAI(c) {}
 
     uint32 flashheal_timer;
     uint32 dispelmagic_timer;
-
+	bool InCombat;
     void Reset()
     {
         flashheal_timer = 2500;
@@ -551,7 +556,7 @@ struct MANGOS_DLL_DECL boss_alyson_antilleAI : public boss_malacrass_addAI
 
         //AcquireGUID();
 
-        boss_malacrass_addAI::Reset();
+        boss_hexlord_addAI::Reset();
     }
 
     void AttackStart(Unit* who)
@@ -561,30 +566,31 @@ struct MANGOS_DLL_DECL boss_alyson_antilleAI : public boss_malacrass_addAI
 
         if (who->isTargetableForAttack())
         {
-            if(m_creature->Attack(who, false))
+            if (m_creature->Attack(who, false))
             {
                 m_creature->GetMotionMaster()->MoveChase(who, 20);
                 m_creature->AddThreat(who, 0.0f);
             }
 
-			if (!m_creature->isInCombat())
+            if (!InCombat)
             {
                 Aggro(who);
+                InCombat = true;
             }
         }
     }
 
     void UpdateAI(const uint32 diff)
     {
-        if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        if (!m_creature->SelectHostileTarget() || !m_creature->getVictim() )
             return;
 
-        if(flashheal_timer < diff)
+        if (flashheal_timer < diff)
         {
             Unit* target = DoSelectLowestHpFriendly(99, 30000);
-            if(target)
+            if (target)
             {
-                if(target->IsWithinDistInMap(m_creature, 50))
+                if (target->IsWithinDistInMap(m_creature, 50))
                     m_creature->CastSpell(target,SPELL_FLASH_HEAL, false);
                 else
                 {
@@ -595,7 +601,7 @@ struct MANGOS_DLL_DECL boss_alyson_antilleAI : public boss_malacrass_addAI
             }
             else
             {
-                if(rand()%2)
+                if (rand()%2)
                 {
                     Unit* target = DoSelectLowestHpFriendly(50, 0);
                     m_creature->CastSpell(target, SPELL_DISPEL_MAGIC, false);
@@ -615,27 +621,34 @@ struct MANGOS_DLL_DECL boss_alyson_antilleAI : public boss_malacrass_addAI
         m_creature->CastSpell(target, SPELL_DISPEL_MAGIC, false);
         }
         else
-        m_creature->CastSpell(SelectUnit(SELECT_TARGET_RANDOM, 0), SPELL_DISPEL_MAGIC, false);
+        m_creature->CastSpell(m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0), SPELL_DISPEL_MAGIC, false);
 
         dispelmagic_timer = 12000;
         }else dispelmagic_timer -= diff;*/
 
-        boss_malacrass_addAI::UpdateAI(diff);
+        boss_hexlord_addAI::UpdateAI(diff);
     }
 };
 
-#define SPELL_FIREBOLT        43584
+/****
+**boss gazakroth
+****/
 
-struct MANGOS_DLL_DECL boss_gazakrothAI : public boss_malacrass_addAI
+enum
 {
-    boss_gazakrothAI(Creature *c) : boss_malacrass_addAI(c)  {}
+    SPELL_FIREBOLT       = 43584
+};
+
+struct MANGOS_DLL_DECL boss_gazakrothAI : public boss_hexlord_addAI
+{
+    boss_gazakrothAI(Creature *c) : boss_hexlord_addAI(c)  {}
 
     uint32 firebolt_timer;
-
+	bool InCombat;
     void Reset()
     {
         firebolt_timer = 2000;
-        boss_malacrass_addAI::Reset();
+        boss_hexlord_addAI::Reset();
     }
 
     void AttackStart(Unit* who)
@@ -645,40 +658,48 @@ struct MANGOS_DLL_DECL boss_gazakrothAI : public boss_malacrass_addAI
 
         if (who->isTargetableForAttack())
         {
-            if(m_creature->Attack(who, false))
+            if (m_creature->Attack(who, false))
             {
                 m_creature->GetMotionMaster()->MoveChase(who, 20);
                 m_creature->AddThreat(who, 0.0f);
             }
 
-			if (!m_creature->isInCombat())
+            if (!InCombat)
             {
                 Aggro(who);
+                InCombat = true;
             }
         }
     }
 
     void UpdateAI(const uint32 diff)
     {
-        if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        if (!m_creature->SelectHostileTarget() || !m_creature->getVictim() )
             return;
 
-        if(firebolt_timer < diff)
+        if (firebolt_timer < diff)
         {
             m_creature->CastSpell(m_creature->getVictim(),SPELL_FIREBOLT, false);
             firebolt_timer = 700;
         }else firebolt_timer -= diff;
 
-        boss_malacrass_addAI::UpdateAI(diff);
+        boss_hexlord_addAI::UpdateAI(diff);
     }
 };
 
-#define SPELL_FLAME_BREATH    43582
-#define SPELL_THUNDERCLAP     43583
+/***
+**bossraadan
+***/
 
-struct MANGOS_DLL_DECL boss_lord_raadanAI : public boss_malacrass_addAI
+enum
 {
-    boss_lord_raadanAI(Creature *c) : boss_malacrass_addAI(c)  {}
+    SPELL_FLAME_BREATH  =  43582,
+    SPELL_THUNDERCLAP   =  43583
+};
+
+struct MANGOS_DLL_DECL boss_lord_raadanAI : public boss_hexlord_addAI
+{
+    boss_lord_raadanAI(Creature *c) : boss_hexlord_addAI(c)  {}
 
     uint32 flamebreath_timer;
     uint32 thunderclap_timer;
@@ -688,16 +709,16 @@ struct MANGOS_DLL_DECL boss_lord_raadanAI : public boss_malacrass_addAI
         flamebreath_timer = 8000;
         thunderclap_timer = 13000;
 
-        boss_malacrass_addAI::Reset();
+        boss_hexlord_addAI::Reset();
 
     }
     void UpdateAI(const uint32 diff)
     {
-        if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        if (!m_creature->SelectHostileTarget() || !m_creature->getVictim() )
             return;
 
         if (thunderclap_timer < diff)
-        { 
+        {
             m_creature->CastSpell(m_creature->getVictim(),SPELL_THUNDERCLAP, false);
             thunderclap_timer = 12000;
         }else thunderclap_timer -= diff;
@@ -708,15 +729,22 @@ struct MANGOS_DLL_DECL boss_lord_raadanAI : public boss_malacrass_addAI
             flamebreath_timer = 12000;
         }else flamebreath_timer -= diff;
 
-        boss_malacrass_addAI::UpdateAI(diff);
+        boss_hexlord_addAI::UpdateAI(diff);
     }
 };
 
-#define SPELL_PSYCHIC_WAIL   43590
+/***
+**boss darkheart
+***/
 
-struct MANGOS_DLL_DECL boss_darkheartAI : public boss_malacrass_addAI
+enum
 {
-    boss_darkheartAI(Creature *c) : boss_malacrass_addAI(c)  {}
+    SPELL_PSYCHIC_WAIL = 43590
+};
+
+struct MANGOS_DLL_DECL boss_darkheartAI : public boss_hexlord_addAI
+{
+    boss_darkheartAI(Creature *c) : boss_hexlord_addAI(c)  {}
 
     uint32 psychicwail_timer;
 
@@ -724,37 +752,44 @@ struct MANGOS_DLL_DECL boss_darkheartAI : public boss_malacrass_addAI
     {
         psychicwail_timer = 8000;
 
-        boss_malacrass_addAI::Reset();
+        boss_hexlord_addAI::Reset();
 
     }
     void UpdateAI(const uint32 diff)
     {
-        if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        if (!m_creature->SelectHostileTarget() || !m_creature->getVictim() )
             return;
 
         if (psychicwail_timer < diff)
-        { 
+        {
             m_creature->CastSpell(m_creature->getVictim(),SPELL_PSYCHIC_WAIL, false);
             psychicwail_timer = 12000;
         }else psychicwail_timer -= diff;
 
-        boss_malacrass_addAI::UpdateAI(diff);
+        boss_hexlord_addAI::UpdateAI(diff);
     }
 };
 
-#define SPELL_VENOM_SPIT    43579
+/****
+**boss slither
+****/
 
-struct MANGOS_DLL_DECL boss_slitherAI : public boss_malacrass_addAI
+enum
 {
-    boss_slitherAI(Creature *c) : boss_malacrass_addAI(c) {}
+    SPELL_VENOM_SPIT   = 43579
+};
+
+struct MANGOS_DLL_DECL boss_slitherAI : public boss_hexlord_addAI
+{
+    boss_slitherAI(Creature *c) : boss_hexlord_addAI(c) {}
 
     uint32 venomspit_timer;
-
+	bool InCombat;
 
     void Reset()
     {
         venomspit_timer = 5000;
-        boss_malacrass_addAI::Reset();
+        boss_hexlord_addAI::Reset();
     }
 
     void AttackStart(Unit* who)
@@ -764,41 +799,48 @@ struct MANGOS_DLL_DECL boss_slitherAI : public boss_malacrass_addAI
 
         if (who->isTargetableForAttack())
         {
-            if(m_creature->Attack(who, false))
+            if (m_creature->Attack(who, false))
             {
                 m_creature->GetMotionMaster()->MoveChase(who, 20);
                 m_creature->AddThreat(who, 0.0f);
             }
 
-			if (!m_creature->isInCombat())
+            if (!InCombat)
             {
                 Aggro(who);
+                InCombat = true;
             }
         }
     }
 
     void UpdateAI(const uint32 diff)
     {
-        if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        if (!m_creature->SelectHostileTarget() || !m_creature->getVictim() )
             return;
 
         if (venomspit_timer < diff)
-        { 
-            if (Unit* victim = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
-                m_creature->CastSpell(victim, SPELL_VENOM_SPIT, false);
+        {
+            Unit* victim = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0);
+            m_creature->CastSpell(victim,SPELL_VENOM_SPIT, false);
             venomspit_timer = 2500;
         }else venomspit_timer -= diff;
 
-        boss_malacrass_addAI::UpdateAI(diff);
+        boss_hexlord_addAI::UpdateAI(diff);
     }
 };
 
-//Fenstalker
-#define SPELL_VOLATILE_INFECTION 43586
+/****
+** boss Fenstalker
+****/
 
-struct MANGOS_DLL_DECL boss_fenstalkerAI : public boss_malacrass_addAI
+enum
 {
-    boss_fenstalkerAI(Creature *c) : boss_malacrass_addAI(c) {}
+    SPELL_VOLATILE_INFECTION = 43586
+};
+
+struct MANGOS_DLL_DECL boss_fenstalkerAI : public boss_hexlord_addAI
+{
+    boss_fenstalkerAI(Creature *c) : boss_hexlord_addAI(c) {}
 
     uint32 volatileinf_timer;
 
@@ -806,33 +848,38 @@ struct MANGOS_DLL_DECL boss_fenstalkerAI : public boss_malacrass_addAI
     void Reset()
     {
         volatileinf_timer = 15000;
-        boss_malacrass_addAI::Reset();
+        boss_hexlord_addAI::Reset();
 
     }
     void UpdateAI(const uint32 diff)
     {
-        if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        if (!m_creature->SelectHostileTarget() || !m_creature->getVictim() )
             return;
 
         if (volatileinf_timer < diff)
-        { 
+        {
             // core bug
             m_creature->getVictim()->CastSpell(m_creature->getVictim(),SPELL_VOLATILE_INFECTION, false);
             volatileinf_timer = 12000;
         }else volatileinf_timer -= diff;
 
-        boss_malacrass_addAI::UpdateAI(diff);
+        boss_hexlord_addAI::UpdateAI(diff);
     }
 };
 
-//Koragg
-#define SPELL_COLD_STARE      43593
-#define SPELL_MIGHTY_BLOW     43592
+/***
+** boss Koragg
+***/
 
-
-struct MANGOS_DLL_DECL boss_koraggAI : public boss_malacrass_addAI
+enum
 {
-    boss_koraggAI(Creature *c) : boss_malacrass_addAI(c) {}
+    SPELL_COLD_STARE     = 43593,
+    SPELL_MIGHTY_BLOW    = 43592
+};
+
+struct MANGOS_DLL_DECL boss_koraggAI : public boss_hexlord_addAI
+{
+    boss_koraggAI(Creature *c) : boss_hexlord_addAI(c) {}
 
     uint32 coldstare_timer;
     uint32 mightyblow_timer;
@@ -842,33 +889,33 @@ struct MANGOS_DLL_DECL boss_koraggAI : public boss_malacrass_addAI
     {
         coldstare_timer = 15000;
         mightyblow_timer = 10000;
-        boss_malacrass_addAI::Reset();
+        boss_hexlord_addAI::Reset();
 
     }
     void UpdateAI(const uint32 diff)
     {
-        if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        if(!m_creature->SelectHostileTarget() || !m_creature->getVictim() )
             return;
 
         if (mightyblow_timer < diff)
-        { 
+        {
             m_creature->CastSpell(m_creature->getVictim(),SPELL_MIGHTY_BLOW, false);
             mightyblow_timer = 12000;
         }
         if (coldstare_timer < diff)
         {
-            if (Unit* victim = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
-                m_creature->CastSpell(victim, SPELL_COLD_STARE, false);
+            Unit* victim = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0);
+            m_creature->CastSpell(victim,SPELL_COLD_STARE, false);
             coldstare_timer = 12000;
         }
 
-        boss_malacrass_addAI::UpdateAI(diff);
+        boss_hexlord_addAI::UpdateAI(diff);
     }
 };
 
-CreatureAI* GetAI_boss_malacrass(Creature *_Creature)
+CreatureAI* GetAI_boss_hex_lord_malacrass(Creature *_Creature)
 {
-    return new boss_malacrassAI (_Creature);
+    return new boss_hex_lord_malacrassAI (_Creature);
 }
 
 CreatureAI* GetAI_boss_thurg(Creature *_Creature)
@@ -914,8 +961,8 @@ void AddSC_boss_malacrass()
 {
     Script *newscript;
     newscript = new Script;
-    newscript->Name = "boss_malacrass";
-    newscript->GetAI = &GetAI_boss_malacrass;
+    newscript->Name = "boss_hexlord_malacrass";
+    newscript->GetAI = &GetAI_boss_hex_lord_malacrass;
     newscript->RegisterSelf();
 
     newscript = new Script;
