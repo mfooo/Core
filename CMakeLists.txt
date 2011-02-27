@@ -427,6 +427,7 @@ set_directory_properties(PROPERTIES COMPILE_DEFINITIONS "${DEFINITIONS}")
 set_directory_properties(PROPERTIES COMPILE_DEFINITIONS_RELEASE "${DEFINITIONS_RELEASE}")
 set_directory_properties(PROPERTIES COMPILE_DEFINITIONS_DEBUG "${DEFINITIONS_DEBUG}")
 
+add_subdirectory(recastnavigation)
 add_subdirectory(src)
 # if(SQL)
 #   add_subdirectory(sql)
