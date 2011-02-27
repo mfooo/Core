@@ -1330,6 +1330,7 @@ struct MANGOS_DLL_DECL npc_eye_of_acherusAI : public ScriptedAI
     {
         if (Unit* charmer = m_creature->GetCharmer())
             charmer->RemoveAurasDueToSpell(SPELL_EYE_CONTROL);
+        m_creature->ForcedDespawn();
     }
 
     void MovementInform(uint32 uiType, uint32 uiPointId)
