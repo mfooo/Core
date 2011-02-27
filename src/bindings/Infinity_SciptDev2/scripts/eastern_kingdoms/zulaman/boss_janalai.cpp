@@ -36,7 +36,7 @@ enum
     SAY_DEATH                 =  -1568007,//(-1568007,'Zul\'jin... got a surprise for you...',12038,1,0,'janalai SAY_DEATH'),
     SAY_EVENT_STRANGERS       =  -1568008,//(-1568008,'Come, strangers. The spirit of the dragonhawk hot be hungry for worthy souls.',12039,1,0,'janalai SAY_EVENT_STRANGERS'),
     SAY_EVENT_FRIENDS         =  -1568009,//(-1568009,'Come, friends. Your bodies gonna feed ma hatchlings, and your souls are going to feed me with power!',12040,1,0,'janalai SAY_EVENT_FRIENDS'),
-// Jan'alai
+// -- Jan'alai
     SPELL_FLAME_BREATH        =  43140,
     SPELL_FIRE_WALL           =  43113,
     SPELL_ENRAGE              =  44779,
@@ -446,6 +446,11 @@ CreatureAI* GetAI_boss_janalaiAI(Creature *_Creature)
     return new boss_janalaiAI(_Creature);
 }
 
+/****
+* _janalai_firebombAI
+****/
+
+
 struct MANGOS_DLL_DECL mob_janalai_firebombAI : public ScriptedAI
 {
     mob_janalai_firebombAI(Creature *c) : ScriptedAI(c){Reset();}
@@ -471,6 +476,10 @@ CreatureAI* GetAI_mob_janalai_firebombAI(Creature *_Creature)
 {
     return new mob_janalai_firebombAI(_Creature);
 }
+
+/****
+* _janalai_hatcher
+****/
 
 struct MANGOS_DLL_DECL mob_janalai_hatcherAI : public ScriptedAI
 {
@@ -603,6 +612,10 @@ CreatureAI* GetAI_mob_janalai_hatcherAI(Creature *_Creature)
     return new mob_janalai_hatcherAI(_Creature);
 }
 
+/****
+* _hatchling
+****/
+
 struct MANGOS_DLL_DECL mob_hatchlingAI : public ScriptedAI
 {
     mob_hatchlingAI(Creature *c) : ScriptedAI(c)
@@ -653,6 +666,10 @@ CreatureAI* GetAI_mob_hatchlingAI(Creature *_Creature)
 {
     return new mob_hatchlingAI(_Creature);
 }
+
+/****
+* mob_egg
+****/
 
 struct MANGOS_DLL_DECL mob_eggAI : public ScriptedAI
 {

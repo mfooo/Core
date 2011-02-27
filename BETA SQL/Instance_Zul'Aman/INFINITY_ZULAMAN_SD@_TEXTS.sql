@@ -1,4 +1,7 @@
 -- -1 568 000 ZUL'AMAN
+
+--janalai
+DELETE FROM `script_texts` WHERE (`entry`='-1568000') OR (`entry`='-1568001') OR (`entry`='-1568002') OR (`entry`='-1568003') OR (`entry`='-1568004') OR (`entry`='-1568005') OR (`entry`='-1568006') OR (`entry`='-1568007') OR (`entry`='-1568008') OR (`entry`='-1568009');
 INSERT INTO script_texts (entry,content_default,sound,type,language,emote,comment) VALUES
 (-1568000,'Spirits of da wind be your doom!',12031,1,0,0,'janalai SAY_AGGRO'),
 (-1568001,'I burn ya now!',12032,1,0,0,'janalai SAY_FIRE_BOMBS'),
@@ -9,8 +12,11 @@ INSERT INTO script_texts (entry,content_default,sound,type,language,emote,commen
 (-1568006,'Tazaga-choo!',12037,1,0,0,'janalai SAY_SLAY_2'),
 (-1568007,'Zul\'jin... got a surprise for you...',12038,1,0,0,'janalai SAY_DEATH'),
 (-1568008,'Come, strangers. The spirit of the dragonhawk hot be hungry for worthy souls.',12039,1,0,0,'janalai SAY_EVENT_STRANGERS'),
-(-1568009,'Come, friends. Your bodies gonna feed ma hatchlings, and your souls are going to feed me with power!',12040,1,0,0,'janalai SAY_EVENT_FRIENDS'),
+(-1568009,'Come, friends. Your bodies gonna feed ma hatchlings, and your souls are going to feed me with power!',12040,1,0,0,'janalai SAY_EVENT_FRIENDS');
 
+-- nalorakk
+DELETE FROM `script_texts` WHERE (`entry`='-1568010') OR (`entry`='-1568011') OR (`entry`='-1568012') OR (`entry`='-1568013') OR (`entry`='-1568014') OR (`entry`='-1568015') OR (`entry`='-1568016') OR (`entry`='-1568017') OR (`entry`='-1568018') OR (`entry`='-1568019') OR (`entry`='-1568020') OR (`entry`='-1568021') OR (`entry`='-1568022') OR (`entry`='-1568023');
+INSERT INTO script_texts (entry,content_default,sound,type,language,emote,comment) VALUES
 (-1568010,'Get da move on, guards! It be killin\' time!',12066,1,0,0,'nalorakk SAY_WAVE1_AGGRO'),
 (-1568011,'Guards, go already! Who you more afraid of, dem... or me?',12067,1,0,0,'nalorakk SAY_WAVE2_STAIR1'),
 (-1568012,'Ride now! Ride out dere and bring me back some heads!',12068,1,0,0,'nalorakk SAY_WAVE3_STAIR2'),
@@ -24,8 +30,11 @@ INSERT INTO script_texts (entry,content_default,sound,type,language,emote,commen
 (-1568020,'You had your chance, now it be too late!',12074,1,0,0,'nalorakk SAY_BERSERK'),
 (-1568021,'Mua-ha-ha! Now whatchoo got to say?',12075,1,0,0,'nalorakk SAY_SLAY1'),
 (-1568022,'Da Amani gonna rule again!',12076,1,0,0,'nalorakk SAY_SLAY2'),
-(-1568023,'I... be waitin\' on da udda side....',12077,1,0,0,'nalorakk SAY_DEATH'),
+(-1568023,'I... be waitin\' on da udda side....',12077,1,0,0,'nalorakk SAY_DEATH');
 
+-- akilzon
+DELETE FROM `script_texts` WHERE (`entry`='-1568024') OR (`entry`='-1568025') OR (`entry`='-1568026') OR (`entry`='-1568027') OR (`entry`='-1568028') OR (`entry`='-1568029') OR (`entry`='-1568030') OR (`entry`='-1568031') OR (`entry`='-1568032') OR (`entry`='-1568033');
+INSERT INTO script_texts (entry,content_default,sound,type,language,emote,comment) VALUES
 (-1568024,'Da eagles gonna bear your spirits to me. Your sacrifice is not gonna be in vein!',12122,1,0,0,'akilzon SAY_EVENT1'),
 (-1568025,'Your death gonna be quick, strangers. You shoulda never have come to this place...',12123,1,0,0,'akilzon SAY_EVENT2'),
 (-1568026,'I be da predator! You da prey...',12013,1,0,0,'akilzon SAY_AGGRO'),
@@ -35,8 +44,11 @@ INSERT INTO script_texts (entry,content_default,sound,type,language,emote,commen
 (-1568030,'Ya got nothin\'!',12017,1,0,0,'akilzon SAY_SLAY1'),
 (-1568031,'Stop your cryin\'!',12018,1,0,0,'akilzon SAY_SLAY2'),
 (-1568032,'You can\'t... kill... me spirit!',12019,1,0,0,'akilzon SAY_DEATH'),
-(-1568033,'An Electrical Storm Appears!',0,2,0,0,'akilzon EMOTE_STORM'),
+(-1568033,'An Electrical Storm Appears!',0,2,0,0,'akilzon EMOTE_STORM');
 
+-- halazzi
+DELETE FROM `script_texts` WHERE (`entry`='-1568034') OR (`entry`='-1568035') OR (`entry`='-1568036') OR (`entry`='-1568037') OR (`entry`='-1568038') OR (`entry`='-1568039') OR (`entry`='-1568040') OR (`entry`='-1568041') OR (`entry`='-1568042') OR (`entry`='-1568043') OR (`entry`='-1568044');
+INSERT INTO script_texts (entry,content_default,sound,type,language,emote,comment) VALUES
 (-1568034,'Get on ya knees and bow.... to da fang and claw!',12020,1,0,0,'halazzi SAY_AGGRO'),
 (-1568035,'I fight wit\' untamed spirit....',12021,1,0,0,'halazzi SAY_SPLIT'),
 (-1568036,'Spirit, come back to me!',12022,1,0,0,'halazzi SAY_MERGE'),
@@ -47,8 +59,11 @@ INSERT INTO script_texts (entry,content_default,sound,type,language,emote,commen
 (-1568041,'You gonna fail!',12027,1,0,0,'halazzi SAY_KILL2'),
 (-1568042,'Chaga... choka\'jinn.',12028,1,0,0,'halazzi SAY_DEATH'),
 (-1568043,'Come, fools. Fill ma empty cages...',12029,1,0,0,'halazzi SAY_EVENT1'),
-(-1568044,'I be waitin, strangers. Your deaths gonna make me stronger!',12030,1,0,0,'halazzi SAY_EVENT2'),
+(-1568044,'I be waitin, strangers. Your deaths gonna make me stronger!',12030,1,0,0,'halazzi SAY_EVENT2');
 
+-- malacrass
+DELETE FROM `script_texts` WHERE (`entry`='-1568045') OR (`entry`='-1568046') OR (`entry`='-1568047') OR (`entry`='-1568048') OR (`entry`='-1568049') OR (`entry`='-1568050') OR (`entry`='-1568051') OR (`entry`='-1568052') OR (`entry`='-1568053') OR (`entry`='-1568054') OR (`entry`='-1568055');
+INSERT INTO script_texts (entry,content_default,sound,type,language,emote,comment) VALUES
 (-1568045,'Da shadow gonna fall on you...',12041,1,0,0,'malacrass SAY_AGGRO'),
 (-1568046,'Ya don\'t kill me yet, ya don\'t get another chance!',12042,1,0,0,'malacrass SAY_ENRAGE'),
 (-1568047,'Dis a nightmare ya don\' wake up from!',12043,1,0,0,'malacrass SAY_KILL1'),
@@ -59,8 +74,11 @@ INSERT INTO script_texts (entry,content_default,sound,type,language,emote,commen
 (-1568052,'It not gonna make no difference.',12048,1,0,0,'malacrass SAY_ADD_DIED1'),
 (-1568053,'You gonna die worse dan him.',12049,1,0,0,'malacrass SAY_ADD_DIED2'),
 (-1568054,'Dat no bodda me.',12050,1,0,0,'malacrass SAY_ADD_DIED3'),
-(-1568055,'Dis not... da end of me...',12051,1,0,0,'malacrass SAY_DEATH'),
+(-1568055,'Dis not... da end of me...',12051,1,0,0,'malacrass SAY_DEATH');
 
+-- zuljin
+DELETE FROM `script_texts` WHERE (`entry`='-1568056') OR (`entry`='-1568057') OR (`entry`='-1568058') OR (`entry`='-1568059') OR (`entry`='-1568060') OR (`entry`='-1568061') OR (`entry`='-1568062') OR (`entry`='-1568063') OR (`entry`='-1568064') OR (`entry`='-1568065') OR (`entry`='-1568066');
+INSERT INTO script_texts (entry,content_default,sound,type,language,emote,comment) VALUES
 (-1568056,'Everybody always wanna take from us. Now we gonna start takin\' back. Anybody who get in our way...gonna drown in dey own blood! Da Amani empire be back now...seekin\' vengeance. And we gonna start wit\' you.',12090,1,0,0,'zuljin SAY_INTRO'),
 (-1568057,'Nobody badduh dan me!',12091,1,0,0,'zuljin SAY_AGGRO'),
 (-1568058,'Got me some new tricks... like me brudda bear....',12092,1,0,0,'zuljin SAY_BEAR_TRANSFORM'),
@@ -71,8 +89,11 @@ INSERT INTO script_texts (entry,content_default,sound,type,language,emote,commen
 (-1568063,'You too slow! Me too strong!',12097,1,0,0,'zuljin SAY_BERSERK'),
 (-1568064,'Da Amani de chuka!',12098,1,0,0,'zuljin SAY_KILL1'),
 (-1568065,'Lot more gonna fall like you!',12099,1,0,0,'zuljin SAY_KILL2'),
-(-1568066,'Mebbe me fall...but da Amani empire...never gonna die...',12100,1,0,0,'zuljin SAY_DEATH'),
+(-1568066,'Mebbe me fall...but da Amani empire...never gonna die...',12100,1,0,0,'zuljin SAY_DEATH');
 
+-- instance zul'aman
+DELETE FROM `script_texts` WHERE (`entry`='-1568067') OR (`entry`='-1568068') OR (`entry`='-1568069') OR (`entry`='-1568070') OR (`entry`='-1568071') OR (`entry`='-1568072') OR (`entry`='-1568073') OR (`entry`='-1568074') OR (`entry`='-1568075') OR (`entry`='-1568076') OR (`entry`='-1568077') OR (`entry`='-1568078');
+INSERT INTO script_texts (entry,content_default,sound,type,language,emote,comment) VALUES
 (-1568067,'Zul\'jin got a surprise for ya...',12052,1,0,0,'zulaman SAY_INST_RELEASE'),
 (-1568068,'Da spirits gonna feast today! Begin da ceremonies, sacrifice da prisoners... make room for our new guests!',12053,1,0,0,'zulaman SAY_INST_BEGIN'),
 (-1568069,'Take your pick, trespassers! Any of ma priests be happy to accommodate ya.',12054,1,0,0,'zulaman SAY_INST_PROGRESS_1'),
@@ -84,8 +105,13 @@ INSERT INTO script_texts (entry,content_default,sound,type,language,emote,commen
 (-1568075,'Make haste, ma priests! Da rituals must not be interrupted!',12060,1,0,0,'zulaman SAY_INST_WARN_4'),
 (-1568076,'Ya make a good try... but now you gonna join da ones who already fall.',12061,1,0,0,'zulaman SAY_INST_SACRIF1'),
 (-1568077,'Ya not do too bad. Ya efforts [...] for a small time. Come to me now. Ya prove yourself worthy offerings.',12062,1,0,0,'zulaman SAY_INST_SACRIF2'),
-(-1568078,'Watch now. Every offering gonna strengthen our ties to da spirit world. Soon, we gonna be unstoppable!',12065,1,0,0,'zulaman SAY_INST_COMPLETE'),
+(-1568078,'Watch now. Every offering gonna strengthen our ties to da spirit world. Soon, we gonna be unstoppable!',12065,1,0,0,'zulaman SAY_INST_COMPLETE');
 
+-- Harrsion
+DELETE FROM `script_texts` WHERE (`entry`='-1568079') OR (`entry`='-1568080') OR (`entry`='-1568081');
+INSERT INTO script_texts (entry,content_default,sound,type,language,emote,comment) VALUES
 (-1568079,'Suit yourself. At least five of you must assist me if we\'re to get inside. Follow me.',0,1,0,0,'harrison SAY_START'),
 (-1568080,'According to my calculations, if enough of us bang the gong at once the seal on these doors will break and we can enter.',0,1,0,0,'harrison SAY_AT_GONG'),
 (-1568081,'I\'ve researched this site extensively and I won\'t allow any dim-witted treasure hunters to swoop in and steal what belongs to in a museum. I\'ll lead this charge.',0,1,0,0,'harrison SAY_OPEN_ENTRANCE');
+
+

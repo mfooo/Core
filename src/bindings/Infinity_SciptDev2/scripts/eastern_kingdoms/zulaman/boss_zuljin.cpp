@@ -83,13 +83,16 @@ enum
     SPELL_SHAPE_OF_THE_DRAGONHAWK  = 42608
 };
 
-#define WEAPON_ID 33975
+enum phases
+{
+    PHASE_BEAR        = 0,
+    PHASE_EAGLE       = 1,
+    PHASE_LYNX        = 2,
+    PHASE_DRAGONHAWK  = 3,
+    PHASE_TROLL       = 4
+};
 
-#define PHASE_BEAR 0
-#define PHASE_EAGLE 1
-#define PHASE_LYNX 2
-#define PHASE_DRAGONHAWK 3
-#define PHASE_TROLL 4
+#define WEAPON_ID 33975
 
 //coords for going for changing form
 #define CENTER_X 120.148811f
@@ -612,6 +615,11 @@ CreatureAI* GetAI_boss_zuljin(Creature *_Creature)
     return new boss_zuljinAI (_Creature);
 }
 
+/***
+* do_nothing
+***/
+
+
 struct MANGOS_DLL_DECL do_nothingAI : public ScriptedAI
 {
     do_nothingAI(Creature *c) : ScriptedAI(c) {}
@@ -626,6 +634,10 @@ CreatureAI* GetAI_do_nothing(Creature *_Creature)
 {
     return new do_nothingAI (_Creature);
 }
+
+/***
+* feather_vortex
+***/
 
 struct MANGOS_DLL_DECL feather_vortexAI : public ScriptedAI
 {

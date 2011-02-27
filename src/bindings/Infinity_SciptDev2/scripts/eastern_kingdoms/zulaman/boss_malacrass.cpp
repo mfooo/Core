@@ -457,6 +457,10 @@ struct MANGOS_DLL_DECL boss_hex_lord_malacrassAI : public ScriptedAI
     }
 };
 
+/***
+* hexlord add
+***/
+
 struct MANGOS_DLL_DECL boss_hexlord_addAI : public ScriptedAI
 {
     ScriptedInstance* pInstance;

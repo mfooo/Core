@@ -42,6 +42,7 @@ enum
 // (-1568024,'Da eagles gonna bear your spirits to me. Your sacrifice is not gonna be in vein!',12122,1,0,0,'akilzon SAY_EVENT1'),
 // (-1568025,'Your death gonna be quick, strangers. You shoulda never have come to this place...',12123,1,0,0,'akilzon SAY_EVENT2'),
 
+    MOB_SOARING_EAGLE      = 24858,
 
     SAY_AGGRO              =  -1568026, //(-1568026,'I be da predator! You da prey...',12013,1,0,0,'akilzon SAY_AGGRO'),
     SAY_SUMMON             =  -1568027, //(-1568027,'Feed, me bruddahs!',12014,1,0,0,'akilzon SAY_SUMMON'),
@@ -52,7 +53,6 @@ enum
    //(-1568033,'An Electrical Storm Appears!',0,2,0,0,'akilzon EMOTE_STORM'),
 };
 
-#define MOB_SOARING_EAGLE       24858
 #define SE_LOC_X_MAX            400
 #define SE_LOC_X_MIN            335
 #define SE_LOC_Y_MAX            1435
@@ -382,13 +382,13 @@ struct MANGOS_DLL_DECL boss_akilzonAI : public ScriptedAI
             if (!target)
                 target = m_creature->getVictim();
 
-            DoCast(target, SPELL_GUST_OF_WIND);
+            DoCastSpellIfCan(target, SPELL_GUST_OF_WIND);
             GustOfWind_Timer = (20+rand()%10)*1000; //20 to 30 seconds(bosskillers)
         }else GustOfWind_Timer -= diff;
 
         if (CallLighting_Timer < diff)
         {
-            DoCast(m_creature->getVictim(), SPELL_CALL_LIGHTNING);
+            DoCastSpellIfCan(m_creature->getVictim(), SPELL_CALL_LIGHTNING);
             CallLighting_Timer = (12 + rand()%5)*1000; //totaly random timer. can't find any info on this
         }else CallLighting_Timer -= diff;
 
@@ -463,6 +463,15 @@ struct MANGOS_DLL_DECL boss_akilzonAI : public ScriptedAI
 
         DoMeleeAttackIfReady();
     }
+};
+
+/****
+*Soaring eagle
+****/
+
+enum soaring
+{
+    SPELL_EAGLE_SWOOP        = 44732
 };
 
 struct MANGOS_DLL_DECL mob_soaring_eagleAI : public ScriptedAI

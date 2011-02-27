@@ -54,7 +54,7 @@ enum
     SPELL_LIGHTNING                = 43301,
 
     MOB_SPIRIT_LYNX                = 24143,
-    MOB_TOTEM                      = 24224
+    MOB_TOTEM                      = 24224   // totem handled by eventAI
 };
 
 enum PhaseHalazzi
@@ -111,7 +111,7 @@ struct MANGOS_DLL_DECL boss_halazziAI : public ScriptedAI
         BerserkTimer = 600000;
         CheckTimer = 1000;
 
-        DoCast(m_creature, SPELL_DUAL_WIELD, true);
+        DoCastSpellIfCan(m_creature, SPELL_DUAL_WIELD, true);
 
         Phase = PHASE_NONE;
         EnterPhase(PHASE_LYNX);
