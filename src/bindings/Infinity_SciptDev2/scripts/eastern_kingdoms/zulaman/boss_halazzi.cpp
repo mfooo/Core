@@ -52,7 +52,8 @@ enum
     SPELL_SUMMON_TOTEM             = 43302,
     SPELL_BERSERK                  = 45078,
     SPELL_LIGHTNING                = 43301,
-	
+
+    MOB_SPIRIT_LYNX                = 24143,
     MOB_TOTEM                      = 24224
 };
 
@@ -338,8 +339,6 @@ struct MANGOS_DLL_DECL boss_halazziAI : public ScriptedAI
 
 enum lynx
 {
-    MOB_SPIRIT_LYNX        = 24143,
-
     //lynx spells
     SPELL_LYNX_FRENZY      = 43290,
     SPELL_SHRED_ARMOR      = 43243
