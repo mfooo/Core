@@ -42,6 +42,11 @@ enum
     SPELL_SIPHON_SOUL     =  43501,
     SPELL_DRAIN_POWER     =  44131,
 //Defines for various powers he uses after using soul drain
+
+//Death Knight
+    SPELL_DK_DEATH_AND_DECAY    = 61603,
+    SPELL_DK_PLAGUE_STRIKE      = 61606,
+    SPELL_DK_MARK_OF_BLOOD      = 61600,
 //Druid
     SPELL_DR_THORNS       =  43420,
     SPELL_DR_LIFEBLOOM    =  43421,
@@ -167,7 +172,11 @@ static PlayerAbilityStruct PlayerAbility[][3] =
     // 11 druid
     {{SPELL_DR_LIFEBLOOM, ABILITY_TARGET_HEAL, 10000},
     {SPELL_DR_THORNS, ABILITY_TARGET_SELF, 10000},
-    {SPELL_DR_MOONFIRE, ABILITY_TARGET_ENEMY, 8000}}
+    {SPELL_DR_MOONFIRE, ABILITY_TARGET_ENEMY, 8000}},
+    // 12 deathknight
+    {{SPELL_DK_DEATH_AND_DECAY, ABILITY_TARGET_ENEMY, 10000},
+    {SPELL_DK_PLAGUE_STRIKE, ABILITY_TARGET_ENEMY, 10000},
+    {SPELL_DK_MARK_OF_BLOOD, ABILITY_TARGET_ENEMY, 8000}}
 };
 
 struct MANGOS_DLL_DECL boss_hex_lord_malacrassAI : public ScriptedAI
@@ -374,7 +383,8 @@ struct MANGOS_DLL_DECL boss_hex_lord_malacrassAI : public ScriptedAI
                 PlayerGUID = target->GetGUID();
                 PlayerAbility_Timer = 8000 + rand()%2000;
                 PlayerClass = target->getClass() - 1;
-                if (PlayerClass == 10) PlayerClass = 9; // druid
+                if (PlayerClass == 11) PlayerClass = 10; // deathkinght   NEEDS TESTING THIS  below was what was here
+                //if (PlayerClass == 10) PlayerClass = 9; // druid
                 if (PlayerClass == 4 && target->HasSpell(15473)) PlayerClass = 5; // shadow priest
                 SiphonSoul_Timer = 99999;   // buff lasts 30 sec
             }
