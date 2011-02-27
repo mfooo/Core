@@ -51,7 +51,9 @@ enum
     SPELL_SUMMON_LYNX              = 43143,
     SPELL_SUMMON_TOTEM             = 43302,
     SPELL_BERSERK                  = 45078,
-    SPELL_LIGHTNING                = 43301
+    SPELL_LIGHTNING                = 43301,
+	
+    MOB_TOTEM                      = 24224
 };
 
 enum PhaseHalazzi
@@ -63,11 +65,6 @@ enum PhaseHalazzi
     PHASE_MERGE = 4,
     PHASE_ENRAGE = 5
 };
-
-#define MOB_SPIRIT_LYNX                 24143
-#define SPELL_LYNX_FRENZY               43290
-#define SPELL_SHRED_ARMOR               43243
-#define MOB_TOTEM                       24224
 
 struct MANGOS_DLL_DECL boss_halazziAI : public ScriptedAI
 {
@@ -214,7 +211,7 @@ struct MANGOS_DLL_DECL boss_halazziAI : public ScriptedAI
         if (BerserkTimer < diff)
         {
             DoScriptText(SAY_BERSERK, m_creature);
-            DoCast(m_creature, SPELL_BERSERK, true);
+            DoCastSpellIfCan(m_creature, SPELL_BERSERK, true);
             BerserkTimer = 60000;
         }else BerserkTimer -= diff;
 
@@ -237,7 +234,7 @@ struct MANGOS_DLL_DECL boss_halazziAI : public ScriptedAI
 
             if (FrenzyTimer < diff)
             {
-                DoCast(m_creature, SPELL_FRENZY);
+                DoCastSpellIfCan(m_creature, SPELL_FRENZY);
                 FrenzyTimer = (10+rand()%5)*1000;
             }else FrenzyTimer -= diff;
 
@@ -256,7 +253,7 @@ struct MANGOS_DLL_DECL boss_halazziAI : public ScriptedAI
         {
             if (TotemTimer < diff)
             {
-                DoCast(m_creature, SPELL_SUMMON_TOTEM);
+                DoCastSpellIfCan(m_creature, SPELL_SUMMON_TOTEM);
                 TotemTimer = 20000;
             }else TotemTimer -= diff;
 
@@ -265,9 +262,9 @@ struct MANGOS_DLL_DECL boss_halazziAI : public ScriptedAI
                 if (Unit* target = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM,0))
                 {
                     if (target->IsNonMeleeSpellCasted(false))
-                        DoCast(target,SPELL_EARTHSHOCK);
+                        DoCastSpellIfCan(target,SPELL_EARTHSHOCK);
                     else
-                        DoCast(target,SPELL_FLAMESHOCK);
+                        DoCastSpellIfCan(target,SPELL_FLAMESHOCK);
                     ShockTimer = 10000 + rand()%5000;
                 }
             }else ShockTimer -= diff;
@@ -335,7 +332,18 @@ struct MANGOS_DLL_DECL boss_halazziAI : public ScriptedAI
     }
 };
 
-// Spirits Lynx AI
+/****
+** Spirits Lynx AI
+****/
+
+enum lynx
+{
+    MOB_SPIRIT_LYNX        = 24143,
+
+    //lynx spells
+    SPELL_LYNX_FRENZY      = 43290,
+    SPELL_SHRED_ARMOR      = 43243
+};
 
 struct MANGOS_DLL_DECL boss_spiritlynxAI : public ScriptedAI
 {
@@ -371,13 +379,13 @@ struct MANGOS_DLL_DECL boss_spiritlynxAI : public ScriptedAI
 
         if (FrenzyTimer < diff)
         {
-            DoCast(m_creature, SPELL_LYNX_FRENZY);
+            DoCastSpellIfCan(m_creature, SPELL_LYNX_FRENZY);
             FrenzyTimer = (30+rand()%20)*1000;
         }else FrenzyTimer -= diff;
 
         if (shredder_timer < diff)
         {
-            DoCast(m_creature->getVictim(), SPELL_SHRED_ARMOR);
+            DoCastSpellIfCan(m_creature->getVictim(), SPELL_SHRED_ARMOR);
             shredder_timer = 4000;
         }else shredder_timer -= diff;
 

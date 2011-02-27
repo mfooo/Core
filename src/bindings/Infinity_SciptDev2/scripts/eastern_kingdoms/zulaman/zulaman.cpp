@@ -245,7 +245,7 @@ bool GOHello_go_strange_gong(Player* pPlayer, GameObject* pGo)
 
 #define GOSSIP_HOSTAGE1        "I am glad to help you."
 
-static uint32 HostageInfo[] = {23790, 23999, 24024, 24001};
+static uint32 HostageInfo[] = {23790, 23999, 24024, 24001}; // maybe just using the sql is better
 
 struct MANGOS_DLL_DECL npc_zulaman_hostageAI : public ScriptedAI
 {
