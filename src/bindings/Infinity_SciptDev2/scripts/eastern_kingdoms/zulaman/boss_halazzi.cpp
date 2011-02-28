@@ -139,7 +139,7 @@ struct MANGOS_DLL_DECL boss_halazziAI : public ScriptedAI
             damage = 0;
     }
 
-    void SpellHit(Unit*, const SpellEntry *spell)
+    void SpellHit(Unit *caster, const SpellEntry *spell)
     {
         if (spell->Id == SPELL_TRANSFORM_SPLIT2)
             EnterPhase(PHASE_HUMAN);
