@@ -1,4 +1,4 @@
-/* Copyright (C) 2006 - 2010 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
+/* Copyright (C) 2006 - 2011 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -26,40 +26,41 @@ EndScriptData */
 #include "SpellAuras.h"
 
 //text id -1534018 are the text used when previous events complete. Not part of this script.
-#define SAY_AGGRO                   -1534019
-#define SAY_DOOMFIRE1               -1534020
-#define SAY_DOOMFIRE2               -1534021
-#define SAY_AIR_BURST1              -1534022
-#define SAY_AIR_BURST2              -1534023
-#define SAY_SLAY1                   -1534024
-#define SAY_SLAY2                   -1534025
-#define SAY_SLAY3                   -1534026
-#define SAY_ENRAGE                  -1534027
-#define SAY_DEATH                   -1534028
-#define SAY_SOUL_CHARGE1            -1534029
-#define SAY_SOUL_CHARGE2            -1534030
+enum
+{
+    SAY_AGGRO                 =  -1534019,
+    SAY_DOOMFIRE1             =  -1534020,
+    SAY_DOOMFIRE2             =  -1534021,
+    SAY_AIR_BURST1            =  -1534022,
+    SAY_AIR_BURST2            =  -1534023,
+    SAY_SLAY1                 =  -1534024,
+    SAY_SLAY2                 =  -1534025,
+    SAY_SLAY3                 =  -1534026,
+    SAY_ENRAGE                =  -1534027,
+    SAY_DEATH                 =  -1534028,
+    SAY_SOUL_CHARGE1          =  -1534029,
+    SAY_SOUL_CHARGE2          =  -1534030,
 
-#define SPELL_DENOUEMENT_WISP       32124
-#define SPELL_ANCIENT_SPARK         39349
-#define SPELL_PROTECTION_OF_ELUNE   38528
-
-#define SPELL_DRAIN_WORLD_TREE      39140
-#define SPELL_DRAIN_WORLD_TREE_2    39141
-
-#define SPELL_FINGER_OF_DEATH       31984
-#define SPELL_HAND_OF_DEATH         35354
-#define SPELL_AIR_BURST             32014
-#define SPELL_GRIP_OF_THE_LEGION    31972
-#define SPELL_DOOMFIRE_STRIKE       31903                   //summons two creatures
-#define SPELL_DOOMFIRE_SPAWN        32074
-#define SPELL_DOOMFIRE              31945
-#define SPELL_SOUL_CHARGE_YELLOW    32045
-#define SPELL_SOUL_CHARGE_GREEN     32051
-#define SPELL_SOUL_CHARGE_RED       32052
-#define SPELL_UNLEASH_SOUL_YELLOW   32054
-#define SPELL_UNLEASH_SOUL_GREEN    32057
-#define SPELL_UNLEASH_SOUL_RED      32053
-#define SPELL_FEAR                  31970
+    SPELL_DENOUEMENT_WISP     = 32124,
+    SPELL_ANCIENT_SPARK       =  39349,
+    SPELL_PROTECTION_OF_ELUNE =  38528,
+    SPELL_DRAIN_WORLD_TREE    =  39140,
+    SPELL_DRAIN_WORLD_TREE_2  =  39141,
+    SPELL_FINGER_OF_DEATH     =  31984,
+    SPELL_HAND_OF_DEATH       =  35354,
+    SPELL_AIR_BURST           =  32014,
+    SPELL_GRIP_OF_THE_LEGION  =  31972,
+    SPELL_DOOMFIRE_STRIKE     =  31903,                  //summons two creatures
+    SPELL_DOOMFIRE_SPAWN      =  32074,
+    SPELL_DOOMFIRE            =  31945,
+    SPELL_SOUL_CHARGE_YELLOW  =  32045,
+    SPELL_SOUL_CHARGE_GREEN   =  32051,
+    SPELL_SOUL_CHARGE_RED     =  32052,
+    SPELL_UNLEASH_SOUL_YELLOW =  32054,
+    SPELL_UNLEASH_SOUL_GREEN  =  32057,
+    SPELL_UNLEASH_SOUL_RED    =  32053,
+    SPELL_FEAR                =  31970
+};
 
 #define CREATURE_ARCHIMONDE             17968
 #define CREATURE_DOOMFIRE               18095
@@ -237,6 +238,8 @@ struct MANGOS_DLL_DECL boss_archimondeAI : public ScriptedAI
     {
         m_creature->InterruptSpell(CURRENT_CHANNELED_SPELL);
         DoScriptText(SAY_AGGRO, m_creature);
+
+        m_creature->SetInCombatWithZone();
 
         if (m_pInstance)
             m_pInstance->SetData(TYPE_ARCHIMONDE, IN_PROGRESS);
@@ -472,7 +475,7 @@ struct MANGOS_DLL_DECL boss_archimondeAI : public ScriptedAI
         {
             if (HandOfDeathTimer < diff)
             {
-                DoCastSpellIfCan(m_creature->getVictim(), SPELL_HAND_OF_DEATH);
+                DoCastSpellIfCan(m_creature->getVictim(), SPELL_HAND_OF_DEATH, 0, 0);
                 HandOfDeathTimer = 2000;
             }else HandOfDeathTimer -= diff;
             return;                                         // Don't do anything after this point.
