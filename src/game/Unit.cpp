@@ -313,6 +313,7 @@ void Unit::Update( uint32 update_diff, uint32 p_time )
     if(!IsInWorld())
         return;
 
+    sWorld.m_spellUpdateLock.acquire();
     /*if(p_time > m_AurasCheck)
     {
     m_AurasCheck = 2000;
@@ -323,10 +324,16 @@ void Unit::Update( uint32 update_diff, uint32 p_time )
     // WARNING! Order of execution here is important, do not change.
     // Spells must be processed with event system BEFORE they go to _UpdateSpells.
     // Or else we may have some SPELL_STATE_FINISHED spells stalled in pointers, that is bad.
+
     m_Events.Update( update_diff );
-    _UpdateSpells( update_diff );
+
+    if(!IsInWorld())
+        return;
+
+    _UpdateSpells(update_diff );
 
     CleanupDeletedAuras();
+	sWorld.m_spellUpdateLock.release();
 
     if (m_lastManaUseTimer)
     {
@@ -338,8 +345,6 @@ void Unit::Update( uint32 update_diff, uint32 p_time )
 
     if (CanHaveThreatList())
         getThreatManager().UpdateForClient(update_diff);
-
-
 
     // update combat timer only for players and pets
     if (isInCombat() && GetCharmerOrOwnerPlayerOrPlayerItself())
@@ -10134,6 +10139,7 @@ void Unit::RemoveFromWorld()
     // cleanup
     if (IsInWorld())
     {
+        sWorld.m_spellUpdateLock.acquire();
         Uncharm();
         RemoveNotOwnSingleTargetAuras();
         RemoveGuardians();
@@ -10143,6 +10149,7 @@ void Unit::RemoveFromWorld()
         RemoveAllDynObjects();
         CleanupDeletedAuras();
         GetViewPoint().Event_RemovedFromWorld();
+        sWorld.m_spellUpdateLock.release();
     }
 
     Object::RemoveFromWorld();
