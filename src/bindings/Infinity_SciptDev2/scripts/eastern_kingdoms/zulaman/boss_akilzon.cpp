@@ -36,7 +36,6 @@ enum
     SPELL_GUST_OF_WIND       = 43621,
     SPELL_ELECTRICAL_STORM   = 43648,
     SPELL_BERSERK            = 45078,
-    SPELL_EAGLE_SWOOP        = 44732,
 
 //"Your death gonna be quick, strangers. You shoulda never have come to this place..."
 // (-1568024,'Da eagles gonna bear your spirits to me. Your sacrifice is not gonna be in vein!',12122,1,0,0,'akilzon SAY_EVENT1'),

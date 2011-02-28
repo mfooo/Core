@@ -43,7 +43,8 @@ UPDATE `creature_template` SET `ScriptName` = 'do_nothing' WHERE `entry` = '2418
 UPDATE `creature_template` SET `ScriptName` = 'mob_zuljin_vortex' WHERE `entry` = '24136';
 UPDATE `creature_template` SET `minlevel` = '73', `maxlevel` = '73' WHERE `entry` IN (24187, 24136);
 DELETE FROM `spell_proc_event` WHERE `entry` = 43983;
-INSERT INTO `spell_proc_event` VALUES ('43983', '0', '0', '0', '0', '0', '16384', '0', '0');
+INSERT INTO `spell_proc_event` (`entry`,`procFlags`) VALUES 
+('43983','16384');
 DELETE FROM `spell_script_target` WHERE `entry` = 42577;
 INSERT INTO `spell_script_target` VALUES ('42577', '1', '24136');
 
@@ -63,12 +64,6 @@ INSERT INTO `creature` (`guid`,`id`, `map`,  `position_x`, `position_y`, `positi
 (230008, 23596, 568, 269.566864, 1377.615479, 49.321880, 3.143176, 7200, 69000, 6462),
 (230009, 23596, 568, 265.754272, 1373.319580, 49.325592, 3.143176, 7200, 69000, 6462),
 (230010, 23596, 568, 265.740967, 1381.712524, 49.322567, 3.143176, 7200, 69000, 6462);
-
-
--- fix spells
-DELETE FROM `spell_proc_event` WHERE `entry` = 43983;
-INSERT INTO `spell_proc_event` (`entry`,`procFlags`) VALUES 
-('43983','16384');
 
 -- fix gameobjects
 -- doors
