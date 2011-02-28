@@ -122,7 +122,7 @@ struct MANGOS_DLL_DECL boss_akilzonAI : public ScriptedAI
         if (pInstance)
         {
             pInstance->SetData(TYPE_AKILZON, IN_PROGRESS);
-			if (GameObject* pEncounterDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_AKILZONDOOR)))
+            if (GameObject* pEncounterDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_AKILZONDOOR)))
                 pEncounterDoor->SetGoState(GO_STATE_READY);
         }
     }
@@ -132,15 +132,16 @@ struct MANGOS_DLL_DECL boss_akilzonAI : public ScriptedAI
         DoScriptText(SAY_DEATH, m_creature);
 
         if (pInstance)
-		{
+        {
             pInstance->SetData(TYPE_AKILZON, DONE);
             if (GameObject* pEncounterDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_AKILZONDOOR)))
                 pEncounterDoor->SetGoState(GO_STATE_ACTIVE);
-            if (pInstance->GetData64(DATA_BOSSKILLED)>=4) {
+            if (pInstance->GetData64(DATA_BOSSKILLED)>=4) 
+            {
                 if (GameObject* pEncounterDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_HEXLORDGATE)))
                     pEncounterDoor->SetGoState(GO_STATE_ACTIVE);
-			}
-		}
+            }
+     }
         DespawnSummons(MOB_SOARING_EAGLE);
 
         SetWeather(WEATHER_STATE_FINE, 0.0f);
