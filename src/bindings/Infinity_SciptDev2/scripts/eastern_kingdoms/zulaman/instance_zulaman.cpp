@@ -40,7 +40,7 @@ static SHostageInfo HostageInfo[] =
 {
     {23790, 186648, -57, 1343, 40.77f, 3.2f}, // bear
     {23999, 187021, 400, 1414, 74.36f, 3.3f}, // eagle
-    {24001, 186672, -35, 1134,  18.7f, 1.9f}, // dragonhawk
+    {24001, 186672, -35, 1134,  18.71f, 1.9f}, // dragonhawk
     {24024, 186667, 413, 1117,  6.32f, 3.1f}  // lynx
 
 };
@@ -50,14 +50,14 @@ struct MANGOS_DLL_DECL instance_zulaman : public ScriptedInstance
     instance_zulaman(Map *map) : ScriptedInstance(map) {Initialize();};
 
     uint64 HexLordGateGUID;
-	uint64 HexLordGUID;
+    uint64 HexLordGUID;
     uint64 ZulJinGateGUID;
     uint64 AkilzonDoorGUID;
     uint64 ZulJinDoorGUID;
     uint64 HalazziDoorGUID;
-	uint64 HalazziBackDoorGUID;
-	uint64 EntranceDoorGUID;
-	ScriptedInstance* pInstance;
+    uint64 HalazziBackDoorGUID;
+    uint64 EntranceDoorGUID;
+    ScriptedInstance* pInstance;
     uint32 QuestTimer;
     uint16 BossKilled;
     uint16 QuestMinute;
@@ -74,8 +74,8 @@ struct MANGOS_DLL_DECL instance_zulaman : public ScriptedInstance
         uint64 AkilzonDoorGUID = 0;
         uint64 HalazziDoorGUID = 0;
         uint64 ZulJinDoorGUID = 0;
-		uint64 HalazziBackDoorGUID = 0;
-		uint64 EntranceDoorGUID = 0;
+        uint64 HalazziBackDoorGUID = 0;
+        uint64 EntranceDoorGUID = 0;
         QuestTimer = 0;
         QuestMinute = 21;
         BossKilled = 0;
@@ -100,13 +100,13 @@ struct MANGOS_DLL_DECL instance_zulaman : public ScriptedInstance
         switch(identifier)
         {
             case DATA_HEXLORDGUID:					return HexLordGUID;
-			case DATA_HEXLORDDOOR:					return ZulJinGateGUID;
-			case DATA_AKILZONDOOR:					return AkilzonDoorGUID;
-			case DATA_ZULJINDOOR:					return ZulJinDoorGUID;
-			case DATA_ENTRANCEDOOR:                 return EntranceDoorGUID;
-			case DATA_HALAZZIFRONTDOOR:             return HalazziDoorGUID;
-			case DATA_HEXLORDGATE:					return HexLordGateGUID;
-			case DATA_BOSSKILLED:					return BossKilled;
+            case DATA_HEXLORDDOOR:                  return ZulJinGateGUID;
+            case DATA_AKILZONDOOR:                  return AkilzonDoorGUID;
+            case DATA_ZULJINDOOR:                   return ZulJinDoorGUID;
+            case DATA_ENTRANCEDOOR:                 return EntranceDoorGUID;
+            case DATA_HALAZZIFRONTDOOR:             return HalazziDoorGUID;
+            case DATA_HEXLORDGATE:                  return HexLordGateGUID;
+            case DATA_BOSSKILLED:                   return BossKilled;
         }
         return 0;
     }
@@ -133,10 +133,10 @@ struct MANGOS_DLL_DECL instance_zulaman : public ScriptedInstance
             case 186305: HexLordGateGUID = go->GetGUID(); break;
             case 186858: AkilzonDoorGUID = go->GetGUID(); break;
             case 186859: ZulJinDoorGUID  = go->GetGUID(); break;
-			case 186728: EntranceDoorGUID  = go->GetGUID(); break;
+            case 186728: EntranceDoorGUID  = go->GetGUID(); break;
         default: break;
         }
-		CheckInstanceStatus();
+        CheckInstanceStatus();
     }
     void CheckInstanceStatus()
     {
@@ -184,7 +184,7 @@ struct MANGOS_DLL_DECL instance_zulaman : public ScriptedInstance
     {
         WorldPacket data(SMSG_UPDATE_WORLD_STATE, 8);
         data << field << value;
-		instance->SendToPlayers(&data);
+        instance->SendToPlayers(&data);
     }
 
     const char* Save()
@@ -283,7 +283,7 @@ struct MANGOS_DLL_DECL instance_zulaman : public ScriptedInstance
                 QuestMinute = 0;
                 UpdateWorldState(3104, 0);
             }
-			CheckInstanceStatus();
+            CheckInstanceStatus();
             SaveToDB();
         }
     }
