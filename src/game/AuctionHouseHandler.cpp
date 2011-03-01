@@ -300,6 +300,8 @@ void WorldSession::HandleAuctionSellItem( WorldPacket & recv_data )
     auctionHouse->AddAuction(AH);
 
     sAuctionMgr.AddAItem(it);
+	// Remove item from refundable map
+	pl->RemoveRefundableItem(it->GetGUID());
     pl->MoveItemFromInventory( it->GetBagSlot(), it->GetSlot(), true);
 
     CharacterDatabase.BeginTransaction();
