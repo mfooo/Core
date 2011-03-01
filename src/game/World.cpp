@@ -23,6 +23,7 @@
 #include "World.h"
 #include "Database/DatabaseEnv.h"
 #include "Config/Config.h"
+#include "playerbot/config.h"
 #include "Platform/Define.h"
 #include "SystemConfig.h"
 #include "Log.h"
@@ -82,10 +83,6 @@ float World::m_MaxVisibleDistanceInFlight     = DEFAULT_VISIBILITY_DISTANCE;
 float World::m_VisibleUnitGreyDistance        = 0;
 float World::m_VisibleObjectGreyDistance      = 0;
 
-uint32 World::m_relocation_ai_notify_delay = 1000;
-float World::m_relocation_lower_limit_sq = 10.f * 10.f;
-
-
 extern Config botConfig;
 
 //PVP Announcer
@@ -104,6 +101,10 @@ void World::SendPvPAnnounce(Player* killer, Player* killed)
   msg << KillerColor << KillerName.str().c_str() << "]" << "|CFF0042FF Has Killed " << KilledColor << KilledName.str().c_str() << "]" << "|CFFE55BB0 in " << AreaColor << "[" << killer->GetMap()->GetMapName() << "]";
   SendWorldText(LANG_SYSTEMMESSAGE, msg.str().c_str());
 }
+
+extern Config botConfig;
+uint32 World::m_relocation_ai_notify_delay = 1000;
+float World::m_relocation_lower_limit_sq = 10.f * 10.f;
 
 /// World constructor
 World::World()
@@ -1462,6 +1463,16 @@ void World::SetInitialWorldSettings()
     auctionbot.Initialize();
 
     sLog.outString("Starting Autobroadcast system by Xeross..." );
+
+    //Get playerbot configuration file
+    if (!botConfig.SetSource(_PLAYERBOT_CONFIG))
+        sLog.outError("Playerbot: Unable to open configuration file. Database will be unaccessible. Configuration values will use default.");
+    else
+        sLog.outString("Playerbot: Using configuration file %s",_PLAYERBOT_CONFIG);
+
+    //Check playerbot config file version
+    if (botConfig.GetIntDefault("ConfVersion", 0) != PLAYERBOT_CONF_VERSION)
+        sLog.outError("Playerbot: Configuration file version doesn't match expected version. Some config variables may be wrong or missing.");
 
     sLog.outString( "WORLD: World initialized" );
 

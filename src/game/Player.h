@@ -1655,7 +1655,7 @@ class MANGOS_DLL_SPEC Player : public Unit
 
         void chompAndTrim(std::string& str);
         bool getNextQuestId(const std::string& pString, unsigned int& pStartPos, unsigned int& pId);
-		void skill(std::list<uint32>& m_spellsToLearn);
+        void skill(std::list<uint32>& m_spellsToLearn);
         bool requiredQuests(const char* pQuestIdString);
 
         /*********************************************************/
@@ -2615,7 +2615,7 @@ class MANGOS_DLL_SPEC Player : public Unit
         void SetPlayerbotMgr(PlayerbotMgr* mgr) { assert(!m_playerbotAI && !m_playerbotMgr); m_playerbotMgr=mgr; }
         PlayerbotMgr* GetPlayerbotMgr() { return m_playerbotMgr; }
         void SetBotDeathTimer() { m_deathTimer = 0; }
-
+		
         uint32 m_grid_update_timer;
 
     protected:

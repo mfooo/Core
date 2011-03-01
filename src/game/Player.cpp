@@ -67,6 +67,11 @@
 #include "playerbot/PlayerbotMgr.h"
 #include "Config/Config.h"
 
+// Playerbot mod:
+#include "playerbot/PlayerbotAI.h"
+#include "playerbot/PlayerbotMgr.h"
+#include "Config/Config.h"
+
 #include <cmath>
 
 #define ZONE_UPDATE_INTERVAL (1*IN_MILLISECONDS)
@@ -434,6 +439,10 @@ Player::Player (WorldSession *session): Unit(), m_mover(this), m_camera(this), m
     m_playerbotAI = 0;
     m_playerbotMgr = 0;
 
+    // Playerbot mod:
+    m_playerbotAI = 0;
+    m_playerbotMgr = 0;
+
     m_speakTime = 0;
     m_speakCount = 0;
 
@@ -566,7 +575,7 @@ Player::Player (WorldSession *session): Unit(), m_mover(this), m_camera(this), m
 
     m_stableSlots = 0;
 
-    /////////////////// Instance System /////////////////////
+    /////////////////// Instance System ////////////////////
 
     m_HomebindTimer = 0;
     m_InstanceValid = true;
@@ -668,17 +677,14 @@ Player::~Player ()
     delete m_anticheat;
 
     // Playerbot mod
-    if (m_playerbotAI)
-	{
+    if (m_playerbotAI) {
         delete m_playerbotAI;
         m_playerbotAI = 0;
     }
-    if (m_playerbotMgr)
-	{
+    if (m_playerbotMgr) {
         delete m_playerbotMgr;
         m_playerbotMgr = 0;
     }
-
 }
 
 void Player::CleanupsBeforeDelete()
@@ -1642,7 +1648,7 @@ void Player::Update( uint32 update_diff, uint32 p_time )
     if (IsHasDelayedTeleport())
         TeleportTo(m_teleport_dest, m_teleport_options);
 
-        // Playerbot mod
+	    // Playerbot mod
     if (m_playerbotAI)
         m_playerbotAI->UpdateAI(p_time);
     else if (m_playerbotMgr)
