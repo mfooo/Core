@@ -10,6 +10,8 @@ TO_DO ++++++++++++++++++++++++
 
 4. needs to test each player class and race spell and talent & and start fixing or ect what doesnt work 
 
+5. check/fix the over spell stacking or buffing issue 
+
 =======================
 CORE_BUGS_&_ECT +++++++
 =======================

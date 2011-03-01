@@ -25,7 +25,7 @@ EndScriptData */
 #include "precompiled.h"
 #include "zulaman.h"
 
-#define ENCOUNTERS     6
+#define ENCOUNTERS     6   // 7
 #define RAND_VENDOR    2
 
 // Chests spawn at bear/eagle/dragonhawk/lynx bosses
@@ -50,6 +50,8 @@ struct MANGOS_DLL_DECL instance_zulaman : public ScriptedInstance
 {
     instance_zulaman(Map *map) : ScriptedInstance(map) {Initialize();};
 
+    //uint32 m_uiGongCount;
+
     uint64 HexLordGateGUID;
     uint64 HexLordGUID;
     uint64 ZulJinGateGUID;
@@ -58,6 +60,9 @@ struct MANGOS_DLL_DECL instance_zulaman : public ScriptedInstance
     uint64 HalazziDoorGUID;
     uint64 HalazziBackDoorGUID;
     uint64 EntranceDoorGUID;
+    uint64 HarrisonGUID;
+    uint64 StrangeGongGUID;
+
     ScriptedInstance* pInstance;
     uint32 QuestTimer;
     uint16 BossKilled;
@@ -69,6 +74,8 @@ struct MANGOS_DLL_DECL instance_zulaman : public ScriptedInstance
 
     void Initialize()
     {
+        //GongCount = 0;
+
         uint64 HexLordGateGUID = 0;
         uint64 HexLordGUID = 0;
         uint64 ZulJinGateGUID = 0;
@@ -77,6 +84,9 @@ struct MANGOS_DLL_DECL instance_zulaman : public ScriptedInstance
         uint64 ZulJinDoorGUID = 0;
         uint64 HalazziBackDoorGUID = 0;
         uint64 EntranceDoorGUID = 0;
+        uint64 HarrisonGUID = 0;
+        uint64 StrangeGongGUID =0;
+
         QuestTimer = 0;
         QuestMinute = 21;
         BossKilled = 0;
@@ -108,6 +118,7 @@ struct MANGOS_DLL_DECL instance_zulaman : public ScriptedInstance
             case DATA_HALAZZIFRONTDOOR:             return HalazziDoorGUID;
             case DATA_HEXLORDGATE:                  return HexLordGateGUID;
             case DATA_BOSSKILLED:                   return BossKilled;
+            case DATA_GO_GONG:                      return StrangeGongGUID;
         }
         return 0;
     }
@@ -122,6 +133,7 @@ struct MANGOS_DLL_DECL instance_zulaman : public ScriptedInstance
             case 23578: break;//jan'alai
             case 24239: HexLordGUID = creature->GetGUID(); break;//hexlord
             case 23863: break;//zul'jin
+            case 24358: break;//Harrison
         }
     }
 
@@ -129,6 +141,7 @@ struct MANGOS_DLL_DECL instance_zulaman : public ScriptedInstance
     {
         switch(go->GetEntry())
         {
+            case 187359: StrangeGongGUID = go->GetGUID();break;
             case 186303: HalazziDoorGUID = go->GetGUID(); break;
             case 186304: ZulJinGateGUID  = go->GetGUID(); break;
             case 186305: HexLordGateGUID = go->GetGUID(); break;
