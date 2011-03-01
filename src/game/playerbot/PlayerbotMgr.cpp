@@ -17,8 +17,6 @@ Config botConfig;
 
 PlayerbotMgr::PlayerbotMgr(Player* const master) : m_master(master)
 {
-    m_botCount = 0;
-
     // load config variables
     m_confMaxNumBots = botConfig.GetIntDefault("PlayerbotAI.MaxNumBots", 9);
     m_confDebugWhisper = botConfig.GetBoolDefault("PlayerbotAI.DebugWhisper", false);
@@ -494,7 +492,6 @@ void PlayerbotMgr::LogoutPlayerBot(uint64 guid)
         m_playerBots.erase(guid);    // deletes bot player ptr inside this WorldSession PlayerBotMap
         botWorldSessionPtr->LogoutPlayer(true); // this will delete the bot Player object and PlayerbotAI object
         delete botWorldSessionPtr;  // finally delete the bot's WorldSession
-        m_botCount--;
     }
 }
 
@@ -513,7 +510,6 @@ void PlayerbotMgr::OnBotLogin(Player * const bot)
 
     // tell the world session that they now manage this new bot
     m_playerBots[bot->GetGUID()] = bot;
-    m_botCount++;
 
     // if bot is in a group and master is not in group then
     // have bot leave their group
@@ -545,20 +541,12 @@ void Creature::LoadBotMenu(Player *pPlayer)
     if (pPlayer->GetPlayerbotAI()) return;
     uint64 guid = pPlayer->GetGUID();
     uint32 accountId = sObjectMgr.GetPlayerAccountIdByGUID(guid);
-    std::string fromTable = "characters c";
-    std::string wherestr = "AND (c.guid<>";
-    if (botConfig.GetBoolDefault("PlayerbotAI.SharedBots", true))
-    {
-        fromTable = "characters c, character_social s";
-        wherestr = "OR (c.guid=s.guid AND flags & 1 AND s.note "_LIKE_" "_CONCAT3_("'%%'","'shared'","'%%'")" AND s.friend=";
-    }
-    QueryResult *result = CharacterDatabase.PQuery("SELECT DISTINCT c.guid, c.name, c.online FROM %s WHERE c.account='%d' %s'%u')", fromTable.c_str(), accountId, wherestr.c_str(), guid);
+    QueryResult *result = CharacterDatabase.PQuery("SELECT guid, name FROM characters WHERE account='%d'", accountId);
     do
     {
         Field *fields = result->Fetch();
         uint64 guidlo = fields[0].GetUInt64();
         std::string name = fields[1].GetString();
-        uint8 online = fields[2].GetUInt8();
         std::string word = "";
 
         if ((guid == 0) || (guid == guidlo))
@@ -571,8 +559,7 @@ void Creature::LoadBotMenu(Player *pPlayer)
             // create the manager if it doesn't already exist
             if (!pPlayer->GetPlayerbotMgr())
                 pPlayer->SetPlayerbotMgr(new PlayerbotMgr(pPlayer));
-
-            if (pPlayer->GetPlayerbotMgr()->GetPlayerBot(guidlo) == NULL && online == 0) // add (if not already in game)
+            if (pPlayer->GetPlayerbotMgr()->GetPlayerBot(guidlo) == NULL) // add (if not already in game)
             {
                 word += "Recruit ";
                 word += name;
@@ -713,26 +700,9 @@ bool ChatHandler::HandlePlayerbotCommand(char* args)
     uint32 accountId = sObjectMgr.GetPlayerAccountIdByGUID(guid);
     if (accountId != m_session->GetAccountId())
     {
-        if (!botConfig.GetBoolDefault("PlayerbotAI.SharedBots", true))
-        {
-            PSendSysMessage("|cffff0000You may only add bots from the same account.");
-            SetSentErrorMessage(true);
-            return false;
-        }
-
-        QueryResult *resultsocial = CharacterDatabase.PQuery("SELECT COUNT(*) FROM character_social s, characters c WHERE s.guid=c.guid AND c.online = 0 AND flags & 1 AND s.note "_LIKE_" "_CONCAT3_("'%%'","'shared'","'%%'")" AND s.friend = '%u' AND s.guid = '%u'", m_session->GetPlayer()->GetGUIDLow(), guid);
-        if (resultsocial)
-        {
-            Field *fields = resultsocial->Fetch();
-            if (fields[0].GetUInt32() == 0 && (cmdStr == "add" || cmdStr == "login"))
-            {
-                PSendSysMessage("|cffff0000You may only add bots from the same account or a friend's character that contains 'shared' in the notes on their friend list while not online.");
-                SetSentErrorMessage(true);
-                delete resultsocial;
-                return false;
-            }
-        }
-        delete resultsocial;
+        PSendSysMessage("|cffff0000You may only add bots from the same account.");
+        SetSentErrorMessage(true);
+        return false;
     }
 
     // create the playerbot manager if it doesn't already exist
@@ -743,17 +713,22 @@ bool ChatHandler::HandlePlayerbotCommand(char* args)
         m_session->GetPlayer()->SetPlayerbotMgr(mgr);
     }
 
-    if (!(m_session->GetSecurity() > SEC_PLAYER))
+    QueryResult *resultchar = CharacterDatabase.PQuery("SELECT COUNT(*) FROM characters WHERE online = '1' AND account = '%u'", m_session->GetAccountId());
+    if (resultchar)
     {
+        Field *fields = resultchar->Fetch();
+        int acctcharcount = fields[0].GetUInt32();
         int maxnum = botConfig.GetIntDefault("PlayerbotAI.MaxNumBots", 9);
-        int charcount = m_session->GetPlayer()->GetPlayerbotMgr()->GetBotCount();
-        if (charcount >= maxnum && (cmdStr == "add" || cmdStr == "login"))
-        {
-            PSendSysMessage("|cffff0000You cannot summon anymore bots.(Current Max: |cffffffff%u)",maxnum);
-            SetSentErrorMessage(true);
-            return false;
-        }
+        if (!(m_session->GetSecurity() > SEC_PLAYER))
+            if (acctcharcount > maxnum && (cmdStr == "add" || cmdStr == "login"))
+            {
+                PSendSysMessage("|cffff0000You cannot summon anymore bots.(Current Max: |cffffffff%u)", maxnum);
+                SetSentErrorMessage(true);
+                delete resultchar;
+                return false;
+            }
     }
+    delete resultchar;
 
     QueryResult *resultlvl = CharacterDatabase.PQuery("SELECT level,name FROM characters WHERE guid = '%lu'", guid);
     if (resultlvl)
