@@ -18,6 +18,7 @@
 SDName: Zulaman
 SD%Complete: 90
 SDComment: Forest Frog will turn into different NPC's. Workaround to prevent new entry from running this script
+ToDo:: make sure all this is working as it should
 SDCategory: Zul'Aman
 EndScriptData */
 

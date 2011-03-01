@@ -16,8 +16,9 @@
 
 /* ScriptData
 SDName: Boss_ZulJin
-SD%Complete: 85%
+SD%Complete: %
 SDComment:
+ToDo: implent event texts
 EndScriptData */
 
 #include "precompiled.h"

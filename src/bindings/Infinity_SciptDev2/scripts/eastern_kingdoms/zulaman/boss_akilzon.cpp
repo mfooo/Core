@@ -16,11 +16,10 @@
 
 /* ScriptData
 SDName: boss_Akilzon
-SD%Complete: 75%
+SD%Complete: %
 SDComment: Missing timer for Call Lightning and Sound ID's
 SQLUpdate:
-#Temporary fix for Soaring Eagles
-
+ToDo:: fix soaring eagles
 EndScriptData */
 
 #include "precompiled.h"
@@ -30,6 +29,7 @@ EndScriptData */
 
 enum
 {
+    
     SPELL_STATIC_DISRUPTION  = 43622,
     SPELL_STATIC_VISUAL      = 45265,
     SPELL_CALL_LIGHTNING     = 43661, //Missing timer
@@ -37,19 +37,17 @@ enum
     SPELL_ELECTRICAL_STORM   = 43648,
     SPELL_BERSERK            = 45078,
 
-//"Your death gonna be quick, strangers. You shoulda never have come to this place..."
-// (-1568024,'Da eagles gonna bear your spirits to me. Your sacrifice is not gonna be in vein!',12122,1,0,0,'akilzon SAY_EVENT1'),
-// (-1568025,'Your death gonna be quick, strangers. You shoulda never have come to this place...',12123,1,0,0,'akilzon SAY_EVENT2'),
-
     MOB_SOARING_EAGLE      = 24858,
 
+    SAY_EVENT1              = -1568024, //(-1568024,'Da eagles gonna bear your spirits to me. Your sacrifice is not gonna be in vein!',12122,1,0,0,'akilzon SAY_EVENT1'),
+    SAY_EVENT2              = -1568025, //(-1568025,'Your death gonna be quick, strangers. You shoulda never have come to this place...',12123,1,0,0,'akilzon SAY_EVENT2'),
     SAY_AGGRO              =  -1568026, //(-1568026,'I be da predator! You da prey...',12013,1,0,0,'akilzon SAY_AGGRO'),
     SAY_SUMMON             =  -1568027, //(-1568027,'Feed, me bruddahs!',12014,1,0,0,'akilzon SAY_SUMMON'),
     SAY_ENRAGE             =  -1568029, //(-1568029,'All you be doing is wasting my time!',12016,1,0,0,'akilzon SAY_ENRAGE'),
     SAY_SLAY1              =  -1568030, //(-1568030,'Ya got nothin\'!',12017,1,0,0,'akilzon SAY_SLAY1'),
     SAY_SLAY2              =  -1568031, //(-1568031,'Stop your cryin\'!',12018,1,0,0,'akilzon SAY_SLAY2'),
-    SAY_DEATH              =  -1568032  //(-1568032,'You can\'t... kill... me spirit!',12019,1,0,0,'akilzon SAY_DEATH'),
-   //(-1568033,'An Electrical Storm Appears!',0,2,0,0,'akilzon EMOTE_STORM'),
+    SAY_DEATH              =  -1568032, //(-1568032,'You can\'t... kill... me spirit!',12019,1,0,0,'akilzon SAY_DEATH'),
+    EMOTE_STORM             = -1568033  //(-1568033,'An Electrical Storm Appears!',0,2,0,0,'akilzon EMOTE_STORM'),
 };
 
 #define SE_LOC_X_MAX            400
@@ -316,6 +314,12 @@ struct MANGOS_DLL_DECL boss_akilzonAI : public ScriptedAI
 
         StormSequenceTimer = 1000;
     }
+	
+    void JustSummoned(Creature* Summoned)
+    {
+        if (Summoned->GetEntry() == MOB_SOARING_EAGLE)
+            Summoned->SetInCombatWithZone();
+    }
 
     void UpdateAI(const uint32 diff)
     {
@@ -407,6 +411,7 @@ struct MANGOS_DLL_DECL boss_akilzonAI : public ScriptedAI
             float x, y, z;
             target->GetPosition(x, y, z);
             Unit *Cloud = m_creature->SummonCreature(MOB_TEMP_TRIGGER, x, y, m_creature->GetPositionZ() + 10, 0, TEMPSUMMON_TIMED_DESPAWN, 15000);
+            DoScriptText(EMOTE_STORM, m_creature);
 
             if (Cloud)
             {
@@ -529,7 +534,7 @@ struct MANGOS_DLL_DECL mob_soaring_eagleAI : public ScriptedAI
             if (Unit* target = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
             {
                 float x, y, z;
-                if(EagleSwoop_Timer)
+                if (EagleSwoop_Timer)
                 {
                     x = target->GetPositionX() + 10 - rand()%20;
                     y = target->GetPositionY() + 10 - rand()%20;

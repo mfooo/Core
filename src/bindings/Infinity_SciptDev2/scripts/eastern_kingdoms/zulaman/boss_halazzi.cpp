@@ -19,6 +19,7 @@ SDName: boss_Halazzi
 SD%Complete: 80
 SDComment:
 SDCategory: Zul°‰Aman
+ToDO:: need to get him to refuse into lynx troll version after cat dies  every 25% health i believe and implent event texts
 EndScriptData */
 
 #include "precompiled.h"
