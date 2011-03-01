@@ -547,7 +547,7 @@ void Creature::LoadBotMenu(Player *pPlayer)
     uint32 accountId = sObjectMgr.GetPlayerAccountIdByGUID(guid);
     std::string fromTable = "characters c";
     std::string wherestr = "AND (c.guid<>";
-    if (botConfig.GetBoolDefault("PlayerbotAI.SharedBots", true))
+    /*if (botConfig.GetBoolDefault("PlayerbotAI.SharedBots", true))
     {
         fromTable = "characters c, character_social s";
         wherestr = "OR (c.guid=s.guid AND flags & 1 AND s.note "_LIKE_" "_CONCAT3_("'%%'","'shared'","'%%'")" AND s.friend=";
@@ -565,7 +565,7 @@ void Creature::LoadBotMenu(Player *pPlayer)
         {
             //not found or himself
         }
-        else
+        else*/
         {
             // if(sConfig.GetBoolDefault("PlayerbotAI.DisableBots", false)) return;
             // create the manager if it doesn't already exist
