@@ -396,6 +396,15 @@ struct GraveYardData
 };
 typedef std::multimap<uint32, GraveYardData> GraveYardMap;
 typedef std::pair<GraveYardMap::const_iterator, GraveYardMap::const_iterator> GraveYardMapBounds;
+struct GCNewsData
+{
+	uint16 type;
+	uint16 parent;
+	std::string textstring;
+};
+
+typedef std::multimap<uint32, GCNewsData> GCNewsMap;
+typedef std::map<uint64, uint32> ItemRefundableMap;
 
 enum ConditionType
 {                                                           // value1       value2  for the Condition enumed
@@ -819,6 +828,8 @@ class ObjectMgr
 
         void LoadVehicleAccessories();
 
+		void LoadGCNews();
+
         std::string GeneratePetName(uint32 entry);
         uint32 GetBaseXP(uint32 level) const;
         uint32 GetXPForLevel(uint32 level) const;
@@ -1104,6 +1115,9 @@ class ObjectMgr
         bool IsVendorItemValid(bool isTemplate, char const* tableName, uint32 vendor_entry, uint32 item, uint32 maxcount, uint32 ptime, uint32 ExtendedCost, Player* pl = NULL, std::set<uint32>* skip_vendors = NULL) const;
 
         int GetOrNewIndexForLocale(LocaleConstant loc);
+
+		GCNewsMap mGCNewsMap;
+		ItemRefundableMap mItemRefundableMap;
 
         SpellClickInfoMapBounds GetSpellClickInfoMapBounds(uint32 creature_id) const
         {

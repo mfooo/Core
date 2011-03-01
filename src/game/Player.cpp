@@ -20247,6 +20247,9 @@ bool Player::BuyItemFromVendorSlot(ObjectGuid vendorGuid, uint32 vendorslot, uin
             data << uint32(count);
             GetSession()->SendPacket(&data);
 
+			if (it->IsEligibleForRefund() && crItem->ExtendedCost)
+				AddRefundableItem(it->GetGUID(), crItem->ExtendedCost);
+
             SendNewItem(it, pProto->BuyCount*count, true, false, false);
         }
     }
@@ -20291,6 +20294,9 @@ bool Player::BuyItemFromVendorSlot(ObjectGuid vendorGuid, uint32 vendorslot, uin
             data << uint32(crItem->maxcount > 0 ? new_count : 0xFFFFFFFF);
             data << uint32(count);
             GetSession()->SendPacket(&data);
+
+			if (it->IsEligibleForRefund() && crItem->ExtendedCost)
+				AddRefundableItem(it->GetGUID(), crItem->ExtendedCost);
 
             SendNewItem(it, pProto->BuyCount*count, true, false, false);
 
@@ -24208,6 +24214,35 @@ bool Player::IsReferAFriendLinked(Player* target)
     }
 
     return false;
+}
+
+void Player::AddRefundableItem(uint64 itemGUID,  uint32 extendedcost)
+{
+	std::pair<uint64, uint32> RefundableItemInfo;
+
+	if (Item *item = GetItemByGuid(itemGUID))
+	{
+		item->SetPlayedtimeField(GetTotalPlayedTime());
+		RefundableItemInfo.first = itemGUID;
+		RefundableItemInfo.second = extendedcost;
+
+		sObjectMgr.mItemRefundableMap.insert(RefundableItemInfo);
+	}
+}
+
+void Player::RemoveRefundableItem(uint64 itemGUID)
+{
+	sObjectMgr.mItemRefundableMap.erase(itemGUID);
+}
+
+uint32 Player::LookupRefundableItem(uint64 itemGUID)
+{
+	ItemRefundableMap::iterator itr = sObjectMgr.mItemRefundableMap.find(itemGUID);
+
+	if (itr != sObjectMgr.mItemRefundableMap.end())
+		return itr->second;
+
+	return 0;
 }
 
 /** World of Warcraft Armory **/

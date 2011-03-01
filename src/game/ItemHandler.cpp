@@ -1446,30 +1446,6 @@ void WorldSession::HandleCancelTempEnchantmentOpcode(WorldPacket& recv_data)
     item->ClearEnchantment(TEMP_ENCHANTMENT_SLOT);
 }
 
-void WorldSession::HandleItemRefundInfoRequest(WorldPacket& recv_data)
-{
-    DEBUG_LOG("WORLD: CMSG_ITEM_REFUND_INFO_REQUEST");
-
-    ObjectGuid itemGuid;
-    recv_data >> itemGuid;
-
-    Item *item = _player->GetItemByGuid(itemGuid);
-
-    if(!item)
-    {
-        DEBUG_LOG("Item refund: item not found!");
-        return;
-    }
-
-    if(!(item->GetProto()->Flags & ITEM_FLAG_REFUNDABLE))
-    {
-        DEBUG_LOG("Item refund: item not refundable!");
-        return;
-    }
-
-    // item refund system not implemented yet
-}
-
 /**
  * Handles the packet sent by the client when requesting information about item text.
  *
@@ -1495,4 +1471,148 @@ void WorldSession::HandleItemTextQuery(WorldPacket & recv_data )
         data << uint8(1);                                   // no text
     }
     SendPacket(&data);
+}
+
+void WorldSession::HandleItemRefundInfoRequest(WorldPacket& recvPacket)
+{
+	if(!_player || !_player->IsInWorld())
+		return;
+
+	sLog.outDebug("Recieved CMSG_ITEMREFUNDINFO.");
+
+	uint64 itemGUID;
+	recvPacket >> itemGUID;
+	SendRefundInfo(itemGUID);
+}
+
+void WorldSession::HandleItemRefundRequest(WorldPacket& recv_data)
+{
+	if(!_player || !_player->IsInWorld())
+		return;
+
+	sLog.outDebug("Recieved CMSG_ITEM_REFUND_INFO.");
+
+	uint64 GUID;
+	uint32 error = 1;
+	Item* pItem = NULL;
+	uint32 RefundEntry;
+	ItemExtendedCostEntry const* ex = NULL;
+	ItemPrototype const* proto = NULL;
+
+	recv_data >> GUID;
+
+	if (pItem = _player->GetItemByGuid(GUID))
+	{
+		if(pItem->IsEligibleForRefund())
+		{
+			RefundEntry = _player->LookupRefundableItem(GUID);
+
+			// If the item is refundable we look up the extendedcost
+			if(RefundEntry != 0 && pItem->GetPlayedtimeField() != 0)
+			{
+				uint32 played = _player->GetTotalPlayedTime();
+				if(played < (pItem->GetPlayedtimeField() + 60*60*2 ))
+					ex = sItemExtendedCostStore.LookupEntry(RefundEntry);
+			}
+
+			if(ex != NULL)
+			{
+				proto = pItem->GetProto();
+
+				if(proto != NULL)
+				{
+					//We remove the refunded item and refund the cost
+					for(int i = 0; i < 5; ++i)
+					{
+						_player->StoreNewItemInInventorySlot( ex->reqitem[i], ex->reqitemcount[i]);
+					}
+
+					_player->ModifyHonorPoints(ex->reqhonorpoints);
+					_player->ModifyArenaPoints(ex->reqarenapoints);
+					//_player->c( proto->BuyPrice ); TODO CHANGE MONEY
+				
+					uint32 count = 1;
+					// Remove Item from player
+					_player->DestroyItem( pItem->GetBagSlot(),pItem->GetSlot(), true);
+					//_player->DestroyItemCount(pItem, &count, true);
+					//_player->GetItemInterface()->RemoveItemAmtByGuid(GUID, 1);
+
+					_player->RemoveRefundableItem(GUID);
+
+					// we were successful!
+					error = 0;
+				}
+			}
+		}
+	}
+
+	WorldPacket packet(SMSG_ITEM_REFUND_RESULT, 60);
+	packet << uint64(GUID);
+	packet << uint32(error);
+
+	if(error == 0)
+	{
+		packet << uint32(proto->BuyPrice);
+		packet << uint32(ex->reqhonorpoints);
+		packet << uint32(ex->reqarenapoints);
+
+		for(int i = 0; i < 5; ++i)
+		{
+			packet << uint32(ex->reqitem[i]);
+			packet << uint32(ex->reqitemcount[i]);
+		}
+	}
+
+	SendPacket(&packet);
+
+	sLog.outDebug("Sent SMSG_ITEM_REFUND_RESULT.");
+}
+
+void WorldSession::SendRefundInfo(uint64 itemGUID)
+{
+	if (!_player || !_player->IsInWorld())
+		return;
+
+	Item* pItem = _player->GetItemByGuid(itemGUID);
+	if(pItem == NULL)
+		return;
+
+	if(pItem->IsEligibleForRefund())
+	{
+		uint32 RefundEntry = _player->LookupRefundableItem(itemGUID);
+
+		if( !RefundEntry || pItem->GetPlayedtimeField() == 0)
+			return;
+
+		ItemExtendedCostEntry const*ex = sItemExtendedCostStore.LookupEntry(RefundEntry);
+		ItemPrototype const* proto = pItem->GetProto();
+
+		if (!ex || !proto)
+			return;
+
+		WorldPacket packet(SMSG_ITEM_REFUND_INFO_RESPONSE, 68);
+		packet << uint64(itemGUID);
+		packet << uint32(proto->BuyPrice);
+		packet << uint32(ex->reqhonorpoints);
+		packet << uint32(ex->reqarenapoints);
+
+		for(int i = 0; i < 5; ++i)
+		{
+			packet << uint32(ex->reqitem[i]);
+			packet << uint32(ex->reqitemcount[i]);
+		}
+
+		packet << uint32(0);  // always seems to be 0
+
+		uint32 played = _player->GetTotalPlayedTime();
+
+		if(played > (pItem->GetPlayedtimeField() + 60*60*2))
+			packet << uint32(0);
+		else
+			packet << uint32(pItem->GetPlayedtimeField());
+
+		SendPacket(&packet);
+
+		sLog.outDebug("Sent SMSG_ITEM_REFUND_INFO_RESPONSE.");
+	}
 }
