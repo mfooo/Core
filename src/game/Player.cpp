@@ -67,11 +67,6 @@
 #include "playerbot/PlayerbotMgr.h"
 #include "Config/Config.h"
 
-// Playerbot mod:
-#include "playerbot/PlayerbotAI.h"
-#include "playerbot/PlayerbotMgr.h"
-#include "Config/Config.h"
-
 #include <cmath>
 
 #define ZONE_UPDATE_INTERVAL (1*IN_MILLISECONDS)
@@ -434,10 +429,6 @@ Player::Player (WorldSession *session): Unit(), m_mover(this), m_camera(this), m
     m_jail_lasttime = "";
     m_jail_duration = 0;
     // Jail end
-
-    // Playerbot mod:
-    m_playerbotAI = 0;
-    m_playerbotMgr = 0;
 
     // Playerbot mod:
     m_playerbotAI = 0;
