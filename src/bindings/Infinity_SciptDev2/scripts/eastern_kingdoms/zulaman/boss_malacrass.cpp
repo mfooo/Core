@@ -16,7 +16,7 @@
 
 /* ScriptData
 SDName: Boss_Hex_Lord_Malacrass
-SD%Complete:
+SD%Complete: %
 SDComment:
 SDCategory: Zul'Aman
 EndScriptData */

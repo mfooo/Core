@@ -16,7 +16,7 @@
 
 /* ScriptData
 SDName: Boss_Nalorakk
-SD%Complete: 80
+SD%Complete: 
 SDComment: Todo: Trash Waves
 SDCategory: Zul'Aman
 EndScriptData */

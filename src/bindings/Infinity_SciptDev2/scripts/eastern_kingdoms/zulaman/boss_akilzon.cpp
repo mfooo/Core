@@ -16,11 +16,10 @@
 
 /* ScriptData
 SDName: boss_Akilzon
-SD%Complete: 75%
+SD%Complete: %
 SDComment: Missing timer for Call Lightning and Sound ID's
 SQLUpdate:
-#Temporary fix for Soaring Eagles
-
+ToDo:: fix soaring eagles
 EndScriptData */
 
 #include "precompiled.h"

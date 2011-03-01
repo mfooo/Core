@@ -16,7 +16,7 @@
 
 /* ScriptData
 SDName: Boss_Janalai
-SD%Complete: 100
+SD%Complete: 
 SDComment:
 SDCategory: Zul'Aman
 EndScriptData */

@@ -16,9 +16,10 @@
 
 /* ScriptData
 SDName: Instance_Zulaman
-SD%Complete: 80
+SD%Complete: 
 SDComment:
 SDCategory: Zul'Aman
+ToDo:: gong and harrsion need looked over and implented in  plus chests need overlooked
 EndScriptData */
 
 #include "precompiled.h"
