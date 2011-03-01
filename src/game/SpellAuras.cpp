@@ -1313,14 +1313,21 @@ void Aura::TriggerSpell()
                     }
 //                    // Controller Timer
 //                    case 28095: break;
-//                    // Stalagg Chain
-//                    case 28096: break;
+                    case 28096:                                     // Stalagg Chain
+                    case 28111:                                     // Feugen Chain
+                    {
+                        Unit* pCaster = GetCaster();
+                        if (pCaster && pCaster->GetDistance(target) > 60.0f)
+                        {
+                            pCaster->InterruptNonMeleeSpells(true);
+                            target->CastSpell(pCaster, 28087, true);
+                        }
+                        return;
+                    }
 //                    // Stalagg Tesla Passive
 //                    case 28097: break;
 //                    // Feugen Tesla Passive
 //                    case 28109: break;
-//                    // Feugen Chain
-//                    case 28111: break;
 //                    // Mark of Didier
 //                    case 28114: break;
 //                    // Communique Timer, camp
