@@ -1340,6 +1340,25 @@ void Spell::EffectDummy(SpellEffectIndex eff_idx)
 
                     return;
                 }
+                // Polarity Shift - Naxxramas - Thaddius 
+                case 28089: 
+                { 
+                     uint32 spell_id = roll_chance_i(50)  
+                     ? 28059  
+                     : 28084; 
+ 
+                  if (unitTarget) 
+                     unitTarget->CastSpell(unitTarget, spell_id, true, NULL, NULL, m_caster->GetGUID()); 
+                } 
+                case 39096: 
+                { 
+                uint32 spell_id = roll_chance_i(50)  
+                     ? 39088  
+                     : 39091; 
+ 
+                   if (unitTarget) 
+                   unitTarget->CastSpell(unitTarget, spell_id, true, NULL, NULL, m_caster->GetGUID()); 
+                } 
                 case 29200:                                 // Purify Helboar Meat
                 {
                     if (m_caster->GetTypeId() != TYPEID_PLAYER)

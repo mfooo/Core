@@ -26,6 +26,8 @@ EndScriptData */
 
 enum
 {
+    //SAY_AGGRO                 = Need texts, 
+    //SAY_DEATH                 = Needs texts,
     SPELL_ECK_BITE            = 55813,
     SPELL_ECK_SPIT            = 55814,
     SPELL_ECK_SPRING          = 55815,
@@ -65,12 +67,16 @@ struct MANGOS_DLL_DECL boss_eckAI : public ScriptedAI
 
     void Aggro(Unit* pWho)
     {
+        //DoScriptText(SAY_AGGRO, m_creature);
+
         if (m_pInstance)
             m_pInstance->SetData(TYPE_ECK, IN_PROGRESS);
     }
 
     void JustDied(Unit* pKiller)
     {
+        //DoScriptText(SAY_DEATH, m_creature);
+
         if (m_pInstance)
             m_pInstance->SetData(TYPE_ECK, DONE);
     }
