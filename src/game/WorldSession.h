@@ -304,8 +304,8 @@ class MANGOS_DLL_SPEC WorldSession
         }
         //used with item_page table
         bool SendItemInfo( uint32 itemid, WorldPacket data );
-		//used with item refund system
-		void SendRefundInfo(uint64 GUID);
+        //used with item refund system
+        void SendRefundInfo(uint64 GUID);
 
         //auction
         void SendAuctionHello(Unit * unit);
@@ -776,9 +776,9 @@ class MANGOS_DLL_SPEC WorldSession
 
         // Item Refund
         void HandleItemRefundInfoRequest(WorldPacket& recv_data);
-		void HandleItemRefundRequest(WorldPacket& recv_data);
+        void HandleItemRefundRequest(WorldPacket& recv_data);
 
-		void HandleCancelTempEnchantmentOpcode(WorldPacket& recv_data);
+        void HandleCancelTempEnchantmentOpcode(WorldPacket& recv_data);
         void HandleChannelVoiceOnOpcode(WorldPacket & recv_data);
         void HandleVoiceSessionEnableOpcode(WorldPacket& recv_data);
         void HandleSetActiveVoiceChannel(WorldPacket& recv_data);

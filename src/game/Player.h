@@ -2605,12 +2605,13 @@ class MANGOS_DLL_SPEC Player : public Unit
         bool HasTitle(CharTitlesEntry const* title) const { return HasTitle(title->bit_index); }
         void SetTitle(CharTitlesEntry const* title, bool lost = false);
 
-		/*********************************************************/
-		/***                ITEM REFUND SYSTEM                 ***/
-		/*********************************************************/
-		void AddRefundableItem(uint64 itemGUID,  uint32 extendedCost);
-		void RemoveRefundableItem(uint64 itemGUID);
-		uint32 LookupRefundableItem(uint64 itemGUID);
+        /*********************************************************/
+        /***                ITEM REFUND SYSTEM                 ***/
+        /*********************************************************/
+
+        void AddRefundableItem(uint64 itemGUID,  uint32 extendedCost);
+        void RemoveRefundableItem(uint64 itemGUID);
+        uint32 LookupRefundableItem(uint64 itemGUID);
 
         bool canSeeSpellClickOn(Creature const* creature) const;
 
@@ -2622,7 +2623,7 @@ class MANGOS_DLL_SPEC Player : public Unit
         void SetPlayerbotMgr(PlayerbotMgr* mgr) { assert(!m_playerbotAI && !m_playerbotMgr); m_playerbotMgr=mgr; }
         PlayerbotMgr* GetPlayerbotMgr() { return m_playerbotMgr; }
         void SetBotDeathTimer() { m_deathTimer = 0; }
-		
+
         uint32 m_grid_update_timer;
 
     protected:

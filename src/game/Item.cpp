@@ -470,15 +470,15 @@ bool Item::LoadFromDB(uint32 guidLow, Field *fields, ObjectGuid ownerGuid)
         }
     }
 
-	// Insert to Refundable map
-	if(GetPlayedtimeField())
-	{
-		std::pair<uint64, uint32> ItemInfo;
-		ItemInfo.first = GetGUID();
-		ItemInfo.second = 0; // At this point we can't lookup modified extended cost
+    // Insert to Refundable map
+    if(GetPlayedtimeField())
+    {
+        std::pair<uint64, uint32> ItemInfo;
+        ItemInfo.first = GetGUID();
+        ItemInfo.second = 0; // At this point we can't lookup modified extended cost
 
-		sObjectMgr.mItemRefundableMap.insert(ItemInfo);
-	}
+        sObjectMgr.mItemRefundableMap.insert(ItemInfo);
+    }
 
     if (need_save)                                          // normal item changed state set not work at loading
     {

@@ -7786,40 +7786,40 @@ void ObjectMgr::LoadSpellDisabledEntrys()
 
 void ObjectMgr::LoadGCNews()
 {
-	mGCNewsMap.clear(); // For reloading possibility
-	QueryResult* result = WorldDatabase.Query("SELECT id, parent, type, text FROM gc_news");
-	if(!result)
-	{
-		barGoLink bar(1);
+    mGCNewsMap.clear(); // For reloading possibility
+    QueryResult* result = WorldDatabase.Query("SELECT id, parent, type, text FROM gc_news");
+    if(!result)
+    {
+        barGoLink bar(1);
 
-		bar.step();
+        bar.step();
 
-		sLog.outString();
-		sLog.outErrorDb(">> Loaded `gc_news`, table is empty!");
-		return;
-	}
+        sLog.outString();
+        sLog.outErrorDb(">> Loaded `gc_news`, table is empty!");
+        return;
+    }
 
-	barGoLink bar(result->GetRowCount());
+    barGoLink bar(result->GetRowCount());
 
-	uint32 count = 0;
-	do
-	{
-		bar.step();
+    uint32 count = 0;
+    do
+    {
+        bar.step();
 
-		Field* fields = result->Fetch();
+        Field* fields = result->Fetch();
 
-		GCNewsData data;
-		data.parent = fields[1].GetUInt16();
-		data.type = fields[2].GetUInt16();
-		data.textstring = fields[3].GetCppString();
-		mGCNewsMap.insert(GCNewsMap::value_type(fields[0].GetUInt32(), data));
+        GCNewsData data;
+        data.parent = fields[1].GetUInt16();
+        data.type = fields[2].GetUInt16();
+        data.textstring = fields[3].GetCppString();
+        mGCNewsMap.insert(GCNewsMap::value_type(fields[0].GetUInt32(), data));
 
-		++count;
-	} while (result->NextRow());
-	delete result;
+        ++count;
+    } while (result->NextRow());
+    delete result;
 
-	sLog.outString();
-	sLog.outString( ">> Loaded %d GC News Data ", count );
+    sLog.outString();
+    sLog.outString( ">> Loaded %d GC News Data ", count );
 }
 
 void ObjectMgr::LoadFishingBaseSkillLevel()

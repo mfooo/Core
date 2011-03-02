@@ -919,7 +919,7 @@ bool Player::Create( uint32 guidlow, const std::string& name, uint8 race, uint8 
         }
     }
     // all item positions resolved
-    
+
     //Custom: Send a welcome in-game mail with external mail system. This must be moved to DB/Config.
     std::ostringstream welcome_message;
     welcome_message << "INSERT INTO `mail_external` (receiver, subject, message, money, item, item_count) VALUES ('" << GetGUIDLow() << "', '" << (getGender() == 0 ? "Welcome" : "Welcome") << "', 'Hola " << GetName() << ", " << (getGender() == 0 ? "Welcome" : "Welcome") << " STILL TESTING AND MIGHT PLACE A CUSTOM ITEM HERE BUT WELCOME AND ENJOY YOUR ADVENTURE!', '0', '0', '0')";
@@ -4852,7 +4852,7 @@ void Player::KillPlayer()
     UpdateCorpseReclaimDelay();                             // dependent at use SetDeathPvP() call before kill
 
     // don't create corpse at this moment, player might be falling
-	
+
     if (InBattleGround())
     {
         if (BattleGround* bg = GetBattleGround())
@@ -9255,7 +9255,7 @@ void Player::SendInitWorldStates(uint32 zoneid, uint32 areaid)
                 data << uint32(0xe2a) << uint32(0x1);       // 30 3626 Beach2 - Alliance control
                 // and many unks...
             }
-            break;	
+            break;
         case 4710:
             if (bg && bg->GetTypeID(true) == BATTLEGROUND_IC)
                 bg->FillInitialWorldStates(data, count);
@@ -9270,7 +9270,7 @@ void Player::SendInitWorldStates(uint32 zoneid, uint32 areaid)
                 data << uint32(4320) << uint32(1); // 13
                 data << uint32(4323) << uint32(1); // 14
                 data << uint32(4324) << uint32(1); // 15
-                data << uint32(4325) << uint32(1); // 16 
+                data << uint32(4325) << uint32(1); // 16
                 data << uint32(4317) << uint32(1); // 17
 
                 data << uint32(4301) << uint32(1); // 18
@@ -18163,7 +18163,7 @@ void Player::SaveToDB()
         CharacterDatabase.Execute( ps.str().c_str() );
     }
     /** World of Warcraft Armory **/
-	
+
         std::string sql_name = m_name;
         CharacterDatabase.escape_string(sql_name);
 
@@ -20224,8 +20224,8 @@ bool Player::BuyItemFromVendorSlot(ObjectGuid vendorGuid, uint32 vendorslot, uin
             data << uint32(count);
             GetSession()->SendPacket(&data);
 
-			if (it->IsEligibleForRefund() && crItem->ExtendedCost)
-				AddRefundableItem(it->GetGUID(), crItem->ExtendedCost);
+            if (it->IsEligibleForRefund() && crItem->ExtendedCost)
+                AddRefundableItem(it->GetGUID(), crItem->ExtendedCost);
 
             SendNewItem(it, pProto->BuyCount*count, true, false, false);
         }
@@ -20272,8 +20272,8 @@ bool Player::BuyItemFromVendorSlot(ObjectGuid vendorGuid, uint32 vendorslot, uin
             data << uint32(count);
             GetSession()->SendPacket(&data);
 
-			if (it->IsEligibleForRefund() && crItem->ExtendedCost)
-				AddRefundableItem(it->GetGUID(), crItem->ExtendedCost);
+            if (it->IsEligibleForRefund() && crItem->ExtendedCost)
+                AddRefundableItem(it->GetGUID(), crItem->ExtendedCost);
 
             SendNewItem(it, pProto->BuyCount*count, true, false, false);
 
@@ -21835,7 +21835,7 @@ uint32 Player::GetResurrectionSpellId()
 // Used in triggers for check "Only to targets that grant experience or honor" req
 bool Player::isHonorOrXPTarget(Unit* pVictim) const
 {
-    if (!pVictim) 
+    if (!pVictim)
         return false;
 
     uint32 v_level = pVictim->getLevel();
@@ -24195,16 +24195,16 @@ bool Player::IsReferAFriendLinked(Player* target)
 
 void Player::AddRefundableItem(uint64 itemGUID,  uint32 extendedcost)
 {
-	std::pair<uint64, uint32> RefundableItemInfo;
+    std::pair<uint64, uint32> RefundableItemInfo;
 
-	if (Item *item = GetItemByGuid(itemGUID))
-	{
-		item->SetPlayedtimeField(GetTotalPlayedTime());
-		RefundableItemInfo.first = itemGUID;
-		RefundableItemInfo.second = extendedcost;
+    if (Item *item = GetItemByGuid(itemGUID))
+    {
+        item->SetPlayedtimeField(GetTotalPlayedTime());
+        RefundableItemInfo.first = itemGUID;
+        RefundableItemInfo.second = extendedcost;
 
-		sObjectMgr.mItemRefundableMap.insert(RefundableItemInfo);
-	}
+        sObjectMgr.mItemRefundableMap.insert(RefundableItemInfo);
+    }
 }
 
 void Player::RemoveRefundableItem(uint64 itemGUID)

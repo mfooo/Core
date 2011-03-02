@@ -245,8 +245,8 @@ void WorldSession::HandleSendMail(WorldPacket & recv_data )
                         GetPlayerName(), GetAccountId(), item->GetProto()->Name1, item->GetEntry(), item->GetCount(), receiver.c_str(), rc_account);
                 }
 
-				// remove item from refundable map
-				pl->RemoveRefundableItem(items[i]->GetGUID());
+                // remove item from refundable map
+                pl->RemoveRefundableItem(items[i]->GetGUID());
 
                 pl->MoveItemFromInventory(items[i]->GetBagSlot(), item->GetSlot(), true);
                 CharacterDatabase.BeginTransaction();

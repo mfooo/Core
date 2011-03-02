@@ -398,9 +398,9 @@ typedef std::multimap<uint32, GraveYardData> GraveYardMap;
 typedef std::pair<GraveYardMap::const_iterator, GraveYardMap::const_iterator> GraveYardMapBounds;
 struct GCNewsData
 {
-	uint16 type;
-	uint16 parent;
-	std::string textstring;
+    uint16 type;
+    uint16 parent;
+    std::string textstring;
 };
 
 typedef std::multimap<uint32, GCNewsData> GCNewsMap;
@@ -828,7 +828,7 @@ class ObjectMgr
 
         void LoadVehicleAccessories();
 
-		void LoadGCNews();
+        void LoadGCNews();
 
         std::string GeneratePetName(uint32 entry);
         uint32 GetBaseXP(uint32 level) const;
@@ -1116,8 +1116,8 @@ class ObjectMgr
 
         int GetOrNewIndexForLocale(LocaleConstant loc);
 
-		GCNewsMap mGCNewsMap;
-		ItemRefundableMap mItemRefundableMap;
+        GCNewsMap mGCNewsMap;
+        ItemRefundableMap mItemRefundableMap;
 
         SpellClickInfoMapBounds GetSpellClickInfoMapBounds(uint32 creature_id) const
         {
