@@ -1,4 +1,4 @@
-/* Copyright (C) 2006 - 2010 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
+/* Copyright (C) 2006 - 2011 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
  * This program is free software licensed under GPL version 2
  * Please see the included DOCS/LICENSE.TXT for more information */
 
@@ -14,6 +14,9 @@ enum eTypes
 
     DATA_ANOMALUS,
     DATA_KERISTRASZA,
+	
+    //DATA_STOUTBEARD,
+    //DATA_KOLURG,
 
     ANOMALUS_CONTAINMET_SPHERE,
     ORMOROKS_CONTAINMET_SPHERE,
