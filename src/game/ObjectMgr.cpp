@@ -7784,6 +7784,44 @@ void ObjectMgr::LoadSpellDisabledEntrys()
     sLog.outString( ">> Loaded %u disabled spells ( %u - is cheaters spells)", total_count, cheat_spell_count);
 }
 
+void ObjectMgr::LoadGCNews()
+{
+    mGCNewsMap.clear(); // For reloading possibility
+    QueryResult* result = WorldDatabase.Query("SELECT id, parent, type, text FROM gc_news");
+    if(!result)
+    {
+        barGoLink bar(1);
+
+        bar.step();
+
+        sLog.outString();
+        sLog.outErrorDb(">> Loaded `gc_news`, table is empty!");
+        return;
+    }
+
+    barGoLink bar(result->GetRowCount());
+
+    uint32 count = 0;
+    do
+    {
+        bar.step();
+
+        Field* fields = result->Fetch();
+
+        GCNewsData data;
+        data.parent = fields[1].GetUInt16();
+        data.type = fields[2].GetUInt16();
+        data.textstring = fields[3].GetCppString();
+        mGCNewsMap.insert(GCNewsMap::value_type(fields[0].GetUInt32(), data));
+
+        ++count;
+    } while (result->NextRow());
+    delete result;
+
+    sLog.outString();
+    sLog.outString( ">> Loaded %d GC News Data ", count );
+}
+
 void ObjectMgr::LoadFishingBaseSkillLevel()
 {
     mFishingBaseForArea.clear();                            // for reload case

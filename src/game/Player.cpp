@@ -566,7 +566,7 @@ Player::Player (WorldSession *session): Unit(), m_mover(this), m_camera(this), m
 
     m_stableSlots = 0;
 
-    /////////////////// Instance System /////////////////////
+    /////////////////// Instance System ////////////////////
 
     m_HomebindTimer = 0;
     m_InstanceValid = true;
@@ -668,17 +668,14 @@ Player::~Player ()
     delete m_anticheat;
 
     // Playerbot mod
-    if (m_playerbotAI)
-	{
+    if (m_playerbotAI) {
         delete m_playerbotAI;
         m_playerbotAI = 0;
     }
-    if (m_playerbotMgr)
-	{
+    if (m_playerbotMgr) {
         delete m_playerbotMgr;
         m_playerbotMgr = 0;
     }
-
 }
 
 void Player::CleanupsBeforeDelete()
@@ -922,7 +919,7 @@ bool Player::Create( uint32 guidlow, const std::string& name, uint8 race, uint8 
         }
     }
     // all item positions resolved
-    
+
     //Custom: Send a welcome in-game mail with external mail system. This must be moved to DB/Config.
     std::ostringstream welcome_message;
     welcome_message << "INSERT INTO `mail_external` (receiver, subject, message, money, item, item_count) VALUES ('" << GetGUIDLow() << "', '" << (getGender() == 0 ? "Welcome" : "Welcome") << "', 'Hola " << GetName() << ", " << (getGender() == 0 ? "Welcome" : "Welcome") << " STILL TESTING AND MIGHT PLACE A CUSTOM ITEM HERE BUT WELCOME AND ENJOY YOUR ADVENTURE!', '0', '0', '0')";
@@ -1642,7 +1639,7 @@ void Player::Update( uint32 update_diff, uint32 p_time )
     if (IsHasDelayedTeleport())
         TeleportTo(m_teleport_dest, m_teleport_options);
 
-        // Playerbot mod
+	    // Playerbot mod
     if (m_playerbotAI)
         m_playerbotAI->UpdateAI(p_time);
     else if (m_playerbotMgr)
@@ -4855,7 +4852,7 @@ void Player::KillPlayer()
     UpdateCorpseReclaimDelay();                             // dependent at use SetDeathPvP() call before kill
 
     // don't create corpse at this moment, player might be falling
-	
+
     if (InBattleGround())
     {
         if (BattleGround* bg = GetBattleGround())
@@ -9258,7 +9255,7 @@ void Player::SendInitWorldStates(uint32 zoneid, uint32 areaid)
                 data << uint32(0xe2a) << uint32(0x1);       // 30 3626 Beach2 - Alliance control
                 // and many unks...
             }
-            break;	
+            break;
         case 4710:
             if (bg && bg->GetTypeID(true) == BATTLEGROUND_IC)
                 bg->FillInitialWorldStates(data, count);
@@ -9273,7 +9270,7 @@ void Player::SendInitWorldStates(uint32 zoneid, uint32 areaid)
                 data << uint32(4320) << uint32(1); // 13
                 data << uint32(4323) << uint32(1); // 14
                 data << uint32(4324) << uint32(1); // 15
-                data << uint32(4325) << uint32(1); // 16 
+                data << uint32(4325) << uint32(1); // 16
                 data << uint32(4317) << uint32(1); // 17
 
                 data << uint32(4301) << uint32(1); // 18
@@ -14082,41 +14079,21 @@ void Player::OnGossipSelect(WorldObject* pSource, uint32 gossipListId, uint32 me
             }
             else if(GetPlayerbotMgr()->GetPlayerBot(guidlo) == NULL)
             {
-                if(!(m_session->GetSecurity() > SEC_PLAYER))
+                QueryResult *resultchar = CharacterDatabase.PQuery("SELECT COUNT(*) FROM characters WHERE online = '1' AND account = '%u'", m_session->GetAccountId());
+                if(resultchar)
                 {
+                    Field *fields = resultchar->Fetch();
                     int maxnum = botConfig.GetIntDefault("PlayerbotAI.MaxNumBots", 9);
-                    int charcount = GetPlayerbotMgr()->GetBotCount();
-                    if(charcount >= maxnum)
-                    {
-                        ChatHandler(this).PSendSysMessage("|cffff0000You cannot summon anymore bots.(Current Max: |cffffffff%u)",maxnum);
-                        break;
-                    }
-                }
-
-                // check if this bot is allowed for player from other account
-                // placed here to prevent packet cheating
-                uint32 accountId = sObjectMgr.GetPlayerAccountIdByGUID(guid);
-                if (accountId != m_session->GetAccountId())
-                {
-                    if (!botConfig.GetBoolDefault("PlayerbotAI.SharedBots", true))
-                    {
-                        ChatHandler(this).PSendSysMessage("|cffff0000You may only add bots from the same account.");
-                        break;
-                    }
-
-                    QueryResult *resultsocial = CharacterDatabase.PQuery("SELECT COUNT(*) FROM character_social s, characters c WHERE s.guid=c.guid AND c.online = 0 AND flags & 1 AND s.note "_LIKE_" "_CONCAT3_("'%%'","'shared'","'%%'")" AND s.friend = '%u' AND s.guid = '%u'", m_session->GetPlayer()->GetGUIDLow(), guidlo);
-                    if (resultsocial)
-                    {
-                        Field *fields = resultsocial->Fetch();
-                        if (fields[0].GetUInt32() == 0)
+                    int acctcharcount = fields[0].GetUInt32();
+                    if(!(m_session->GetSecurity() > SEC_PLAYER))
+                        if(acctcharcount > maxnum)
                         {
-                            ChatHandler(this).PSendSysMessage("|cffff0000You may only add bots from the same account or a friend's character that contains 'shared' in the notes on their friend list while not online.");
-                            delete resultsocial;
+                            ChatHandler(this).PSendSysMessage("|cffff0000You cannot summon anymore bots.(Current Max: |cffffffff%u)",maxnum);
+                            delete resultchar;
                             break;
                         }
-                    }
-                    delete resultsocial;
                 }
+                delete resultchar;
 
                 QueryResult *resultlvl = CharacterDatabase.PQuery("SELECT level,name FROM characters WHERE guid = '%u'", guidlo);
                 if(resultlvl)
@@ -18186,7 +18163,7 @@ void Player::SaveToDB()
         CharacterDatabase.Execute( ps.str().c_str() );
     }
     /** World of Warcraft Armory **/
-	
+
         std::string sql_name = m_name;
         CharacterDatabase.escape_string(sql_name);
 
@@ -20247,6 +20224,9 @@ bool Player::BuyItemFromVendorSlot(ObjectGuid vendorGuid, uint32 vendorslot, uin
             data << uint32(count);
             GetSession()->SendPacket(&data);
 
+            if (it->IsEligibleForRefund() && crItem->ExtendedCost)
+                AddRefundableItem(it->GetGUID(), crItem->ExtendedCost);
+
             SendNewItem(it, pProto->BuyCount*count, true, false, false);
         }
     }
@@ -20291,6 +20271,9 @@ bool Player::BuyItemFromVendorSlot(ObjectGuid vendorGuid, uint32 vendorslot, uin
             data << uint32(crItem->maxcount > 0 ? new_count : 0xFFFFFFFF);
             data << uint32(count);
             GetSession()->SendPacket(&data);
+
+            if (it->IsEligibleForRefund() && crItem->ExtendedCost)
+                AddRefundableItem(it->GetGUID(), crItem->ExtendedCost);
 
             SendNewItem(it, pProto->BuyCount*count, true, false, false);
 
@@ -21852,7 +21835,7 @@ uint32 Player::GetResurrectionSpellId()
 // Used in triggers for check "Only to targets that grant experience or honor" req
 bool Player::isHonorOrXPTarget(Unit* pVictim) const
 {
-    if (!pVictim) 
+    if (!pVictim)
         return false;
 
     uint32 v_level = pVictim->getLevel();
@@ -24208,6 +24191,35 @@ bool Player::IsReferAFriendLinked(Player* target)
     }
 
     return false;
+}
+
+void Player::AddRefundableItem(uint64 itemGUID,  uint32 extendedcost)
+{
+    std::pair<uint64, uint32> RefundableItemInfo;
+
+    if (Item *item = GetItemByGuid(itemGUID))
+    {
+        item->SetPlayedtimeField(GetTotalPlayedTime());
+        RefundableItemInfo.first = itemGUID;
+        RefundableItemInfo.second = extendedcost;
+
+        sObjectMgr.mItemRefundableMap.insert(RefundableItemInfo);
+    }
+}
+
+void Player::RemoveRefundableItem(uint64 itemGUID)
+{
+	sObjectMgr.mItemRefundableMap.erase(itemGUID);
+}
+
+uint32 Player::LookupRefundableItem(uint64 itemGUID)
+{
+	ItemRefundableMap::iterator itr = sObjectMgr.mItemRefundableMap.find(itemGUID);
+
+	if (itr != sObjectMgr.mItemRefundableMap.end())
+		return itr->second;
+
+	return 0;
 }
 
 /** World of Warcraft Armory **/

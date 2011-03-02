@@ -35,7 +35,6 @@ public:
     Player* GetMaster() const { return m_master; };
     PlayerBotMap::const_iterator GetPlayerBotsBegin() const { return m_playerBots.begin(); }
     PlayerBotMap::const_iterator GetPlayerBotsEnd()   const { return m_playerBots.end();   }
-    int GetBotCount() const { return m_botCount; }
 
     void LogoutAllBots();
     void RemoveAllBotsFromGroup();
@@ -48,14 +47,12 @@ public:
     uint32 m_confDisableBotsInRealm;
     uint32 m_confMaxNumBots;
     bool m_confDisableBots;
-    bool m_confSharedBots;
     bool m_confDebugWhisper;
     float m_confFollowDistance[2];
 
 private:
     Player* const m_master;
     PlayerBotMap m_playerBots;
-    int m_botCount;
 };
 
 #endif

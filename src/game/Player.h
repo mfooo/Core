@@ -1655,7 +1655,7 @@ class MANGOS_DLL_SPEC Player : public Unit
 
         void chompAndTrim(std::string& str);
         bool getNextQuestId(const std::string& pString, unsigned int& pStartPos, unsigned int& pId);
-		void skill(std::list<uint32>& m_spellsToLearn);
+        void skill(std::list<uint32>& m_spellsToLearn);
         bool requiredQuests(const char* pQuestIdString);
 
         /*********************************************************/
@@ -2604,6 +2604,14 @@ class MANGOS_DLL_SPEC Player : public Unit
         bool HasTitle(uint32 bitIndex) const;
         bool HasTitle(CharTitlesEntry const* title) const { return HasTitle(title->bit_index); }
         void SetTitle(CharTitlesEntry const* title, bool lost = false);
+
+        /*********************************************************/
+        /***                ITEM REFUND SYSTEM                 ***/
+        /*********************************************************/
+
+        void AddRefundableItem(uint64 itemGUID,  uint32 extendedCost);
+        void RemoveRefundableItem(uint64 itemGUID);
+        uint32 LookupRefundableItem(uint64 itemGUID);
 
         bool canSeeSpellClickOn(Creature const* creature) const;
 
