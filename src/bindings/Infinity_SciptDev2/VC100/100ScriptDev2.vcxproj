@@ -288,7 +288,6 @@
     <ClCompile Include="..\scripts\eastern_kingdoms\silverpine_forest.cpp" />
     <ClCompile Include="..\scripts\eastern_kingdoms\stormwind_city.cpp" />
     <ClCompile Include="..\scripts\eastern_kingdoms\stranglethorn_vale.cpp" />
-    <ClCompile Include="..\scripts\eastern_kingdoms\sunwell_plateau\boss_muru_entropius.cpp" />
     <ClCompile Include="..\scripts\eastern_kingdoms\swamp_of_sorrows.cpp" />
     <ClCompile Include="..\scripts\eastern_kingdoms\tirisfal_glades.cpp" />
     <ClCompile Include="..\scripts\eastern_kingdoms\undercity.cpp" />
