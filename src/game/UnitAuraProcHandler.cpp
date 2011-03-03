@@ -3692,6 +3692,7 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
             }
             break;
         case SPELLFAMILY_HUNTER:
+        {
             // Piercing Shots
             if (auraSpellInfo->SpellIconID == 3247 && auraSpellInfo->SpellVisual[0] == 0)
             {
@@ -3699,6 +3700,7 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
                 trigger_spell_id = 63468;
                 target = pVictim;
             }
+            
             // Rapid Recuperation
             else if (auraSpellInfo->Id == 53228 || auraSpellInfo->Id == 53232)
             {
@@ -3710,7 +3712,15 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
             else if ((auraSpellInfo->Id == 19184 || auraSpellInfo->Id == 19387 || auraSpellInfo->Id == 19388) &&
                 !(procSpell->SpellFamilyFlags & UI64LIT(0x200000000000) || procSpell->SpellFamilyFlags2 & UI64LIT(0x40000)))
                     return SPELL_AURA_PROC_FAILED;
+            // Lock and Load 
+            else if (auraSpellInfo->SpellIconID == 3579) 
+            { 
+                // Check for Lock and Load Marker 
+                if (HasAura(67544)) 
+                    return SPELL_AURA_PROC_FAILED; 
+            }
             break;
+        }
         case SPELLFAMILY_PALADIN:
         {
             /*
