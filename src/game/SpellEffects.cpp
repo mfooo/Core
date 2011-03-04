@@ -5667,6 +5667,16 @@ void Spell::DoSummonGuardian(SpellEffectIndex eff_idx, uint32 forceFaction)
         else
             m_caster->GetClosePoint(px, py, pz,m_caster->GetObjectBoundingRadius());
 
+        // Mirror Image 
+        if (pet_entry == 31216) 
+        { 
+                // Set correct health and mana 
+                spawnCreature->SetMaxHealth(m_caster->GetMaxHealth()/3.0f); 
+                spawnCreature->SetHealth(m_caster->GetHealth()/3.0f); 
+                spawnCreature->SetMaxPower(POWER_MANA, m_caster->GetMaxPower(POWER_MANA)); 
+                spawnCreature->SetPower(POWER_MANA, m_caster->GetPower(POWER_MANA)); 
+        }
+
         if (!spawnCreature->SetSummonPosition(px,py,pz))
         {
             sLog.outError("Guardian pet (guidlow %d, entry %d) not summoned. Suggested coordinates isn't valid (X: %f Y: %f)",
