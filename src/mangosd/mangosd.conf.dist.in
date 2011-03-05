@@ -1923,6 +1923,14 @@ CharDelete.KeepDays = 30
 #        The amount of gold that players will receive after killing an enemy.
 #        Default: 100000
 #
+#    PvPToken.Honor 
+#        The amount of honor points that players will receive after killing an enemy. 
+#        Default: 75000 
+# 
+#    PvPToken.Arena 
+#        The amount of arena points that players will receive after killing an enemy. 
+#        Default: 5000
+#
 #    PvPToken.MapRestriction
 #        The type of maps where players can receive the token
 #        Default: 4 - all maps
@@ -1936,6 +1944,8 @@ PvPToken.Enable = 1
 PvPToken.ItemID = 29434
 PvPToken.ItemCount = 1
 PvPToken.Gold = 100000
+PvPToken.Honor = 75000 
+PvPToken.Arena = 5000
 PvPToken.MapRestriction = 4
 
 ###################################################################################################################

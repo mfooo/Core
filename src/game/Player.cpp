@@ -23120,6 +23120,8 @@ void Player::ReceiveToken()
     uint32 itemID = sWorld.getConfig(CONFIG_FLOAT_PVP_TOKEN_ITEMID);
     uint32 itemCount = sWorld.getConfig(CONFIG_FLOAT_PVP_TOKEN_ITEMCOUNT);
     uint32 goldAmount = sWorld.getConfig(CONFIG_FLOAT_PVP_TOKEN_GOLD);
+    uint32 honorAmount = sWorld.getConfig(CONFIG_PVP_TOKEN_HONOR); 
+    uint32 arenaAmount = sWorld.getConfig(CONFIG_PVP_TOKEN_ARENA); 
 
     ItemPosCountVec dest;
     uint8 msg = CanStoreNewItem( NULL_BAG, NULL_SLOT, dest, itemID, itemCount);
@@ -23129,13 +23131,23 @@ void Player::ReceiveToken()
         return;
     }
 
-    Item* item = StoreNewItem( dest, itemID, true, Item::GenerateItemRandomPropertyId(itemID));
-    SendNewItem(item,itemCount,true,false);
-
-    if( goldAmount > 0 )
-        ModifyMoney(goldAmount);
-        SaveGoldToDB();
-        return;
+    Item* item = StoreNewItem( dest, itemID, true, Item::GenerateItemRandomPropertyId(itemID)); 
+   SendNewItem(item,itemCount,true,false); 
+ 
+   if( honorAmount > 0 ) 
+       ModifyHonorPoints(honorAmount); 
+       SaveToDB(); 
+       return; 
+ 
+   if( goldAmount > 0 ) 
+       ModifyMoney(goldAmount); 
+       SaveGoldToDB(); 
+       return;
+ 
+   if( arenaAmount > 0 ) 
+       ModifyArenaPoints(arenaAmount);
+       SaveToDB();
+       return;
 
     ChatHandler(this).PSendSysMessage(LANG_EVENTMESSAGE);
 }
