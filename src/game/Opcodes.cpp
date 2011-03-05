@@ -1230,7 +1230,7 @@ OpcodeHandler opcodeTable[NUM_MSG_TYPES] =
     /*0x4B1*/ { "UMSG_UNKNOWN_1201",                            STATUS_NEVER,    PROCESS_INPLACE,      &WorldSession::Handle_NULL                     },
     /*0x4B2*/ { "SMSG_ITEM_REFUND_INFO_RESPONSE",               STATUS_NEVER,    PROCESS_INPLACE,      &WorldSession::Handle_ServerSide               },
     /*0x4B3*/ { "CMSG_ITEM_REFUND_INFO",                        STATUS_LOGGEDIN, PROCESS_THREADUNSAFE, &WorldSession::HandleItemRefundInfoRequest     },
-    /*0x4B4*/ { "CMSG_ITEM_REFUND",                             STATUS_NEVER,    PROCESS_INPLACE,      &WorldSession::Handle_NULL                     },
+    /*0x4B4*/ { "CMSG_ITEM_REFUND",                             STATUS_LOGGEDIN, PROCESS_THREADUNSAFE, &WorldSession::HandleItemRefundRequest         },
     /*0x4B5*/ { "SMSG_ITEM_REFUND_RESULT",                      STATUS_NEVER,    PROCESS_INPLACE,      &WorldSession::Handle_ServerSide               },
     /*0x4B6*/ { "CMSG_CORPSE_MAP_POSITION_QUERY",               STATUS_LOGGEDIN, PROCESS_THREADUNSAFE, &WorldSession::HandleCorpseMapPositionQueryOpcode},
     /*0x4B7*/ { "SMSG_CORPSE_MAP_POSITION_QUERY_RESPONSE",      STATUS_NEVER,    PROCESS_INPLACE,      &WorldSession::Handle_ServerSide               },

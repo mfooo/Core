@@ -479,6 +479,14 @@ bool Spell::FillCustomTargetMap(SpellEffectIndex i, UnitList &targetUnitMap)
             FillAreaTargets(targetUnitMap,m_targets.m_destX, m_targets.m_destY,radius,PUSH_DEST_CENTER,SPELL_TARGETS_AOE_DAMAGE);
             break;
         }
+        case 58912: // Deathstorm
+        {
+            if (!m_caster->GetObjectGuid().IsVehicle())
+                return false;
+
+            SetTargetMap(SpellEffectIndex(i), TARGET_RANDOM_ENEMY_CHAIN_IN_AREA, targetUnitMap);
+            return true;
+        }
         case 61999: // Raise ally
         {
             WorldObject* result = FindCorpseUsing <MaNGOS::RaiseAllyObjectCheck>  ();
@@ -692,6 +700,7 @@ void Spell::FillTargetMap()
                 }
                 break;
             case TARGET_AREAEFFECT_CUSTOM:
+            case TARGET_DUELVSPLAYER:
                 if (FillCustomTargetMap(SpellEffectIndex(i),tmpUnitMap)) break;
             default:
                 switch(m_spellInfo->EffectImplicitTargetB[i])
@@ -1664,6 +1673,7 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
                 case 30843:                                 // Enfeeble TODO: exclude top threat target from target selection
                 case 42005:                                 // Bloodboil TODO: need to be 5 targets(players) furthest away from caster
                 case 55665:                                 // Life Drain (h)
+                case 58917:                                 // Consume Minions
                 case 67700:                                 // Penetrating Cold (25 man)
                 case 68510:                                 // Penetrating Cold (25 man, heroic)
                     unMaxTargets = 5;
@@ -1757,6 +1767,8 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
             float angle = 2.0f * M_PI_F * rand_norm_f();
             float dest_x, dest_y, dest_z;
             m_caster->GetClosePoint(dest_x, dest_y, dest_z, 0.0f, radius, angle);
+            if (m_spellInfo->Id == 66084)                   // cosmetic hack for Lightning Arrows 
+                dest_z += 7.0f;                             // (Trial of the Champion encounter)
             m_targets.setDestination(dest_x, dest_y, dest_z);
 
             targetUnitMap.push_back(m_caster);
@@ -1974,6 +1986,10 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
                 {
                     if (!prev->IsWithinDist (*next,CHAIN_SPELL_JUMP_RADIUS))
                         break;
+
+                    if (prev == (Unit*)m_caster)
+                        break;
+
                     if (!prev->IsWithinLOSInMap (*next) || ((m_spellInfo->AttributesEx6 & SPELL_ATTR_EX6_IGNORE_CCED_TARGETS) && !(*next)->CanFreeMove()))
                     {
                         ++next;
@@ -6086,13 +6102,20 @@ SpellCastResult Spell::CheckPetCast(Unit* target)
                                    || m_spellInfo->EffectImplicitTargetA[j] == TARGET_MASTER
                                    || m_spellInfo->EffectImplicitTargetA[j] == TARGET_IN_FRONT_OF_CASTER
                                    || m_spellInfo->EffectImplicitTargetA[j] == TARGET_EFFECT_SELECT
+                                   || m_spellInfo->EffectImplicitTargetA[j] == TARGET_CHAIN_DAMAGE
                                    || m_spellInfo->EffectImplicitTargetA[j] == TARGET_CASTER_COORDINATES);
                 }
-                if (!m_caster->GetVehicleKit() && m_caster->IsFriendlyTo(target) && !(!m_caster->GetCharmerOrOwner() || !m_caster->GetCharmerOrOwner()->IsFriendlyTo(target))
+                if (m_caster->IsFriendlyTo(_target) && !(!m_caster->GetCharmerOrOwner() || !m_caster->GetCharmerOrOwner()->IsFriendlyTo(_target))
                      && !dualEffect && !IsDispelSpell(m_spellInfo))
                 {
-                    DEBUG_LOG("Charmed creature attempt to cast spell %d, but target (guid %u) is not valid",m_spellInfo->Id,target->GetObjectGuid().GetRawValue());
+                    DEBUG_LOG("Charmed creature attempt to cast spell %d, but target (guid %u) is not valid",m_spellInfo->Id,_target->GetObjectGuid().GetRawValue());
                     return SPELL_FAILED_BAD_TARGETS;
+                }
+
+                if (m_caster->GetObjectGuid() == _target->GetObjectGuid() && dualEffect && !IsPositiveSpell(m_spellInfo->Id))
+                {
+                    DEBUG_LOG("Charmed creature %u attempt to cast negative spell %d on self",_target->GetObjectGuid().GetRawValue(),m_spellInfo->Id);
+//                    return SPELL_FAILED_BAD_TARGETS;
                 }
             }
         }

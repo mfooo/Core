@@ -516,6 +516,28 @@ void LoadDBCStores(const std::string& dataPath)
     }
 	
     // DBC Hacks
+	
+    // Bestial Wrath - Similar to PvP trinket except for Daze effects and slow attack
+   SpellEntry *sfix1 = const_cast<SpellEntry*>(sSpellStore.LookupEntry(19574));
+   sfix1->EffectApplyAuraName[EFFECT_INDEX_2] = SPELL_AURA_MECHANIC_IMMUNITY_MASK;
+   sfix1->EffectMiscValue[EFFECT_INDEX_2] = ( \
+   (1<<(MECHANIC_CHARM   -1))|(1<<(MECHANIC_DISORIENTED-1))|(1<<(MECHANIC_FEAR  -1))| \
+   (1<<(MECHANIC_ROOT    -1))|(1<<(MECHANIC_SLEEP -1))| \
+   (1<<(MECHANIC_SNARE   -1))|(1<<(MECHANIC_STUN       -1))|(1<<(MECHANIC_FREEZE-1))| \
+   (1<<(MECHANIC_KNOCKOUT-1))|(1<<(MECHANIC_POLYMORPH  -1))|(1<<(MECHANIC_BANISH-1))| \
+   (1<<(MECHANIC_SHACKLE -1))|(1<<(MECHANIC_TURN       -1))|(1<<(MECHANIC_HORROR-1))| \
+   (1<<(MECHANIC_SAPPED     -1)));
+
+   // The Beast Within - Same problem as Bestial Wrath
+   SpellEntry *sfix2 = const_cast<SpellEntry*>(sSpellStore.LookupEntry(34471));
+   sfix2->EffectApplyAuraName[EFFECT_INDEX_2] = SPELL_AURA_MECHANIC_IMMUNITY_MASK;
+   sfix2->EffectMiscValue[EFFECT_INDEX_2] = ( \
+   (1<<(MECHANIC_CHARM   -1))|(1<<(MECHANIC_DISORIENTED-1))|(1<<(MECHANIC_FEAR  -1))| \
+   (1<<(MECHANIC_ROOT    -1))|(1<<(MECHANIC_SLEEP -1))| \
+   (1<<(MECHANIC_SNARE   -1))|(1<<(MECHANIC_STUN       -1))|(1<<(MECHANIC_FREEZE-1))| \
+   (1<<(MECHANIC_KNOCKOUT-1))|(1<<(MECHANIC_POLYMORPH  -1))|(1<<(MECHANIC_BANISH-1))| \
+   (1<<(MECHANIC_SHACKLE -1))|(1<<(MECHANIC_TURN       -1))|(1<<(MECHANIC_HORROR-1))| \
+   (1<<(MECHANIC_SAPPED     -1)));
 
     //Throw Passanger
     SpellEntry *sfix3 = const_cast<SpellEntry*>(sSpellStore.LookupEntry(62324));

@@ -302,4 +302,9 @@ EXTRA_DIST = \
 	11115_01_mangos_command.sql \
 	11117_01_mangos_world_template.sql \
 	11117_02_characters_world.sql \
+    11169_01_mangos_mangos_string \
+    11169_02_mangos_command \
+    11190_01_mangos_pool_creature_template \
+    11190_01_mangos_pool_gameobject_template \
+    11200_01_mangos_spell_bonus_data
 	README

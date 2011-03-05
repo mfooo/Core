@@ -439,11 +439,15 @@ void WorldSession::HandleAcceptTradeOpcode(WorldPacket& recvPacket)
             if (Item* item = myItems[i])
             {
                 item->SetGuidValue(ITEM_FIELD_GIFTCREATOR, _player->GetObjectGuid());
+                // Removing items from refundable map
+                _player->RemoveRefundableItem(item->GetGUID());
                 _player->MoveItemFromInventory(item->GetBagSlot(), item->GetSlot(), true);
             }
             if (Item* item = hisItems[i])
             {
                 item->SetGuidValue(ITEM_FIELD_GIFTCREATOR, trader->GetObjectGuid());
+                // Removing items from refundable map
+                _player->RemoveRefundableItem(item->GetGUID());
                 trader->MoveItemFromInventory(item->GetBagSlot(), item->GetSlot(), true);
             }
         }

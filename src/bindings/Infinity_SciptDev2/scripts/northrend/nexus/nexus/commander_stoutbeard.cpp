@@ -1,4 +1,4 @@
-/* Copyright (C) 2006 - 2010 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
+/* Copyright (C) 2006 - 2011 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -22,40 +22,53 @@ SDCategory:
 Script Data End */
 
 #include "precompiled.h"
+#include "nexus.h"
 
-#define SPELL_BATTLE_SHOUT                                       31403
-#define SPELL_CHARGE                                             60067
-#define SPELL_FRIGHTENING_SHOUT                                  19134
-#define SPELL_WHIRLWIND_1                                        38619
-#define SPELL_WHIRLWIND_2                                        38618
+enum
+{
 
-//not used
-//Yell
-#define SAY_AGGRO                                              -1576021
-#define SAY_KILL                                               -1576022
-#define SAY_DEATH                                              -1576023
+    SAY_AGGRO                                               = -1576021, // need correct text
+    SAY_KILL                                                = -1576022, // need correct text
+    SAY_DEATH                                               = -1576023, // need correct text
+
+    SPELL_BATTLE_SHOUT                                      = 31403,
+    SPELL_CHARGE                                            = 60067,
+    SPELL_FRIGHTENING_SHOUT                                 = 19134,
+    SPELL_WHIRLWIND_1                                       = 38619,
+    SPELL_WHIRLWIND_2                                       = 38618
+};
 
 struct MANGOS_DLL_DECL boss_commander_stoutbeardAI : public ScriptedAI
 {
     boss_commander_stoutbeardAI(Creature *pCreature) : ScriptedAI(pCreature) {Reset();}
 
     void Reset() {}
-    void EnterCombat(Unit* who)
+
+    void EnterCombat(Unit* who) 
     {
         DoScriptText(SAY_AGGRO, m_creature);
     }
+
     void AttackStart(Unit* who) {}
+
     void MoveInLineOfSight(Unit* who) {}
+	
+    void KilledUnit(Unit *victim)
+    {
+        DoScriptText(SAY_KILL, m_creature);
+    }
+	
+    void JustDied(Unit* killer)  
+    {
+        DoScriptText(SAY_DEATH, m_creature);
+    }
+
     void UpdateAI(const uint32 diff)
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;
 
         DoMeleeAttackIfReady();
-    }
-    void JustDied(Unit* killer)
-    {
-        DoScriptText(SAY_DEATH, m_creature);
     }
 };
 

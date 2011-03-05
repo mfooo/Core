@@ -140,14 +140,14 @@ class CharacterHandler
         // Playerbot mod: is different from the normal HandlePlayerLoginCallback in that it
         // sets up the bot's world session and also stores the pointer to the bot player in the master's
         // world session m_playerBots map
-        void HandlePlayerBotLoginCallback(QueryResult * /*dummy*/, SqlQueryHolder * holder, uint32 masterId)
+        void HandlePlayerBotLoginCallback(QueryResult * /*dummy*/, SqlQueryHolder * holder)
         {
             if (!holder)
                 return;
 
             LoginQueryHolder* lqh = (LoginQueryHolder*) holder;
 
-            WorldSession* masterSession = sWorld.FindSession(masterId);
+            WorldSession* masterSession = sWorld.FindSession(lqh->GetAccountId());
 
             if (! masterSession || sObjectMgr.GetPlayer(lqh->GetGuid()))
             {
@@ -577,11 +577,6 @@ void WorldSession::HandlePlayerLoginOpcode( WorldPacket & recv_data )
     ObjectGuid playerGuid;
     recv_data >> playerGuid;
 
-    // check if character is currently a playerbot, if so then logout
-    Player *checkChar = sObjectMgr.GetPlayer(playerGuid);
-    if (checkChar && checkChar->GetPlayerbotAI())
-        checkChar->GetPlayerbotAI()->GetManager()->LogoutPlayerBot(playerGuid.GetRawValue());
-
     if(PlayerLoading() || GetPlayer() != NULL)
     {
         sLog.outError("Player tryes to login again, AccountId = %d", GetAccountId());
@@ -621,9 +616,7 @@ void PlayerbotMgr::AddPlayerBot(uint64 playerGuid)
         delete holder;                                      // delete all unprocessed queries
         return;
     }
-
-    uint32 masterId = sObjectMgr.GetPlayerAccountIdByGUID(GetMaster()->GetObjectGuid());
-    CharacterDatabase.DelayQueryHolder(&chrHandler, &CharacterHandler::HandlePlayerBotLoginCallback, holder, masterId);
+    CharacterDatabase.DelayQueryHolder(&chrHandler, &CharacterHandler::HandlePlayerBotLoginCallback, holder);
 }
 
 void WorldSession::HandlePlayerLogin(LoginQueryHolder *holder)
@@ -777,11 +770,7 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder *holder)
     pCurrChar->SendInitialPacketsAfterAddToMap();
 
     CharacterDatabase.PExecute("UPDATE characters SET online = 1 WHERE guid = '%u'", pCurrChar->GetGUIDLow());
-
-    // don't update active realm if is playerbot
-    if (pCurrChar->GetSession()->GetRemoteAddress() != "bot")
-        LoginDatabase.PExecute("UPDATE account SET active_realm_id = %u WHERE id = '%u'", realmID, GetAccountId());
-
+    LoginDatabase.PExecute("UPDATE account SET active_realm_id = %u WHERE id = '%u'", realmID, GetAccountId());
     pCurrChar->SetInGameTime( WorldTimer::getMSTime() );
 
     // announce group about member online (must be after add to player list to receive announce to self)

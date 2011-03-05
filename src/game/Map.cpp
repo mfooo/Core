@@ -632,7 +632,7 @@ void Map::Remove(Player *player, bool remove)
     SendRemoveTransports(player);
     UpdateObjectVisibility(player,cell,p);
 
-    player->ResetMap();
+    // player->ResetMap();
     if( remove )
         DeleteFromWorld(player);
 }
@@ -1387,8 +1387,7 @@ bool DungeonMap::Add(Player *player)
                 GetPersistanceState()->GetMapId(), GetPersistanceState()->GetInstanceId(),
                 GetPersistanceState()->GetDifficulty(), GetPersistanceState()->GetPlayerCount(),
                 GetPersistanceState()->GetGroupCount(), GetPersistanceState()->CanReset());
-            player->RepopAtGraveyard();
-            return false;
+            MANGOS_ASSERT(false);
         }
     }
     else
@@ -1438,8 +1437,7 @@ bool DungeonMap::Add(Player *player)
                         sLog.outError("GroupBind save players: %d, group count: %d", groupBind->state->GetPlayerCount(), groupBind->state->GetGroupCount());
                     else
                         sLog.outError("GroupBind save NULL");
-                    player->RepopAtGraveyard();
-                    return false;
+                    MANGOS_ASSERT(false);
                 }
                 // if the group/leader is permanently bound to the instance
                 // players also become permanently bound when they enter
@@ -1464,8 +1462,8 @@ bool DungeonMap::Add(Player *player)
                 player->BindToInstance(GetPersistanceState(), false);
             else
             {
-                player->RepopAtGraveyard();
-                return false;
+                // cannot jump to a different instance without resetting it 
+                MANGOS_ASSERT(playerBind->state == GetPersistentState());
             }
         }
     }

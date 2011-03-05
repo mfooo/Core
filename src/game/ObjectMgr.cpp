@@ -3903,6 +3903,7 @@ void ObjectMgr::LoadGroups()
             uint32 mapId = fields[1].GetUInt32();
             Difficulty diff = (Difficulty)fields[4].GetUInt8();
             uint32 groupId = fields[7].GetUInt32();
+            uint64 resetTime = fields[5].GetUInt64();
 
             if (!group || group->GetId() != groupId)
             {
@@ -3928,7 +3929,13 @@ void ObjectMgr::LoadGroups()
                 diff = REGULAR_DIFFICULTY;                  // default for both difficaly types
             }
 
-            DungeonPersistentState *state = (DungeonPersistentState*)sMapPersistentStateMgr.AddPersistentState(mapEntry, fields[2].GetUInt32(), Difficulty(diff), (time_t)fields[5].GetUInt64(), (fields[6].GetUInt32() == 0), true);
+            if (resetTime > (time(NULL) + INSTANCE_MAX_RESET_OFFSET))
+            {
+                resetTime = DungeonResetScheduler::CalculateNextResetTime(mapId, diff, time(NULL));
+                sLog.outErrorDb("ObjectMgr::Wrong reset time in group_instance corrected to: %d", resetTime);
+            }
+
+            DungeonPersistentState *state = (DungeonPersistentState*)sMapPersistentStateMgr.AddPersistentState(mapEntry, fields[2].GetUInt32(), Difficulty(diff), (time_t)resetTime, (fields[6].GetUInt32() == 0), true);
             group->BindToInstance(state, fields[3].GetBool(), true);
         }while( result->NextRow() );
         delete result;
@@ -7782,6 +7789,44 @@ void ObjectMgr::LoadSpellDisabledEntrys()
 
     sLog.outString();
     sLog.outString( ">> Loaded %u disabled spells ( %u - is cheaters spells)", total_count, cheat_spell_count);
+}
+
+void ObjectMgr::LoadGCNews()
+{
+    mGCNewsMap.clear(); // For reloading possibility
+    QueryResult* result = WorldDatabase.Query("SELECT id, parent, type, text FROM gc_news");
+    if(!result)
+    {
+        barGoLink bar(1);
+
+        bar.step();
+
+        sLog.outString();
+        sLog.outErrorDb(">> Loaded `gc_news`, table is empty!");
+        return;
+    }
+
+    barGoLink bar(result->GetRowCount());
+
+    uint32 count = 0;
+    do
+    {
+        bar.step();
+
+        Field* fields = result->Fetch();
+
+        GCNewsData data;
+        data.parent = fields[1].GetUInt16();
+        data.type = fields[2].GetUInt16();
+        data.textstring = fields[3].GetCppString();
+        mGCNewsMap.insert(GCNewsMap::value_type(fields[0].GetUInt32(), data));
+
+        ++count;
+    } while (result->NextRow());
+    delete result;
+
+    sLog.outString();
+    sLog.outString( ">> Loaded %d GC News Data ", count );
 }
 
 void ObjectMgr::LoadFishingBaseSkillLevel()

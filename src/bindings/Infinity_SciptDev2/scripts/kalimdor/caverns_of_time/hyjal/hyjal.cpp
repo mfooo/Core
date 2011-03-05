@@ -102,7 +102,7 @@ bool GossipSelect_npc_jaina_proudmoore(Player* pPlayer, Creature* pCreature, uin
                 pJainaAI->StartEvent();
                 break;
             case GOSSIP_ACTION_INFO_DEF + 3:
-                pJainaAI->Retreat();
+                pPlayer->TeleportTo(534, 5495.071289f, -2970.372070f, 1537.687744f, 2.858703f, 0);
                 break;
             case GOSSIP_ACTION_INFO_DEF:
                 pJainaAI->m_bDebugMode = !pJainaAI->m_bDebugMode;
@@ -174,7 +174,7 @@ bool GossipSelect_npc_thrall(Player* pPlayer, Creature* pCreature, uint32 uiSend
                 pThrallAI->StartEvent();
                 break;
             case GOSSIP_ACTION_INFO_DEF + 3:
-                pThrallAI->Retreat();
+                pPlayer->TeleportTo(534, 5224.279785f, -3350.814453f, 1649.026611f, 4.812733f, 0);
                 break;
             case GOSSIP_ACTION_INFO_DEF:
                 pThrallAI->m_bDebugMode = !pThrallAI->m_bDebugMode;

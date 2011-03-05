@@ -1340,6 +1340,25 @@ void Spell::EffectDummy(SpellEffectIndex eff_idx)
 
                     return;
                 }
+                // Polarity Shift - Naxxramas - Thaddius 
+                case 28089: 
+                { 
+                     uint32 spell_id = roll_chance_i(50)  
+                     ? 28059  
+                     : 28084; 
+ 
+                  if (unitTarget) 
+                     unitTarget->CastSpell(unitTarget, spell_id, true, NULL, NULL, m_caster->GetGUID()); 
+                } 
+                case 39096: 
+                { 
+                uint32 spell_id = roll_chance_i(50)  
+                     ? 39088  
+                     : 39091; 
+ 
+                   if (unitTarget) 
+                   unitTarget->CastSpell(unitTarget, spell_id, true, NULL, NULL, m_caster->GetGUID()); 
+                } 
                 case 29200:                                 // Purify Helboar Meat
                 {
                     if (m_caster->GetTypeId() != TYPEID_PLAYER)
@@ -5646,12 +5665,22 @@ void Spell::DoSummonGuardian(SpellEffectIndex eff_idx, uint32 forceFaction)
         }
         // Summon if dest location not present near caster
         else
-            m_caster->GetClosePoint(px, py, pz,spawnCreature->GetObjectBoundingRadius());
+            m_caster->GetClosePoint(px, py, pz,m_caster->GetObjectBoundingRadius());
+
+        // Mirror Image 
+        if (pet_entry == 31216) 
+        { 
+                // Set correct health and mana 
+                spawnCreature->SetMaxHealth(m_caster->GetMaxHealth()/3.0f); 
+                spawnCreature->SetHealth(m_caster->GetHealth()/3.0f); 
+                spawnCreature->SetMaxPower(POWER_MANA, m_caster->GetMaxPower(POWER_MANA)); 
+                spawnCreature->SetPower(POWER_MANA, m_caster->GetPower(POWER_MANA)); 
+        }
 
         if (!spawnCreature->SetSummonPosition(px,py,pz))
         {
             sLog.outError("Guardian pet (guidlow %d, entry %d) not summoned. Suggested coordinates isn't valid (X: %f Y: %f)",
-                spawnCreature->GetGUIDLow(), spawnCreature->GetEntry(), spawnCreature->GetPositionX(), spawnCreature->GetPositionY());
+                spawnCreature->GetGUIDLow(), spawnCreature->GetEntry(), px, py);
             delete spawnCreature;
             return;
         }
@@ -7747,6 +7776,25 @@ void Spell::EffectScriptEffect(SpellEffectIndex eff_idx)
                     unitTarget->CastSpell(unitTarget, damage, false);
                     break;
                 }
+                //Big Blizzard Bear 
+                case 58983: 
+                { 
+                    if(!unitTarget || unitTarget->GetTypeId() != TYPEID_PLAYER) 
+                        return; 
+ 
+                    // Prevent stacking of mounts 
+                    unitTarget->RemoveSpellsCausingAura(SPELL_AURA_MOUNTED); 
+ 
+                    // Triggered spell id dependent of riding skill 
+                    if(uint16 skillval = ((Player*)unitTarget)->GetSkillValue(SKILL_RIDING)) 
+                    { 
+                        if (skillval >= 150) 
+                            unitTarget->CastSpell(unitTarget, 58999, true); 
+                        else 
+                            unitTarget->CastSpell(unitTarget, 58997, true); 
+                    } 
+                    return; 
+                }
                 case 52941:                                 // Song of Cleansing
                 {
                     uint32 spellId = 0;
@@ -7997,18 +8045,41 @@ void Spell::EffectScriptEffect(SpellEffectIndex eff_idx)
 
                     return;
                 }
+                case 58916:                                 // Gift of the Lich King
+                {
+                    if (!unitTarget || unitTarget->isAlive())
+                        return;
+
+                    m_caster->CastSpell(unitTarget, 58915, true);
+
+                    unitTarget->RemoveFromWorld();
+
+                    if (Unit* master = m_caster->GetCharmerOrOwner())
+                        master->CastSpell(master, 58987, true);
+
+                    return;
+                }
+                case 58917:                                 // Consume minions
+                {
+                    if (!unitTarget || unitTarget->GetTypeId() != TYPEID_UNIT)
+                        return;
+
+                    m_caster->CastSpell(unitTarget, 58919, true);
+                    return;
+                }
                 case 59910:                                 // Summon Minions
                 {
                     if (!unitTarget)
-                        return;
-                                                           // Summon Fetid Troll (1-5)
+					    return;
+
                     unitTarget->CastSpell(unitTarget, 59935, true);
                     unitTarget->CastSpell(unitTarget, 59938, true);
                     unitTarget->CastSpell(unitTarget, 59939, true);
                     unitTarget->CastSpell(unitTarget, 59940, true);
                     unitTarget->CastSpell(unitTarget, 59943, true);
                     return;
-                }                                                      // random spell learn instead placeholder
+                }
+                // random spell learn instead placeholder
                 case 60893:                                 // Northrend Alchemy Research
                 case 61177:                                 // Northrend Inscription Research
                 case 61288:                                 // Minor Inscription Research
@@ -8024,6 +8095,7 @@ void Spell::EffectScriptEffect(SpellEffectIndex eff_idx)
 
                     return;
                 }
+
                 case 69200:                                 // Raging Spirit
                 {
                     if (!unitTarget)
@@ -8767,8 +8839,9 @@ void Spell::EffectScriptEffect(SpellEffectIndex eff_idx)
                         CancelGlobalCooldown();
                         return;
                     }
-                    ((Player*)m_caster)->RemoveSpellCooldown(triggered_spell_id,true);
                     finish(true);
+                    ((Player*)m_caster)->RemoveSpellCooldown(m_spellInfo->CalculateSimpleValue(EFFECT_INDEX_2),true);
+                    ((Player*)m_caster)->RemoveSpellCooldown(m_spellInfo->CalculateSimpleValue(EFFECT_INDEX_1),true);
                     CancelGlobalCooldown();
                     return;
                 }

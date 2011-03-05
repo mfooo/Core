@@ -1,4 +1,4 @@
-/* Copyright (C) 2006 - 2009 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
+/* Copyright (C) 2006 - 2011 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -145,7 +145,7 @@ struct MANGOS_DLL_DECL boss_ormorokAI : public ScriptedAI
 
         if (!m_bIsFrenzy && (m_creature->GetHealthPercent() < 25.0f))
         {
-			DoCast(m_creature, m_bIsRegularMode ? SPELL_FRENZY_N : SPELL_FRENZY_H);
+			DoCastSpellIfCan(m_creature, m_bIsRegularMode ? SPELL_FRENZY_N : SPELL_FRENZY_H);
             m_bIsFrenzy = true;
         }
 
@@ -158,7 +158,7 @@ struct MANGOS_DLL_DECL boss_ormorokAI : public ScriptedAI
         if (m_uiReflectionTimer < diff)
         {
             DoScriptText(SAY_REFLECT, m_creature);
-            DoCast(m_creature, SPELL_SPELL_REFLECTION);
+            DoCastSpellIfCan(m_creature, SPELL_SPELL_REFLECTION);
             m_uiReflectionTimer = 15000;
         }else m_uiReflectionTimer -= diff;
 
@@ -216,13 +216,13 @@ struct MANGOS_DLL_DECL mob_crystal_spikeAI : public Scripted_NoMovementAI
     {
         if (m_uiCrystalSpikePreVisualTimer < diff)
         {
-            DoCast(m_creature, SPELL_CRYSTAL_SPIKE_PREVISUAL);
+            DoCastSpellIfCan(m_creature, SPELL_CRYSTAL_SPIKE_PREVISUAL);
             m_uiCrystalSpikePreVisualTimer = 10000;
         }else m_uiCrystalSpikePreVisualTimer -=diff;
 
         if (m_uiCrystallSpikeDamageTimer < diff)
         {
-            DoCast(m_creature, m_bIsRegularMode ? SPELL_CRYSTALL_SPIKE_DAMAGE_N : SPELL_CRYSTALL_SPIKE_DAMAGE_H);
+            DoCastSpellIfCan(m_creature, m_bIsRegularMode ? SPELL_CRYSTALL_SPIKE_DAMAGE_N : SPELL_CRYSTALL_SPIKE_DAMAGE_H);
             m_uiCrystallSpikeDamageTimer = 10000;
         }else m_uiCrystallSpikeDamageTimer -=diff;
     } 
@@ -269,7 +269,7 @@ void AddSC_boss_ormorok()
 
     newscript = new Script;
     newscript->Name="boss_ormorok";
-    newscript->GetAI = GetAI_boss_ormorok;
+    newscript->GetAI = &GetAI_boss_ormorok;
     newscript->RegisterSelf();
 
     newscript = new Script;

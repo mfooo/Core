@@ -29,13 +29,13 @@ enum
     SAY_KING_DRED_TALON                = -1600020,
     SAY_CALL_FOR_RAPTOR                = -1600021,
     
-    SPELL_BELLOWING_ROAR            = 22686,
+    SPELL_BELLOWING_ROAR               = 22686,
     SPELL_FEARSOME_ROAR                = 48849,
-    H_SPELL_FEARSOME_ROAR            = 59422,
+    H_SPELL_FEARSOME_ROAR              = 59422,
     SPELL_GRIEVOUS_BITE                = 48920,
-    SPELL_MANGLING_SLASH            = 48873,
-    SPELL_PIERCING_SLASH            = 48878,
-    SPELL_RAPTOR_CALL                = 59416,            //not yet implemented
+    SPELL_MANGLING_SLASH               = 48873,
+    SPELL_PIERCING_SLASH               = 48878,
+    SPELL_RAPTOR_CALL                  = 59416,            //not yet implemented
 
 };
 
@@ -137,7 +137,7 @@ struct MANGOS_DLL_DECL boss_dredAI : public ScriptedAI
             Unit* pPlayer = m_creature->getVictim();
             if (pPlayer->GetHealth() == pPlayer->GetMaxHealth())
                 if (pPlayer->HasAura(SPELL_GRIEVOUS_BITE))
-                        pPlayer->RemoveAura(SPELL_GRIEVOUS_BITE, EFFECT_INDEX_0);
+                    pPlayer->RemoveAura(SPELL_GRIEVOUS_BITE, EFFECT_INDEX_0);
             Check_Timer = 1000;
         }else Check_Timer -= uiDiff;
         

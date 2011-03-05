@@ -516,6 +516,9 @@ class World
         const char* GetMotd() const { return m_motd.c_str(); }
 
         LocaleConstant GetDefaultDbcLocale() const { return m_defaultDbcLocale; }
+		
+        // Semaphore for serialize spells update in mtmaps env	 	
+        ACE_Thread_Mutex m_spellUpdateLock;
 
         /// Get the path where data (dbc, maps) are stored on disk
         std::string GetDataPath() const { return m_dataPath; }
@@ -620,9 +623,6 @@ class World
         void UpdateRealmCharCount(uint32 accid);
 
         LocaleConstant GetAvailableDbcLocale(LocaleConstant locale) const { if(m_availableDbcLocaleMask & (1 << locale)) return locale; else return m_defaultDbcLocale; }
-
-        // Semaphore for serialize spells update in mtmaps env
-        ACE_Thread_Mutex m_spellUpdateLock;
 
         //used World DB version
         void LoadDBVersion();

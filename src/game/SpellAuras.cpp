@@ -1313,14 +1313,21 @@ void Aura::TriggerSpell()
                     }
 //                    // Controller Timer
 //                    case 28095: break;
-//                    // Stalagg Chain
-//                    case 28096: break;
+                    case 28096:                                     // Stalagg Chain
+                    case 28111:                                     // Feugen Chain
+                    {
+                        Unit* pCaster = GetCaster();
+                        if (pCaster && pCaster->GetDistance(target) > 60.0f)
+                        {
+                            pCaster->InterruptNonMeleeSpells(true);
+                            target->CastSpell(pCaster, 28087, true);
+                        }
+                        return;
+                    }
 //                    // Stalagg Tesla Passive
 //                    case 28097: break;
 //                    // Feugen Tesla Passive
 //                    case 28109: break;
-//                    // Feugen Chain
-//                    case 28111: break;
 //                    // Mark of Didier
 //                    case 28114: break;
 //                    // Communique Timer, camp
@@ -5340,6 +5347,14 @@ void Aura::HandlePeriodicTriggerSpell(bool apply, bool /*Real*/)
                 }
 
                 return;
+             case 66083:                                     // Lightning Arrows (Trial of the Champion encounter) 
+                 if (m_removeMode == AURA_REMOVE_BY_EXPIRE) 
+                { 
+                    if (Unit* pCaster = GetCaster()) 
+                        pCaster->CastSpell(pCaster, 66085, true, NULL, this); 
+                } 
+ 
+                return;
             case 71441:
                 if (m_removeMode == AURA_REMOVE_BY_EXPIRE)
                     target->CastSpell(target, 67375, true, NULL, this);
@@ -5980,6 +5995,9 @@ void Aura::HandleAuraModTotalManaPercentRegen(bool apply, bool /*Real*/)
 {
     if(m_modifier.periodictime == 0)
         m_modifier.periodictime = 1000;
+
+    if(GetSpellProto()->Id == 60069)            // Dispersion HACK
+        m_modifier.m_miscvalue = 0;	
 
     m_periodicTimer = m_modifier.periodictime;
     m_isPeriodic = apply;
@@ -8104,6 +8122,27 @@ void Aura::PeriodicDummyTick()
 //              case 50493: break;
 //              // Love Rocket Barrage
 //              case 50530: break;
+                case 47214: // Burninate Effect 
+                { 
+                    Unit * caster = GetCaster(); 
+                    if (!caster) 
+                        return; 
+ 
+                    if (target->GetEntry() == 26570) 
+                    { 
+                        if (target->HasAura(54683, EFFECT_INDEX_0)) 
+                            return; 
+                        else  
+                        { 
+                            // Credit Scourge 
+                            caster->CastSpell(caster, 47208, true); 
+                            // set ablaze 
+                            target->CastSpell(target, 54683, true); 
+                            ((Creature*)target)->ForcedDespawn(4000);    
+                        } 
+                    }                     
+                    break; 
+                }
                 case 50789:                                 // Summon iron dwarf (left or right)
                 case 59860:
                     target->CastSpell(target, roll_chance_i(50) ? 50790 : 50791, true, NULL, this);
@@ -9161,9 +9200,9 @@ void SpellAuraHolder::_RemoveSpellAuraHolder()
         }
 
         // reset cooldown state for spells
-        if(caster->GetTypeId() == TYPEID_PLAYER)
+        if(caster && caster->GetTypeId() == TYPEID_PLAYER)
         {
-            if (caster && GetSpellProto()->Attributes & SPELL_ATTR_DISABLED_WHILE_ACTIVE )
+            if ( GetSpellProto()->Attributes & SPELL_ATTR_DISABLED_WHILE_ACTIVE )
                 // note: item based cooldowns and cooldown spell mods with charges ignored (unknown existing cases)
                 ((Player*)caster)->SendCooldownEvent(GetSpellProto());
         }
@@ -9742,6 +9781,8 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
             // Barkskin
             if (GetId()==22812 && m_target->HasAura(63057)) // Glyph of Barkskin
                 spellId1 = 63058;                           // Glyph - Barkskin 01
+            else if (!apply && GetId() == 5229)             // Enrage (Druid Bear) 
+                spellId1 = 51185;                           // King of the Jungle (Enrage damage aura)
             // Item - Druid T10 Feral 4P Bonus
             else if (GetId() == 5229 && m_target->HasAura(70726)) // Enrage
                 spellId1 = 70725;

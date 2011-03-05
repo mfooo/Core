@@ -1,4 +1,4 @@
-/* Copyright (C) 2006 - 2010 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
+/* Copyright (C) 2006 - 2011 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -50,13 +50,6 @@ enum eEnums
     SAY_ENRAGE                                      = -1576042,
     SAY_DEATH                                       = -1576043,
     SAY_CRYSTAL_NOVA                                = -1576044
-	
-	/*
-	(26723,-1576040,'Preserve? Why? There''s no truth in it. No no no... only in the taking! I see that now!',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,13450,1,0,0,'keristrasza SAY_AGGRO'),
-   (26723,-1576041,'Now we''ve come to the truth!',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,13453,1,0,0,'keristrasza SAY_SLAY'),
-   (26723,-1576042,'Finish it! FINISH IT! Kill me, or I swear by the Dragonqueen you''ll never see daylight again!',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,13452,1,0,0,'keristrasza SAY_ENRAGE'),
-   (26723,-1576043,'Dragonqueen... Life-Binder... preserve... me.',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,13454,1,0,0,'keristrasza SAY_DEATH'),
-   (26723,-1576044,'Stay. Enjoy your final moments.',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,13451,1,0,0,'keristrasza SAY_CRYSTAL_NOVA'),*/  ///missing texts need id numbers double checked and impleted
 };
 
 struct MANGOS_DLL_DECL boss_keristraszaAI : public ScriptedAI
@@ -102,7 +95,7 @@ struct MANGOS_DLL_DECL boss_keristraszaAI : public ScriptedAI
     void EnterCombat(Unit* who)
     {
         DoScriptText(SAY_AGGRO, m_creature);
-        DoCast(m_creature->getVictim(), SPELL_INTENSE_COLD);
+        DoCastSpellIfCan(m_creature->getVictim(), SPELL_INTENSE_COLD);
 
         if (m_pInstance)
             m_pInstance->SetData(DATA_KERISTRASZA_EVENT, IN_PROGRESS);
@@ -201,7 +194,7 @@ struct MANGOS_DLL_DECL boss_keristraszaAI : public ScriptedAI
         {
             m_creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_OOC_NOT_ATTACKABLE);
             m_creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-            DoCast(m_creature, SPELL_FROZEN_PRISON, false);
+            DoCastSpellIfCan(m_creature, SPELL_FROZEN_PRISON, false);
         }
     }
 
@@ -232,19 +225,19 @@ struct MANGOS_DLL_DECL boss_keristraszaAI : public ScriptedAI
         if (!Enrage && (m_creature->GetHealth() < m_creature->GetMaxHealth() * 0.25))
         {
             DoScriptText(SAY_ENRAGE, m_creature);
-            DoCast(m_creature, SPELL_ENRAGE);
+            DoCastSpellIfCan(m_creature, SPELL_ENRAGE);
             Enrage = true;
         }
 
         if (CRYSTALFIRE_BREATH_Timer <= diff)
         {
-			DoCast(m_creature->getVictim(), m_bIsRegularMode ? SPELL_CRYSTALFIRE_BREATH_N : SPELL_CRYSTALFIRE_BREATH_H);
+			DoCastSpellIfCan(m_creature->getVictim(), m_bIsRegularMode ? SPELL_CRYSTALFIRE_BREATH_N : SPELL_CRYSTALFIRE_BREATH_H);
             CRYSTALFIRE_BREATH_Timer = 14000;
         } else CRYSTALFIRE_BREATH_Timer -=diff;
 
         if (TAIL_SWEEP_Timer <= diff)
         {
-            DoCast(m_creature, SPELL_TAIL_SWEEP);
+            DoCastSpellIfCan(m_creature, SPELL_TAIL_SWEEP);
             TAIL_SWEEP_Timer = 5000;
         } else TAIL_SWEEP_Timer -=diff;
 
