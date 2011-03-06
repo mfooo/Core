@@ -8272,6 +8272,9 @@ void Aura::PeriodicDummyTick()
             // Prey on the Weak
             if (spell->SpellIconID == 2983)
             {
+                if (target->GetTypeId() != TYPEID_PLAYER) 
+                    return; 
+
                 Unit *victim = target->getVictim();
                 if (victim && (target->GetHealth() * 100 / target->GetMaxHealth() > victim->GetHealth() * 100 / victim->GetMaxHealth()))
                 {
