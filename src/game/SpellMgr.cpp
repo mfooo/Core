@@ -383,7 +383,7 @@ SpellSpecific GetSpellSpecific(uint32 spellId)
                 // SpellIcon 2560 is Spell 46687, does not have this flag
                 if ((spellInfo->AttributesEx2 & SPELL_ATTR_EX2_FOOD_BUFF) || spellInfo->SpellIconID == 2560)
                     return SPELL_WELL_FED;
-					
+
 	            else if (spellInfo->EffectApplyAuraName[EFFECT_INDEX_0] == SPELL_AURA_MOD_STAT &&  spellInfo->Attributes & SPELL_ATTR_NOT_SHAPESHIFT &&
                      spellInfo->SchoolMask & SPELL_SCHOOL_MASK_NATURE && spellInfo->PreventionType == SPELL_PREVENTION_TYPE_SILENCE)
                      return SPELL_SCROLL;
@@ -638,7 +638,7 @@ bool IsPositiveEffect(uint32 spellId, SpellEffectIndex effIndex)
     SpellEntry const *spellproto = sSpellStore.LookupEntry(spellId);
     if (!spellproto)
         return false;
-	
+
 	switch(spellId)
 	{
 		case 47540: // Penance start dummy aura - Rank 1
@@ -1856,7 +1856,7 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
     // Allow stack passive and not passive spells
     if ((spellInfo_1->Attributes & SPELL_ATTR_PASSIVE)!=(spellInfo_2->Attributes & SPELL_ATTR_PASSIVE))
         return false;
-        
+
     // My rules! :D
     if (spellInfo_1->AttributesEx6 & SPELL_ATTR_EX6_UNK26 && spellInfo_2->AttributesEx6 & SPELL_ATTR_EX6_UNK26)
     {
@@ -1871,15 +1871,15 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
             return true;
     }
 
-    // Mangle and Trauma 
-    if (spellInfo_1->EffectApplyAuraName[EFFECT_INDEX_1] == SPELL_AURA_MOD_MECHANIC_DAMAGE_TAKEN_PERCENT && 
+    // Mangle and Trauma
+    if (spellInfo_1->EffectApplyAuraName[EFFECT_INDEX_1] == SPELL_AURA_MOD_MECHANIC_DAMAGE_TAKEN_PERCENT &&
         spellInfo_1->EffectMiscValue[EFFECT_INDEX_1] == MECHANIC_BLEED &&
         spellInfo_2->EffectApplyAuraName[EFFECT_INDEX_0] == SPELL_AURA_MOD_MECHANIC_DAMAGE_TAKEN_PERCENT &&
-        spellInfo_2->EffectMiscValue[EFFECT_INDEX_0] == MECHANIC_BLEED || 
-        spellInfo_2->EffectApplyAuraName[EFFECT_INDEX_1] == SPELL_AURA_MOD_MECHANIC_DAMAGE_TAKEN_PERCENT && 
+        spellInfo_2->EffectMiscValue[EFFECT_INDEX_0] == MECHANIC_BLEED ||
+        spellInfo_2->EffectApplyAuraName[EFFECT_INDEX_1] == SPELL_AURA_MOD_MECHANIC_DAMAGE_TAKEN_PERCENT &&
         spellInfo_2->EffectMiscValue[EFFECT_INDEX_1] == MECHANIC_BLEED &&
         spellInfo_1->EffectApplyAuraName[EFFECT_INDEX_0] == SPELL_AURA_MOD_MECHANIC_DAMAGE_TAKEN_PERCENT &&
-        spellInfo_1->EffectMiscValue[EFFECT_INDEX_0] == MECHANIC_BLEED ) 
+        spellInfo_1->EffectMiscValue[EFFECT_INDEX_0] == MECHANIC_BLEED )
         return true;
 
     // Specific spell family spells
@@ -1923,7 +1923,7 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
                     if ((spellInfo_1->Id == 28093 && spellInfo_2->Id == 42084) ||
                         (spellInfo_2->Id == 28093 && spellInfo_1->Id == 42084))
                         return false;
-						
+
                     // Ymiron - channel spirit to ymiron should stack with everything
                     if (spellInfo_1->Id == 48316 || spellInfo_2->Id == 48316)
                         return false;
@@ -2007,20 +2007,16 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
                     // Vigilance and Damage Reduction (Vigilance triggered spell)
                     if (spellInfo_1->SpellIconID == 2834 && spellInfo_2->SpellIconID == 2834)
                         return false;
-						
-                    // Death's Choice Heroic & Normal versions 
-                    if( (spellInfo_1->Id == 67702 && spellInfo_2->Id == 67771) || 
-                        (spellInfo_2->Id == 67702 && spellInfo_1->Id == 67771) ) 
-                        return false; 
- 
-                    // Solace of the Defeated Heroic & Normal versions 
-                    if( (spellInfo_1->Id == 67696 && spellInfo_2->Id == 67750) || 
-                        (spellInfo_2->Id == 67696 && spellInfo_1->Id == 67750) ) 
-                        return false; 
-					
-                    // Dragonmaw Illusion, Blood Elf Illusion, Human Illusion, Illidari Agent Illusion, Scarlet Crusade Disguise
-                    if(spellInfo_1->SpellIconID == 1691 && spellInfo_2->SpellIconID == 1691)
-                        return false; 
+
+                    // Death's Choice Heroic & Normal versions
+                    if( (spellInfo_1->Id == 67702 && spellInfo_2->Id == 67771) ||
+                        (spellInfo_2->Id == 67702 && spellInfo_1->Id == 67771) )
+                        return false;
+
+                    // Solace of the Defeated Heroic & Normal versions
+                    if( (spellInfo_1->Id == 67696 && spellInfo_2->Id == 67750) ||
+                        (spellInfo_2->Id == 67696 && spellInfo_1->Id == 67750) )
+                        return false;
 
                     break;
                 }
@@ -2086,6 +2082,9 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
                         return false;
                 }
             }
+            // Dragonmaw Illusion, Blood Elf Illusion, Human Illusion, Illidari Agent Illusion, Scarlet Crusade Disguise
+            if(spellInfo_1->SpellIconID == 1691 && spellInfo_2->SpellIconID == 1691)
+                return false;
             break;
         case SPELLFAMILY_MAGE:
             if( spellInfo_2->SpellFamilyName == SPELLFAMILY_MAGE )
@@ -2127,6 +2126,15 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
             if (spellInfo_1->SpellIconID == 125 && spellInfo_2->Id == 18820)
                 return false;
 
+            // Fire Ward and Fire Shield (multi-family check)
+            if ((spellInfo_1->SpellIconID == 16) && (spellInfo_1->SpellFamilyFlags & UI64LIT(0x0000000000000008)) &&
+                (spellInfo_2->SpellIconID == 16) && (spellInfo_2->SpellFamilyName == SPELLFAMILY_WARLOCK))
+                return false;
+
+			// Hot Streak and Firestarter
+            if( spellInfo_1->EffectSpellClassMaskC[0] == 262144 && spellInfo_2->EffectSpellClassMaskC[0] == 262144)
+                return false;
+
             break;
         case SPELLFAMILY_WARLOCK:
             if (spellInfo_2->SpellFamilyName == SPELLFAMILY_WARLOCK)
@@ -2136,7 +2144,7 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
                     (spellInfo_2->SpellIconID == 152 && spellInfo_1->SpellIconID == 546))
                     return false;
 
-                //Corruption & Seed of corruption
+                // Corruption & Seed of corruption
                 if ((spellInfo_1->SpellIconID == 313 && spellInfo_2->SpellIconID == 1932) ||
                     (spellInfo_2->SpellIconID == 313 && spellInfo_1->SpellIconID == 1932))
                     if(spellInfo_1->SpellVisual[0] != 0 && spellInfo_2->SpellVisual[0] != 0)
@@ -2164,6 +2172,12 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
             // Detect Invisibility and Mana Shield (multi-family check)
             if (spellInfo_1->Id == 132 && spellInfo_2->SpellIconID == 209 && spellInfo_2->SpellVisual[0] == 968)
                 return false;
+
+            // Fire Shield and Fire Ward (multi-family check)
+            if ((spellInfo_1->SpellIconID == 16) &&
+                (spellInfo_2->SpellIconID == 16) && (spellInfo_2->SpellFamilyFlags & UI64LIT(0x0000000000000008)))
+                return false;
+
             break;
         case SPELLFAMILY_WARRIOR:
             if (spellInfo_2->SpellFamilyName == SPELLFAMILY_WARRIOR)
@@ -2184,6 +2198,10 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
                     return true;
             }
 
+            // Flurry and Rip stacking
+            if(spellInfo_1->SpellIconID == 108 && spellInfo_2->SpellIconID == 108)
+                return false;
+
             // Hamstring -> Improved Hamstring (multi-family check)
             if ((spellInfo_1->SpellFamilyFlags & UI64LIT(0x2)) && spellInfo_2->Id == 23694)
                 return false;
@@ -2196,7 +2214,7 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
             if (spellInfo_2->Id == 2825 && spellInfo_1->SpellIconID == 38 && spellInfo_1->SpellVisual[0] == 0)
                 return false;
 
-                // Taste of Blood and Sudden Death
+            // Taste of Blood and Sudden Death
             if( (spellInfo_1->Id == 52437 && spellInfo_2->Id == 60503) ||
                 (spellInfo_2->Id == 52437 && spellInfo_1->Id == 60503) )
                 return false;
@@ -2222,22 +2240,22 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
                 if ((spellInfo_1->SpellIconID == 566 && spellInfo_2->SpellIconID == 2820) ||
                     (spellInfo_2->SpellIconID == 566 && spellInfo_1->SpellIconID == 2820))
                     return false;
-					
-                 // Renew and Gift of the Naaru 
-                if ((spellInfo_1->SpellIconID == 321 && spellInfo_2->SpellIconID == 329) || 
-                    (spellInfo_2->SpellIconID == 321 && spellInfo_1->SpellIconID == 329)) 
-                    return false; 
+
+                 // Renew and Gift of the Naaru
+                if ((spellInfo_1->SpellIconID == 321 && spellInfo_2->SpellIconID == 329) ||
+                    (spellInfo_2->SpellIconID == 321 && spellInfo_1->SpellIconID == 329))
+                    return false;
             }
             break;
         case SPELLFAMILY_DRUID:
             if (spellInfo_2->SpellFamilyName == SPELLFAMILY_DRUID)
             {
-                //Omen of Clarity and Blood Frenzy
+                // Omen of Clarity and Blood Frenzy
                 if (((spellInfo_1->SpellFamilyFlags == UI64LIT(0x0) && spellInfo_1->SpellIconID == 108) && (spellInfo_2->SpellFamilyFlags & UI64LIT(0x20000000000000))) ||
                     ((spellInfo_2->SpellFamilyFlags == UI64LIT(0x0) && spellInfo_2->SpellIconID == 108) && (spellInfo_1->SpellFamilyFlags & UI64LIT(0x20000000000000))))
                     return false;
 
-                //  Tree of Life (Shapeshift) and 34123 Tree of Life (Passive)
+                // Tree of Life (Shapeshift) and 34123 Tree of Life (Passive)
                 if ((spellId_1 == 33891 && spellId_2 == 34123) ||
                     (spellId_2 == 33891 && spellId_1 == 34123))
                     return false;
@@ -2247,7 +2265,7 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
                     (spellInfo_2->SpellIconID == 2101 && spellInfo_1->SpellIconID == 2864))
                     return false;
 
-                //  Innervate and Glyph of Innervate and some other spells
+                // Innervate and Glyph of Innervate and some other spells
                 if (spellInfo_1->SpellIconID == 62 && spellInfo_2->SpellIconID == 62)
                     return false;
 
@@ -2286,6 +2304,10 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
                     return false;
             }
 
+            // Flurry and Rip stacking
+            if(spellInfo_1->SpellIconID == 108 && spellInfo_2->SpellIconID == 108)
+                return false;
+
             // Leader of the Pack and Scroll of Stamina (multi-family check)
             if (spellInfo_1->Id == 24932 && spellInfo_2->SpellIconID == 312 && spellInfo_2->SpellVisual[0] == 216)
                 return false;
@@ -2309,17 +2331,17 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
                     (spellInfo_2->Category == 44 && spellInfo_1->Category == 0)))
                     return false;
             }
-            else if ( spellInfo_2->SpellFamilyName == SPELLFAMILY_GENERIC ) 
+            else if ( spellInfo_2->SpellFamilyName == SPELLFAMILY_GENERIC )
             {
                 // Honor Among Thieves dummy auras (multi-family check)
                 if (spellId_1 == 52916 && spellId_2 == 51699)
                     return false;
             }
-            //Overkill
+            // Overkill
             if (spellInfo_1->SpellIconID == 2285 && spellInfo_2->SpellIconID == 2285)
                 return false;
 
-            //Tricks of Trade
+            // Tricks of Trade
             if( spellInfo_1->SpellIconID == 3413 && spellInfo_2->SpellIconID == 3413 )
                 return false;
 
@@ -2390,6 +2412,14 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
                 if (spellInfo_2->Id == 67480 && spellInfo_1->Id == 20911)
                     return false;
 
+                // Seal of Command and Frostforged Champion (multi-family check)
+                if (spellInfo_1->Id == 72412 && spellInfo_2->SpellIconID == 561)
+                    return false;
+
+                // Aegis and Holy Shield (multi-family check)
+                  if (spellInfo_1->Id == 67631 && spellInfo_2->SpellIconID == 453)
+                      return false;
+
                 // Inner Fire and Consecration
                 if(spellInfo_2->SpellFamilyName == SPELLFAMILY_PRIEST)
                     if(spellInfo_1->SpellIconID == 51 && spellInfo_2->SpellIconID == 51)
@@ -2406,14 +2436,14 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
                 // *Seal of Command and Band of Eternal Champion (multi-family check)
                 if( spellInfo_1->SpellIconID==561 && spellInfo_1->SpellVisual[0]==7992 && spellId_2 == 35081)
                     return false;
-					
-                // Holy Vengeance and Righteous Vengeance 
-                if ((spellInfo_2->Id == 61840 && spellInfo_1->Id == 31803) || (spellInfo_1->Id == 61840 && spellInfo_2->Id == 31803)) 
-                    return false; 
- 
-                // Blood Corruption and Righteous Vengeance 
-                if ((spellInfo_2->Id == 61840 && spellInfo_1->Id == 53742) || (spellInfo_1->Id == 61840 && spellInfo_2->Id == 53742)) 
-                    return false; 
+
+                // Holy Vengeance and Righteous Vengeance
+                if ((spellInfo_2->Id == 61840 && spellInfo_1->Id == 31803) || (spellInfo_1->Id == 61840 && spellInfo_2->Id == 31803))
+                    return false;
+
+                // Blood Corruption and Righteous Vengeance
+                if ((spellInfo_2->Id == 61840 && spellInfo_1->Id == 53742) || (spellInfo_1->Id == 61840 && spellInfo_2->Id == 53742))
+                    return false;
             }
 
             // Combustion and Fire Protection Aura (multi-family check)
@@ -2486,6 +2516,7 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
         return false;
 
     // more generic checks
+
     if (spellInfo_1->SpellIconID == spellInfo_2->SpellIconID &&
         spellInfo_1->SpellIconID != 0 && spellInfo_2->SpellIconID != 0)
     {
@@ -4079,8 +4110,8 @@ SpellCastResult SpellMgr::GetSpellAllowedInLocationError(SpellEntry const *spell
         case 69065:                                         // Impaled
         case 69126:                                         // Pungent blight - first aura
         case 69152:                                         // Gazeous blight - first aura
-        case 69157:                                         // Pungent blight - second aura 
-        case 69195:                                         // Pungent blight 
+        case 69157:                                         // Pungent blight - second aura
+        case 69195:                                         // Pungent blight
         case 72293:                                         // Mark of the Fallen Champion
             return map_id == 631 ? SPELL_CAST_OK : SPELL_FAILED_INCORRECT_AREA;
     }
@@ -4611,7 +4642,7 @@ bool SpellArea::IsFitToRequirements(Player const* player, uint32 newZone, uint32
             // not have expected aura
             return !player->HasAura(-auraSpell, EFFECT_INDEX_0);
     }
-	
+
     // Extra conditions -- leaving the possibility add extra conditions...
     switch(spellId)
     {
@@ -4620,14 +4651,14 @@ bool SpellArea::IsFitToRequirements(Player const* player, uint32 newZone, uint32
         {
             if (player->GetBattleGroundTypeId() != BATTLEGROUND_IC || !player->GetBattleGround())
                 return false;
- 
+
             uint8 nodeType = spellId == 68719 ? NODE_TYPE_REFINERY : NODE_TYPE_QUARRY;
             uint8 nodeState = player->GetTeamId() == TEAM_ALLIANCE ? NODE_STATE_CONTROLLED_A : NODE_STATE_CONTROLLED_H;
- 
+
             BattleGroundIC* pIC = static_cast<BattleGroundIC*>(player->GetBattleGround());
             if (pIC->GetNodeState(nodeType) == nodeState)
                 return true;
- 
+
             return false;
         }
     }
@@ -4645,7 +4676,7 @@ SpellEntry const* GetSpellEntryByDifficulty(uint32 id, Difficulty difficulty)
     if (!spellDiff->spellId[difficulty])
         return NULL;
 
-    sLog.outDebug("Searching spell %u in SpellDifficulty.dbc: Result is: %u/%u/%u/%u ",id, 
+    sLog.outDebug("Searching spell %u in SpellDifficulty.dbc: Result is: %u/%u/%u/%u ",id,
     spellDiff->spellId[RAID_DIFFICULTY_10MAN_NORMAL],
     spellDiff->spellId[RAID_DIFFICULTY_25MAN_NORMAL],
     spellDiff->spellId[RAID_DIFFICULTY_10MAN_HEROIC],
