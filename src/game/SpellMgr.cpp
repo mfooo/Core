@@ -1895,6 +1895,10 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
                         GetSpellSpecific(spellInfo_2->Id) == SPELL_SCROLL )
                         return true;
 
+                    // Charge Rift spells (boss_anomalus instance Nexus: Nexus)
+                    if (spellInfo_1->SpellVisual[0] == 7921 || spellInfo_2->SpellVisual[0] == 7921)
+                       return false;
+
                     // Dark Essence & Light Essence
                     if ((spellInfo_1->Id == 65684 && spellInfo_2->Id == 65686) ||
                         (spellInfo_2->Id == 65684 && spellInfo_1->Id == 65686))
@@ -1918,6 +1922,28 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
                     // Lightning Speed (Mongoose) and Fury of the Crashing Waves (Tsunami Talisman)
                     if ((spellInfo_1->Id == 28093 && spellInfo_2->Id == 42084) ||
                         (spellInfo_2->Id == 28093 && spellInfo_1->Id == 42084))
+                        return false;
+						
+                    // Ymiron - channel spirit to ymiron should stack with everything
+                    if (spellInfo_1->Id == 48316 || spellInfo_2->Id == 48316)
+                        return false;
+
+                    // Spell Grow and Poison Aura (Ahn'Kahet - Amanitars mashrooms)
+                    if ((spellInfo_1->Id == 62559 && spellInfo_2->Id == 56741) ||
+                       (spellInfo_2->Id == 62559 && spellInfo_1->Id == 56741) )
+                        return false;
+
+                     // Fel Rage (Gurtog Bloodboil spell)
+                     if(spellInfo_1->SpellIconID == 1930 && spellInfo_2->SpellIconID == 1930)
+                        return false;
+
+                     // Headless Horseman regen spells should stack with any other spells
+                     if (spellInfo_1->Id == 42556 || spellInfo_1->Id == 42403 || spellInfo_1->Id == 43105)
+                         return false;
+
+                    // Pulsing Pumpkin visual auras (Headless Horseman event)
+                    if ((spellInfo_1->Id == 42280 && spellInfo_2->Id == 42294) ||
+                       (spellInfo_2->Id == 42280 && spellInfo_1->Id == 42294))
                         return false;
 
                     // Blood Oath and Blood Oath
