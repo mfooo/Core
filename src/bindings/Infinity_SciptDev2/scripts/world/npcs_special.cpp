@@ -1060,18 +1060,7 @@ enum
     TEXT_ID_WHAT_TO_DO              = 1853,
 
     SPELL_TRICK_OR_TREAT            = 24751,                 // create item or random buff
-    SPELL_TRICK_OR_TREATED          = 24755,                 // buff player get when tricked or treated
-    SPELL_TREAT                     = 24715,
-    SPELL_TRICK_NO_ATTACK           = 24753,
-    SPELL_TRICK_GNOME               = 24713,
-    SPELL_TRICK_GHOST_MALE          = 24735,
-    SPELL_TRICK_GHOST_FEMALE        = 24736,
-    SPELL_TRICK_NINJA_MALE          = 24710,
-    SPELL_TRICK_NINJA_FEMALE        = 24711,
-    SPELL_TRICK_PIRATE_MALE         = 24708,
-    SPELL_TRICK_PIRATE_FEMALE       = 24709,
-    SPELL_TRICK_SKELETON            = 24723,
-    SPELL_TRICK_BAT                 = 24732
+    SPELL_TRICK_OR_TREATED          = 24755                 // buff player get when tricked or treated
 };
 
 #define GOSSIP_ITEM_TRICK_OR_TREAT  "Trick or Treat!"
@@ -1103,41 +1092,10 @@ bool GossipSelect_npc_innkeeper(Player* pPlayer, Creature* pCreature, uint32 uiS
         case GOSSIP_ACTION_INFO_DEF+1:
             pPlayer->SEND_GOSSIP_MENU(TEXT_ID_WHAT_TO_DO, pCreature->GetGUID());
             break;
-
         case GOSSIP_ACTION_INFO_DEF+2:
-        {
             pPlayer->CLOSE_GOSSIP_MENU();
-
-            // either trick or treat, 50% chance
-            if (urand(0, 1))
-            {
-                pPlayer->CastSpell(pPlayer, SPELL_TREAT, true);
-            }
-            else
-            {
-                uint32 uiTrickSpell = 0;
-
-                switch(urand(0, 9))                             // note that female characters can get male costumes and vice versa
-                {
-                    case 0: uiTrickSpell = SPELL_TRICK_NO_ATTACK; break;
-                    case 1: uiTrickSpell = SPELL_TRICK_GNOME; break;
-                    case 2: uiTrickSpell = SPELL_TRICK_GHOST_MALE; break;
-                    case 3: uiTrickSpell = SPELL_TRICK_GHOST_FEMALE; break;
-                    case 4: uiTrickSpell = SPELL_TRICK_NINJA_MALE; break;
-                    case 5: uiTrickSpell = SPELL_TRICK_NINJA_FEMALE; break;
-                    case 6: uiTrickSpell = SPELL_TRICK_PIRATE_MALE; break;
-                    case 7: uiTrickSpell = SPELL_TRICK_PIRATE_FEMALE; break;
-                    case 8: uiTrickSpell = SPELL_TRICK_SKELETON; break;
-                    case 9: uiTrickSpell = SPELL_TRICK_BAT; break;
-                }
-
-                pPlayer->CastSpell(pPlayer, uiTrickSpell, true);
-            }
-
-            pPlayer->CastSpell(pPlayer, SPELL_TRICK_OR_TREATED, true);
+            pCreature->CastSpell(pPlayer, SPELL_TRICK_OR_TREATED, true);
             break;
-        }
-
         case GOSSIP_OPTION_VENDOR:
             pPlayer->SEND_VENDORLIST(pCreature->GetGUID());
             break;
