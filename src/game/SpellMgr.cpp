@@ -2195,12 +2195,12 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
         case SPELLFAMILY_PRIEST:
             if (spellInfo_2->SpellFamilyName == SPELLFAMILY_PRIEST)
             {
-                //Devouring Plague and Shadow Vulnerability
+                // Devouring Plague and Shadow Vulnerability
                 if (((spellInfo_1->SpellFamilyFlags & UI64LIT(0x2000000)) && (spellInfo_2->SpellFamilyFlags & UI64LIT(0x800000000))) ||
                     ((spellInfo_2->SpellFamilyFlags & UI64LIT(0x2000000)) && (spellInfo_1->SpellFamilyFlags & UI64LIT(0x800000000))))
                     return false;
 
-                //StarShards and Shadow Word: Pain
+                // StarShards and Shadow Word: Pain
                 if (((spellInfo_1->SpellFamilyFlags & UI64LIT(0x200000)) && (spellInfo_2->SpellFamilyFlags & UI64LIT(0x8000))) ||
                     ((spellInfo_2->SpellFamilyFlags & UI64LIT(0x200000)) && (spellInfo_1->SpellFamilyFlags & UI64LIT(0x8000))))
                     return false;
@@ -2212,6 +2212,11 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
                 if ((spellInfo_1->SpellIconID == 566 && spellInfo_2->SpellIconID == 2820) ||
                     (spellInfo_2->SpellIconID == 566 && spellInfo_1->SpellIconID == 2820))
                     return false;
+					
+                 // Renew and Gift of the Naaru 
+                if ((spellInfo_1->SpellIconID == 321 && spellInfo_2->SpellIconID == 329) || 
+                    (spellInfo_2->SpellIconID == 321 && spellInfo_1->SpellIconID == 329)) 
+                    return false; 
             }
             break;
         case SPELLFAMILY_DRUID:
