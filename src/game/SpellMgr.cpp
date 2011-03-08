@@ -2306,6 +2306,11 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
                 if ((spellInfo_1->Id == 22842 && spellInfo_2->Id == 62606) ||
                     (spellInfo_2->Id == 22842 && spellInfo_1->Id == 62606))
                     return false;
+
+                // Lacerate and Moonfire 
+                if((spellInfo_1->SpellIconID == 225 && spellInfo_2->SpellIconID == 2246) || 
+                   (spellInfo_2->SpellIconID == 225 && spellInfo_1->SpellIconID == 2246)) 
+                   return false;
             }
 
             // Flurry and Rip stacking

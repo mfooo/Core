@@ -538,6 +538,7 @@ class MANGOS_DLL_SPEC Creature : public Unit
         std::string GetAIName() const;
         std::string GetScriptName() const;
         uint32 GetScriptId() const;
+        bool HasAIName() const { return !GetAIName().empty(); }
 
         // overwrite WorldObject function for proper name localization
         const char* GetNameForLocaleIdx(int32 locale_idx) const;
