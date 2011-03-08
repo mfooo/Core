@@ -3279,6 +3279,7 @@ void Aura::HandleAuraModShapeshift(bool apply, bool Real)
         return;
 
     uint32 modelid = 0;
+    uint32 curhealth = 0;
     Powers PowerType = POWER_MANA;
     ShapeshiftForm form = ShapeshiftForm(m_modifier.m_miscvalue);
 
@@ -3546,7 +3547,10 @@ void Aura::HandleAuraModShapeshift(bool apply, bool Real)
         if(modelid > 0)
             target->SetDisplayId(target->GetNativeDisplayId());
         if(target->getClass() == CLASS_DRUID)
+        {
             target->setPowerType(POWER_MANA);
+            curhealth = target->GetHealth() * 100 / target->GetMaxHealth();
+        }
         target->SetShapeshiftForm(FORM_NONE);
 
         switch(form)
@@ -3582,6 +3586,13 @@ void Aura::HandleAuraModShapeshift(bool apply, bool Real)
     // adding/removing linked auras
     // add/remove the shapeshift aura's boosts
     HandleShapeshiftBoosts(apply);
+
+    if (!apply) 
+    { 
+        // Set correct health of player 
+        // Bugs if druid has much life 
+        target->SetHealth(target->GetMaxHealth() * curhealth / 100); 
+    }
 
     target->UpdateSpeed(MOVE_RUN, true);
 
