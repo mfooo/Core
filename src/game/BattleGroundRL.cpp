@@ -127,7 +127,7 @@ void BattleGroundRL::HandleAreaTrigger(Player *Source, uint32 Trigger)
         case 4697:                                          // buff trigger?
             break;
 		case 4941:
-			Source->TeleportTo(GetMapId(), Source->GetPositionX(), Source->GetPositionX(), (Source->GetTerrain()->GetHeight(obj->GetPositionX(), obj->GetPositionY(), MAX_HEIGHT) + 3), Source->GetOrientation());
+			Source->TeleportTo(GetMapId(), Source->GetPositionX(), Source->GetPositionY(), (Source->GetTerrain()->GetHeight(Source->GetPositionX(), Source->GetPositionY(), MAX_HEIGHT) + 3), Source->GetOrientation());
 			break;
 		default:
             sLog.outError("WARNING: Unhandled AreaTrigger in Battleground: %u", Trigger);
