@@ -932,6 +932,19 @@ void Spell::EffectDummy(SpellEffectIndex eff_idx)
                     m_caster->CastSpell(unitTarget, spell_id, true);
                     return;
                 }
+				case 7769:                                  // Strafe Jotunheim Building
+				{
+					if(Unit * pCaster = GetCaster())
+					{
+						if(Creature * pBuilding = pCaster->GetClosestCreatureWithEntry(pCaster, 30599, 50))
+						{
+							if(!pBuilding->HasAura(7448)) // Do not give credit for already burning buildings
+								if(pCaster->GetCharmerOrOwnerPlayerOrPlayerItself())
+									pCaster->GetCharmerOrOwnerPlayerOrPlayerItself()->KilledMonsterCredit(30576);
+							pBuilding->CastSpell(pBuilding, 7448, true);
+						}
+					}
+				}
                 case 7671:                                  // Transformation (human<->worgen)
                 {
                     if (!unitTarget)
