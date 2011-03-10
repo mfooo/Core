@@ -3280,6 +3280,7 @@ void Aura::HandleAuraModShapeshift(bool apply, bool Real)
 
     uint32 modelid = 0;
     uint32 curhealth = 0;
+    bool lifehack = false;
     Powers PowerType = POWER_MANA;
     ShapeshiftForm form = ShapeshiftForm(m_modifier.m_miscvalue);
 
@@ -3558,6 +3559,8 @@ void Aura::HandleAuraModShapeshift(bool apply, bool Real)
             // Nordrassil Harness - bonus
             case FORM_BEAR:
             case FORM_DIREBEAR:
+            // only use for forms which change health 
+                lifehack = true;
             case FORM_CAT:
                 if(Aura* dummy = target->GetDummyAura(37315) )
                     target->CastSpell(target, 37316, true, NULL, dummy);
@@ -3587,11 +3590,14 @@ void Aura::HandleAuraModShapeshift(bool apply, bool Real)
     // add/remove the shapeshift aura's boosts
     HandleShapeshiftBoosts(apply);
 
-    if (!apply) 
+    if (!apply && lifehack)
     { 
         // Set correct health of player 
         // Bugs if druid has much life 
-        target->SetHealth(target->GetMaxHealth() * curhealth / 100); 
+        if (target->getClass() == CLASS_DRUID) 
+        { 
+            target->SetHealth(target->GetMaxHealth() * curhealth / 100); 
+        }
     }
 
     target->UpdateSpeed(MOVE_RUN, true);
