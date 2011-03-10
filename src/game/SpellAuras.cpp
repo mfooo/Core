@@ -3590,11 +3590,11 @@ void Aura::HandleAuraModShapeshift(bool apply, bool Real)
     // add/remove the shapeshift aura's boosts
     HandleShapeshiftBoosts(apply);
 
-    if (!apply && lifehack)
+    if (!apply)
     {
         // Set correct health of player
         // Bugs if druid has much life
-        if (target->getClass() == CLASS_DRUID)
+        if (target->getClass() == CLASS_DRUID && lifehack)
         {
             target->SetHealth(target->GetMaxHealth() * curhealth / 100);
         }
