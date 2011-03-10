@@ -3590,13 +3590,21 @@ void Aura::HandleAuraModShapeshift(bool apply, bool Real)
     // add/remove the shapeshift aura's boosts
     HandleShapeshiftBoosts(apply);
 
-    if (!apply && lifehack)
+    if (!apply)
     {
         // Set correct health of player
         // Bugs if druid has much life
-        if (target->getClass() == CLASS_DRUID)
+        if (target->getClass() == CLASS_DRUID && lifehack)
         {
             target->SetHealth(target->GetMaxHealth() * curhealth / 100);
+        }
+
+       // Reset rage if warrior switchs Stances 
+        if (target->getClass() == CLASS_WARRIOR) 
+        { 
+            // Exclude talent Tactical Mastery 
+            if (target->HasSpell(12295) || target->HasSpell(12676) || target->HasSpell(12677)) 
+                target->ModifyPower(POWER_RAGE, 0); 
         }
     }
 
