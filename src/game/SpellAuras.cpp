@@ -1144,7 +1144,7 @@ void Aura::TriggerSpell()
     // Penance, set target to self if no target set
 	if (!triggerTarget)
 	{
-		uint32 auraId = GetSpellProto()->Id; 
+		uint32 auraId = GetSpellProto()->Id;
 
 		if (auraId == 47757 || auraId == 52986 || auraId == 52987 || auraId == 52988)
 			triggerTarget = GetCaster();
@@ -2209,7 +2209,7 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
                         if (Unit* caster = GetCaster())
                         caster->CastSpell(caster, 50001, true, NULL, this);
                         return;
-                    case 61187: 
+                    case 61187:
                     case 61190:
                     {
                         target->RemoveAurasDueToSpell(57620);
@@ -3280,6 +3280,7 @@ void Aura::HandleAuraModShapeshift(bool apply, bool Real)
 
     uint32 modelid = 0;
     uint32 curhealth = 0;
+    bool lifehack = false;
     Powers PowerType = POWER_MANA;
     ShapeshiftForm form = ShapeshiftForm(m_modifier.m_miscvalue);
 
@@ -3558,6 +3559,8 @@ void Aura::HandleAuraModShapeshift(bool apply, bool Real)
             // Nordrassil Harness - bonus
             case FORM_BEAR:
             case FORM_DIREBEAR:
+            // only use for forms which change health
+                lifehack = true;
             case FORM_CAT:
                 if(Aura* dummy = target->GetDummyAura(37315) )
                     target->CastSpell(target, 37316, true, NULL, dummy);
@@ -3587,11 +3590,14 @@ void Aura::HandleAuraModShapeshift(bool apply, bool Real)
     // add/remove the shapeshift aura's boosts
     HandleShapeshiftBoosts(apply);
 
-    if (!apply) 
-    { 
-        // Set correct health of player 
-        // Bugs if druid has much life 
-        target->SetHealth(target->GetMaxHealth() * curhealth / 100); 
+    if (!apply && lifehack)
+    {
+        // Set correct health of player
+        // Bugs if druid has much life
+        if (target->getClass() == CLASS_DRUID)
+        {
+            target->SetHealth(target->GetMaxHealth() * curhealth / 100);
+        }
     }
 
     target->UpdateSpeed(MOVE_RUN, true);
@@ -4550,16 +4556,16 @@ void Aura::HandleAuraModStun(bool apply, bool Real)
             data << uint32(0);
             target->SendMessageToSet(&data, true);
         }
-		
-        // Seduction (Succubus spell) 
-        if (GetSpellProto()->Id == 6358) 
-        { 
-            Unit* pCaster = GetCaster(); 
-            if(!pCaster) 
-                return; 
-             
-            pCaster->InterruptSpell(CURRENT_CHANNELED_SPELL,false); 
-            return; 
+
+        // Seduction (Succubus spell)
+        if (GetSpellProto()->Id == 6358)
+        {
+            Unit* pCaster = GetCaster();
+            if(!pCaster)
+                return;
+
+            pCaster->InterruptSpell(CURRENT_CHANNELED_SPELL,false);
+            return;
         }
 
         // Wyvern Sting
@@ -5360,13 +5366,13 @@ void Aura::HandlePeriodicTriggerSpell(bool apply, bool /*Real*/)
                 }
 
                 return;
-             case 66083:                                     // Lightning Arrows (Trial of the Champion encounter) 
-                 if (m_removeMode == AURA_REMOVE_BY_EXPIRE) 
-                { 
-                    if (Unit* pCaster = GetCaster()) 
-                        pCaster->CastSpell(pCaster, 66085, true, NULL, this); 
-                } 
- 
+             case 66083:                                     // Lightning Arrows (Trial of the Champion encounter)
+                 if (m_removeMode == AURA_REMOVE_BY_EXPIRE)
+                {
+                    if (Unit* pCaster = GetCaster())
+                        pCaster->CastSpell(pCaster, 66085, true, NULL, this);
+                }
+
                 return;
             case 71441:
                 if (m_removeMode == AURA_REMOVE_BY_EXPIRE)
@@ -6010,7 +6016,7 @@ void Aura::HandleAuraModTotalManaPercentRegen(bool apply, bool /*Real*/)
         m_modifier.periodictime = 1000;
 
     if(GetSpellProto()->Id == 60069)            // Dispersion HACK
-        m_modifier.m_miscvalue = 0;	
+        m_modifier.m_miscvalue = 0;
 
     m_periodicTimer = m_modifier.periodictime;
     m_isPeriodic = apply;
@@ -7256,7 +7262,7 @@ void Aura::PeriodicTick()
             Unit *pCaster = GetCaster();
             if(!pCaster)
                 return;
-				
+
             if(!pCaster->IsInWorld() || !pCaster->isAlive())
 			    return;
 
@@ -8135,26 +8141,26 @@ void Aura::PeriodicDummyTick()
 //              case 50493: break;
 //              // Love Rocket Barrage
 //              case 50530: break;
-                case 47214: // Burninate Effect 
-                { 
-                    Unit * caster = GetCaster(); 
-                    if (!caster) 
-                        return; 
- 
-                    if (target->GetEntry() == 26570) 
-                    { 
-                        if (target->HasAura(54683, EFFECT_INDEX_0)) 
-                            return; 
-                        else  
-                        { 
-                            // Credit Scourge 
-                            caster->CastSpell(caster, 47208, true); 
-                            // set ablaze 
-                            target->CastSpell(target, 54683, true); 
-                            ((Creature*)target)->ForcedDespawn(4000);    
-                        } 
-                    }                     
-                    break; 
+                case 47214: // Burninate Effect
+                {
+                    Unit * caster = GetCaster();
+                    if (!caster)
+                        return;
+
+                    if (target->GetEntry() == 26570)
+                    {
+                        if (target->HasAura(54683, EFFECT_INDEX_0))
+                            return;
+                        else
+                        {
+                            // Credit Scourge
+                            caster->CastSpell(caster, 47208, true);
+                            // set ablaze
+                            target->CastSpell(target, 54683, true);
+                            ((Creature*)target)->ForcedDespawn(4000);
+                        }
+                    }
+                    break;
                 }
                 case 50789:                                 // Summon iron dwarf (left or right)
                 case 59860:
@@ -8284,8 +8290,8 @@ void Aura::PeriodicDummyTick()
             // Prey on the Weak
             if (spell->SpellIconID == 2983)
             {
-                if (target->GetTypeId() != TYPEID_PLAYER) 
-                    return; 
+                if (target->GetTypeId() != TYPEID_PLAYER)
+                    return;
 
                 Unit *victim = target->getVictim();
                 if (victim && (target->GetHealth() * 100 / target->GetMaxHealth() > victim->GetHealth() * 100 / victim->GetMaxHealth()))
@@ -9797,7 +9803,7 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
             // Barkskin
             if (GetId()==22812 && m_target->HasAura(63057)) // Glyph of Barkskin
                 spellId1 = 63058;                           // Glyph - Barkskin 01
-            else if (!apply && GetId() == 5229)             // Enrage (Druid Bear) 
+            else if (!apply && GetId() == 5229)             // Enrage (Druid Bear)
                 spellId1 = 51185;                           // King of the Jungle (Enrage damage aura)
             // Item - Druid T10 Feral 4P Bonus
             else if (GetId() == 5229 && m_target->HasAura(70726)) // Enrage

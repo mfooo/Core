@@ -2047,8 +2047,8 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
                     if (spellId_1 == 40216 && spellId_2 == 42016)
                         return false;
 
-                    // Frenzied Regeneration and Darkmoon Card Berserker 
-                    if(spellInfo_2->Id == 22842 && spellInfo_1->Id == 60196 ) 
+                    // Frenzied Regeneration and Darkmoon Card Berserker
+                    if(spellInfo_2->Id == 22842 && spellInfo_1->Id == 60196 )
                         return false;
 
                     break;
@@ -2307,9 +2307,9 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
                     (spellInfo_2->Id == 22842 && spellInfo_1->Id == 62606))
                     return false;
 
-                // Lacerate and Moonfire 
-                if((spellInfo_1->SpellIconID == 225 && spellInfo_2->SpellIconID == 2246) || 
-                   (spellInfo_2->SpellIconID == 225 && spellInfo_1->SpellIconID == 2246)) 
+                // Lacerate and Moonfire
+                if((spellInfo_1->SpellIconID == 225 && spellInfo_2->SpellIconID == 2246) ||
+                   (spellInfo_2->SpellIconID == 225 && spellInfo_1->SpellIconID == 2246))
                    return false;
             }
 
@@ -2325,13 +2325,13 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
             if (spellId_1 == 42016 && spellId_2 == 40216 )
                 return false;
 
-            // Rejuvenation and Forethought Talisman (item 40258) (60530 has spellfamily druid) 
-            if((spellInfo_2->Id == 60530 && spellInfo_1->SpellIconID == 64) || 
-                (spellInfo_1->Id == 60530 && spellInfo_2->SpellIconID == 64)) 
+            // Rejuvenation and Forethought Talisman (item 40258) (60530 has spellfamily druid)
+            if((spellInfo_2->Id == 60530 && spellInfo_1->SpellIconID == 64) ||
+                (spellInfo_1->Id == 60530 && spellInfo_2->SpellIconID == 64))
                   return false;
 
-            // Frenzied Regeneration and Darkmoon Card Berserker 
-            if(spellInfo_1->Id == 22842 && spellInfo_2->Id == 60196 ) 
+            // Frenzied Regeneration and Darkmoon Card Berserker
+            if(spellInfo_1->Id == 22842 && spellInfo_2->Id == 60196 )
                 return false;
 
             break;
