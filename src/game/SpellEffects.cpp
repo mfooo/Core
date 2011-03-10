@@ -932,19 +932,19 @@ void Spell::EffectDummy(SpellEffectIndex eff_idx)
                     m_caster->CastSpell(unitTarget, spell_id, true);
                     return;
                 }
-				case 7769:                                  // Strafe Jotunheim Building
-				{
-					if(Unit * pCaster = GetCaster())
-					{
-						if(Creature * pBuilding = pCaster->GetClosestCreatureWithEntry(pCaster, 30599, 50))
-						{
-							if(!pBuilding->HasAura(7448)) // Do not give credit for already burning buildings
-								if(pCaster->GetCharmerOrOwnerPlayerOrPlayerItself())
-									pCaster->GetCharmerOrOwnerPlayerOrPlayerItself()->KilledMonsterCredit(30576);
-							pBuilding->CastSpell(pBuilding, 7448, true);
-						}
-					}
-				}
+                case 7769:                                  // Strafe Jotunheim Building
+                {
+                    if(Unit * pCaster = GetCaster())
+                    {
+                        if(Creature * pBuilding = pCaster->GetClosestCreatureWithEntry(pCaster, 30599, 50))
+                        {
+                            if(!pBuilding->HasAura(7448)) // Do not give credit for already burning buildings
+                                if(pCaster->GetCharmerOrOwnerPlayerOrPlayerItself())
+                                    pCaster->GetCharmerOrOwnerPlayerOrPlayerItself()->KilledMonsterCredit(30576);
+                            pBuilding->CastSpell(pBuilding, 7448, true);
+                        }
+                    }
+                }
                 case 7671:                                  // Transformation (human<->worgen)
                 {
                     if (!unitTarget)
@@ -1353,25 +1353,25 @@ void Spell::EffectDummy(SpellEffectIndex eff_idx)
 
                     return;
                 }
-                // Polarity Shift - Naxxramas - Thaddius 
-                case 28089: 
-                { 
-                     uint32 spell_id = roll_chance_i(50)  
-                     ? 28059  
-                     : 28084; 
- 
-                  if (unitTarget) 
-                     unitTarget->CastSpell(unitTarget, spell_id, true, NULL, NULL, m_caster->GetGUID()); 
-                } 
-                case 39096: 
-                { 
-                uint32 spell_id = roll_chance_i(50)  
-                     ? 39088  
-                     : 39091; 
- 
-                   if (unitTarget) 
-                   unitTarget->CastSpell(unitTarget, spell_id, true, NULL, NULL, m_caster->GetGUID()); 
-                } 
+                // Polarity Shift - Naxxramas - Thaddius
+                case 28089:
+                {
+                     uint32 spell_id = roll_chance_i(50)
+                     ? 28059
+                     : 28084;
+
+                  if (unitTarget)
+                     unitTarget->CastSpell(unitTarget, spell_id, true, NULL, NULL, m_caster->GetGUID());
+                }
+                case 39096:
+                {
+                uint32 spell_id = roll_chance_i(50)
+                     ? 39088
+                     : 39091;
+
+                   if (unitTarget)
+                   unitTarget->CastSpell(unitTarget, spell_id, true, NULL, NULL, m_caster->GetGUID());
+                }
                 case 29200:                                 // Purify Helboar Meat
                 {
                     if (m_caster->GetTypeId() != TYPEID_PLAYER)
@@ -1578,26 +1578,26 @@ void Spell::EffectDummy(SpellEffectIndex eff_idx)
 
                     return;
                 }
-                case 42793:                                 // Burn Body 
-                { 
-                    if (!unitTarget || unitTarget->GetTypeId() != TYPEID_UNIT || m_caster->GetTypeId() != TYPEID_PLAYER) 
-                        return; 
- 
-                    Creature* pCreature = (Creature*)unitTarget; 
- 
-                    // Spell can be used in combat and may affect different target than the expected. 
-                    // If target is not the expected we need to prevent this effect. 
-                    if (!pCreature->GetLootRecipientGuid().IsEmpty() || pCreature->isInCombat()) 
-                        return; 
- 
-                    // set loot recipient, prevent re-use same target 
-                    pCreature->SetLootRecipient(m_caster); 
- 
-                    pCreature->ForcedDespawn(GetSpellDuration(m_spellInfo)); 
- 
-                    // EFFECT_INDEX_2 has 0 miscvalue for effect 134, doing the killcredit here instead (only one known case exist where 0) 
-                    ((Player*)m_caster)->KilledMonster(pCreature->GetCreatureInfo(), pCreature->GetObjectGuid()); 
-                    return; 
+                case 42793:                                 // Burn Body
+                {
+                    if (!unitTarget || unitTarget->GetTypeId() != TYPEID_UNIT || m_caster->GetTypeId() != TYPEID_PLAYER)
+                        return;
+
+                    Creature* pCreature = (Creature*)unitTarget;
+
+                    // Spell can be used in combat and may affect different target than the expected.
+                    // If target is not the expected we need to prevent this effect.
+                    if (!pCreature->GetLootRecipientGuid().IsEmpty() || pCreature->isInCombat())
+                        return;
+
+                    // set loot recipient, prevent re-use same target
+                    pCreature->SetLootRecipient(m_caster);
+
+                    pCreature->ForcedDespawn(GetSpellDuration(m_spellInfo));
+
+                    // EFFECT_INDEX_2 has 0 miscvalue for effect 134, doing the killcredit here instead (only one known case exist where 0)
+                    ((Player*)m_caster)->KilledMonster(pCreature->GetCreatureInfo(), pCreature->GetObjectGuid());
+                    return;
                 }
                 case 43036:                                 // Dismembering Corpse
                 {
@@ -2458,14 +2458,14 @@ void Spell::EffectDummy(SpellEffectIndex eff_idx)
                 case 64981:                                 // Summon Random Vanquished Tentacle
                 {
                      uint32 spell_id = 0;
- 
+
                      switch(urand(0, 2))
                      {
                          case 0: spell_id = 64982; break;    // Summon Vanquished Crusher Tentacle
                          case 1: spell_id = 64983; break;    // Summon Vanquished Constrictor Tentacle
                          case 2: spell_id = 64984; break;    // Summon Vanquished Corruptor Tentacle
                      }
- 
+
                      m_caster->CastSpell(m_caster, spell_id, true);
                      return;
                 }
@@ -2579,14 +2579,14 @@ void Spell::EffectDummy(SpellEffectIndex eff_idx)
                     unitTarget->CastSpell(unitTarget, 72195, true);
                     break;
                 }
-                case 69922:                                 // Temper Quel'Delar 
-                { 
-                    if (!unitTarget) 
-                        return; 
- 
-                    // Return Tempered Quel'Delar 
-                    unitTarget->CastSpell(m_caster, 69956, true); 
-                    return; 
+                case 69922:                                 // Temper Quel'Delar
+                {
+                    if (!unitTarget)
+                        return;
+
+                    // Return Tempered Quel'Delar
+                    unitTarget->CastSpell(m_caster, 69956, true);
+                    return;
                 }
             }
             break;
@@ -3756,7 +3756,7 @@ void Spell::EffectTeleportUnits(SpellEffectIndex eff_idx)
 {
     if(!unitTarget || unitTarget->IsTaxiFlying())
         return;
-		
+
     switch (m_spellInfo->Id)
     {
         case 66550: // teleports outside (Isle of Conquest)
@@ -3964,9 +3964,9 @@ void Spell::EffectApplyAura(SpellEffectIndex eff_idx)
 {
     if(!unitTarget)
         return;
-		
-     //Hack for Obsidian Sanctum Spell Flame Tsunami Damage Aura (57492) 
-     if(unitTarget->GetTypeId() == TYPEID_PLAYER && m_spellInfo->Id == 60430) 
+
+     //Hack for Obsidian Sanctum Spell Flame Tsunami Damage Aura (57492)
+     if(unitTarget->GetTypeId() == TYPEID_PLAYER && m_spellInfo->Id == 60430)
         return;
 
     // ghost spell check, allow apply any auras at player loading in ghost mode (will be cleanup after load)
@@ -5701,14 +5701,14 @@ void Spell::DoSummonGuardian(SpellEffectIndex eff_idx, uint32 forceFaction)
         else
             m_caster->GetClosePoint(px, py, pz,m_caster->GetObjectBoundingRadius());
 
-        // Mirror Image 
-        if (pet_entry == 31216) 
-        { 
-                // Set correct health and mana 
-                spawnCreature->SetMaxHealth(m_caster->GetMaxHealth()/3.0f); 
-                spawnCreature->SetHealth(m_caster->GetHealth()/3.0f); 
-                spawnCreature->SetMaxPower(POWER_MANA, m_caster->GetMaxPower(POWER_MANA)); 
-                spawnCreature->SetPower(POWER_MANA, m_caster->GetPower(POWER_MANA)); 
+        // Mirror Image
+        if (pet_entry == 31216)
+        {
+                // Set correct health and mana
+                spawnCreature->SetMaxHealth(m_caster->GetMaxHealth()/3.0f);
+                spawnCreature->SetHealth(m_caster->GetHealth()/3.0f);
+                spawnCreature->SetMaxPower(POWER_MANA, m_caster->GetMaxPower(POWER_MANA));
+                spawnCreature->SetPower(POWER_MANA, m_caster->GetPower(POWER_MANA));
         }
 
         if (!spawnCreature->SetSummonPosition(px,py,pz))
@@ -6961,28 +6961,28 @@ void Spell::EffectScriptEffect(SpellEffectIndex eff_idx)
                     m_caster->CastSpell(unitTarget, unitTarget->getGender() == GENDER_MALE ? 24735 : 24736, true);
                     return;
                 }
-                case 24751:                                 // Trick or Treat 
-                { 
-                    if (!unitTarget || unitTarget->GetTypeId() != TYPEID_PLAYER) 
-                        return; 
- 
-                   // Tricked or Treated 
-                    unitTarget->CastSpell(unitTarget, 24755, true); 
- 
-                    if (roll_chance_i(50)) 
-                   { 
-                        // Treat 
-                        unitTarget->CastSpell(unitTarget, 24715, true); 
-                    } 
-                    else 
-                    { 
-                        if (roll_chance_i(14))              // Trick (can be different critter models). 14% since below can have 1 of 6 
-                            unitTarget->CastSpell(unitTarget, 24753, true); 
-                        else                                // Random Costume, 6 different (plus add. for gender) 
-                            unitTarget->CastSpell(unitTarget, 24720, true); 
-                    } 
- 
-                    return; 
+                case 24751:                                 // Trick or Treat
+                {
+                    if (!unitTarget || unitTarget->GetTypeId() != TYPEID_PLAYER)
+                        return;
+
+                   // Tricked or Treated
+                    unitTarget->CastSpell(unitTarget, 24755, true);
+
+                    if (roll_chance_i(50))
+                   {
+                        // Treat
+                        unitTarget->CastSpell(unitTarget, 24715, true);
+                    }
+                    else
+                    {
+                        if (roll_chance_i(14))              // Trick (can be different critter models). 14% since below can have 1 of 6
+                            unitTarget->CastSpell(unitTarget, 24753, true);
+                        else                                // Random Costume, 6 different (plus add. for gender)
+                            unitTarget->CastSpell(unitTarget, 24720, true);
+                    }
+
+                    return;
                 }
                 case 26275:                                 // PX-238 Winter Wondervolt TRAP
                 {
@@ -7161,7 +7161,7 @@ void Spell::EffectScriptEffect(SpellEffectIndex eff_idx)
                             item = 21821; break;
                         case 6:
                             item = 21822; break;
-                        case 7: 
+                        case 7:
                             item = 21823; break;
                     }
                     if (item)
@@ -7703,23 +7703,23 @@ void Spell::EffectScriptEffect(SpellEffectIndex eff_idx)
                     m_caster->CastSpell(unitTarget, 59807, false);
                     return;
                 }
-                case 50894:                                 // Zul'Drak Rat 
-                { 
-                    if (!unitTarget || unitTarget->GetTypeId() != TYPEID_UNIT) 
-                        return; 
- 
+                case 50894:                                 // Zul'Drak Rat
+                {
+                    if (!unitTarget || unitTarget->GetTypeId() != TYPEID_UNIT)
+                        return;
+
                     if (SpellAuraHolder* pHolder = unitTarget->GetSpellAuraHolder(m_spellInfo->Id))
-                    { 
+                    {
                         if (pHolder->GetStackAmount() + 1 >= m_spellInfo->StackAmount)
-                        { 
-                            // Gluttonous Lurkers: Summon Gorged Lurking Basilisk 
-                            unitTarget->CastSpell(m_caster, 50928, true); 
-                            ((Creature*)unitTarget)->ForcedDespawn(1); 
-                        } 
-                    } 
- 
-                    return; 
-                } 
+                        {
+                            // Gluttonous Lurkers: Summon Gorged Lurking Basilisk
+                            unitTarget->CastSpell(m_caster, 50928, true);
+                            ((Creature*)unitTarget)->ForcedDespawn(1);
+                        }
+                    }
+
+                    return;
+                }
                 case 51770:                                 // Emblazon Runeblade
                 {
                     Unit* caster = GetAffectiveCaster();
@@ -7833,24 +7833,24 @@ void Spell::EffectScriptEffect(SpellEffectIndex eff_idx)
                     unitTarget->CastSpell(unitTarget, damage, false);
                     break;
                 }
-                //Big Blizzard Bear 
-                case 58983: 
-                { 
-                    if(!unitTarget || unitTarget->GetTypeId() != TYPEID_PLAYER) 
-                        return; 
- 
-                    // Prevent stacking of mounts 
-                    unitTarget->RemoveSpellsCausingAura(SPELL_AURA_MOUNTED); 
- 
-                    // Triggered spell id dependent of riding skill 
-                    if(uint16 skillval = ((Player*)unitTarget)->GetSkillValue(SKILL_RIDING)) 
-                    { 
-                        if (skillval >= 150) 
-                            unitTarget->CastSpell(unitTarget, 58999, true); 
-                        else 
-                            unitTarget->CastSpell(unitTarget, 58997, true); 
-                    } 
-                    return; 
+                //Big Blizzard Bear
+                case 58983:
+                {
+                    if(!unitTarget || unitTarget->GetTypeId() != TYPEID_PLAYER)
+                        return;
+
+                    // Prevent stacking of mounts
+                    unitTarget->RemoveSpellsCausingAura(SPELL_AURA_MOUNTED);
+
+                    // Triggered spell id dependent of riding skill
+                    if(uint16 skillval = ((Player*)unitTarget)->GetSkillValue(SKILL_RIDING))
+                    {
+                        if (skillval >= 150)
+                            unitTarget->CastSpell(unitTarget, 58999, true);
+                        else
+                            unitTarget->CastSpell(unitTarget, 58997, true);
+                    }
+                    return;
                 }
                 case 52941:                                 // Song of Cleansing
                 {
@@ -10099,7 +10099,7 @@ void Spell::EffectTransmitted(SpellEffectIndex eff_idx)
 
             m_caster->GetClosePoint(fx, fy, fz, DEFAULT_WORLD_OBJECT_SIZE, dis);
         }
-		
+
         Map *cMap = m_caster->GetMap();
 
         if(goinfo->type==GAMEOBJECT_TYPE_FISHINGNODE)

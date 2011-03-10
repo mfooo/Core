@@ -381,7 +381,7 @@ void DungeonResetScheduler::LoadResetTimes()
                 oldresettime = DungeonResetScheduler::CalculateNextResetTime(mapid, difficulty, time(NULL));
                 sLog.outErrorDb("Wrong reset time in group_instance corrected to: %d", oldresettime);
             }
-            else 
+            else
                 oldresettime = time_t(_oldresettime);
 
             MapDifficulty const* mapDiff = GetMapDifficultyData(mapid,difficulty);
