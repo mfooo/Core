@@ -3602,8 +3602,8 @@ void Aura::HandleAuraModShapeshift(bool apply, bool Real)
        // Reset rage if warrior switchs Stances 
         if (target->getClass() == CLASS_WARRIOR) 
         { 
-            // Exclude talent Tactical Mastery 
-            if (target->HasSpell(12295) || target->HasSpell(12676) || target->HasSpell(12677)) 
+            // Exclude talent Tactical Mastery and Stance Mastery 
+            if (target->HasSpell(12295) || target->HasSpell(12676) || target->HasSpell(12677) || target->HasSpell(12678))
                 target->ModifyPower(POWER_RAGE, 0); 
         }
     }
