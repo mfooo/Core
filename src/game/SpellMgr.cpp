@@ -2175,6 +2175,11 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
                 // Nether Protection effects
                 if( spellInfo_2->SpellIconID == 1985 && spellInfo_1->SpellIconID == 1985 && spellInfo_1->SpellVisual[0] == 9750 )
                     return false;
+
+                // (Corruption or Unstable Affliction or Curse of Agony or Curse of Doom) and Shadowflame 
+                if((spellInfo_1->SpellIconID == 313 || spellInfo_1->SpellIconID == 2039 || spellInfo_1->SpellIconID == 544 || spellInfo_1->SpellIconID == 91) && (spellInfo_2->SpellIconID == 3317) || 
+                   (spellInfo_2->SpellIconID == 313 || spellInfo_2->SpellIconID == 2039 || spellInfo_2->SpellIconID == 544 || spellInfo_1->SpellIconID == 91) && (spellInfo_1->SpellIconID == 3317)) 
+                    return false;
             }
 
             // Detect Invisibility and Mana Shield (multi-family check)
