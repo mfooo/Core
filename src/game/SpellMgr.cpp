@@ -866,6 +866,10 @@ bool IsPositiveEffect(uint32 spellId, SpellEffectIndex effIndex)
                     if(spellproto->Id==42792)               // Recently Dropped Flag (prevent cancel)
                         return false;
                     break;
+                case SPELL_AURA_PHASE: 
+                    if (spellproto->SpellIconID==2874)      // Some phasing Auras of Herald Volazj in Ahn'kahet 
+                        return false; 
+                    break;
                 default:
                     break;
             }

@@ -2445,6 +2445,15 @@ void Spell::EffectDummy(SpellEffectIndex eff_idx)
                     m_caster->CastSpell(unitTarget,60934,true,NULL);
                     return;
                 }
+                case 62907:                                 // Freyas Wall 
+                { 
+                    if (!unitTarget) 
+                        return; 
+ 
+                    for (int i= 0; i < 3;++i) 
+                        unitTarget->CastSpell(unitTarget, 62947, true); 
+                    return; 
+                }
                 case 64385:                                 // Spinning (from Unusual Compass)
                 {
                     m_caster->SetFacingTo(frand(0, M_PI_F*2), true);
@@ -4210,6 +4219,32 @@ void Spell::EffectPowerBurn(SpellEffectIndex eff_idx)
 
     new_damage = int32(new_damage * multiplier);
     m_damage += new_damage;
+
+    // "Mana Burn now causes Fear, Hex and Psychic Scream to break early when used." 
+    if (m_spellInfo->SpellFamilyName == SPELLFAMILY_PRIEST) 
+    { 
+        // Hex 
+        if (SpellAuraHolder *holder = unitTarget->GetSpellAuraHolder(51514)) 
+            unitTarget->RemoveSpellAuraHolder(holder, AURA_REMOVE_BY_CANCEL); 
+ 
+        Unit::AuraList const& fearAuras = unitTarget->GetAurasByType(SPELL_AURA_MOD_FEAR); 
+        for (Unit::AuraList::const_iterator itr = fearAuras.begin(); itr != fearAuras.end();) 
+        { 
+            if (*itr) 
+            { 
+                SpellEntry const *spellInfo = (*itr)->GetSpellProto(); 
+                if ((spellInfo->SpellFamilyName == SPELLFAMILY_WARLOCK && spellInfo->SpellIconID == 98) || // Fear 
+                    (spellInfo->SpellFamilyName == SPELLFAMILY_PRIEST &&                                   // Psychic Scream 
+                    (spellInfo->SpellFamilyFlags & UI64LIT(0x0000000000010000)))) 
+                { 
+                    ++itr; 
+                    unitTarget->RemoveAurasDueToSpell(spellInfo->Id, 0, AURA_REMOVE_BY_CANCEL); 
+                    continue; 
+                } 
+            } 
+            ++itr; 
+        } 
+    }
 }
 
 void Spell::EffectHeal(SpellEffectIndex /*eff_idx*/)
@@ -8163,7 +8198,15 @@ void Spell::EffectScriptEffect(SpellEffectIndex eff_idx)
 
                     return;
                 }
-
+                case 62705:                                 // Auto-repair 
+                { 
+                    if (!unitTarget) 
+                        return; 
+                    unitTarget->SetHealth(unitTarget->GetMaxHealth()); 
+                    if (VehicleKit* vehicle = unitTarget->GetVehicleKit()) 
+                        if (Unit* seat = vehicle->GetPassenger(1)) 
+                            seat->ModifyPower(POWER_ENERGY,50); 
+                }
                 case 69200:                                 // Raging Spirit
                 {
                     if (!unitTarget)
@@ -8254,6 +8297,15 @@ void Spell::EffectScriptEffect(SpellEffectIndex eff_idx)
 
                     ((Creature*)m_caster)->ForcedDespawn(1000);
                     return;
+                }
+                case 65044:                                 // Flames Ulduar 
+                { 
+                    if (!unitTarget) 
+                        return; 
+ 
+                    if (unitTarget->HasAura(62297)) 
+                        unitTarget->RemoveAurasDueToSpell(62297);   // Remove Hodir's Fury 
+                    break; 
                 }
                 case 65917:                                 // Magic Rooster
                 {

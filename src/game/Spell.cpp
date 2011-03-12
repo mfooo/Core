@@ -1644,6 +1644,7 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
                 case 67281:
                 case 67282:
                 case 67283:
+                case 62374:                                 // Pursued Ulduar Leviathan
                 case 65950:                                 // Touch of Light
                 case 67296:
                 case 67297:
