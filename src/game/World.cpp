@@ -823,6 +823,8 @@ void World::LoadConfigSettings(bool reload)
     setConfig(CONFIG_FLOAT_PVP_TOKEN_ITEMID,"PvPToken.ItemID", 29434);
     setConfig(CONFIG_FLOAT_PVP_TOKEN_ITEMCOUNT,"PvPToken.ItemCount", 1);
     setConfig(CONFIG_FLOAT_PVP_TOKEN_GOLD,"PvPToken.Gold", 100000);
+    setConfig(CONFIG_PVP_TOKEN_HONOR,"PvPToken.Honor", 75000); 
+    setConfig(CONFIG_PVP_TOKEN_ARENA,"PvPToken.Arena", 5000);
     setConfig(CONFIG_FLOAT_PVP_TOKEN_RESTRICTION,"PvPToken.MapRestriction", 4);
     // PvP Announcer System
     setConfig(CONFIG_BOOL_PVP_ANNOUNCER,"PvPAnnouncer.Enable", true);

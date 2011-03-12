@@ -137,7 +137,7 @@ void BattleGroundSA::EndBattleGround(Team winner)
     RewardHonorToTeam(GetBonusHonorFromKill(2), HORDE);
     //RewardXpToTeam(0, 0.8f, ALLIANCE);
     //RewardXpToTeam(0, 0.8f, HORDE);
-    
+
     BattleGround::EndBattleGround(winner);
 }
 
@@ -369,7 +369,7 @@ void BattleGroundSA::ResetBattle(uint32 winner, Team teamDefending)
     Phase = SA_ROUND_TWO;
     shipsTimer = 60000;
     shipsStarted = false;
-    
+
     for (int32 i = 0; i <= BG_SA_GATE_MAX; ++i)
         GateStatus[i] = 1;
 

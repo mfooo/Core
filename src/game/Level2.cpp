@@ -1156,6 +1156,44 @@ bool ChatHandler::HandleGameObjectPhaseCommand(char* args)
     return true;
 }
 
+//set state for selected object 
+bool ChatHandler::HandleGameObjectStateCommand(char* args) 
+{ 
+    // number or [name] Shift-click form |color|Hgameobject:go_id|h[name]|h|r 
+    char* cId = ExtractKeyFromLink(&args,"Hgameobject"); 
+    if (!cId) 
+        return false; 
+ 
+    uint32 lowguid = atoi(cId); 
+    if (!lowguid) 
+        return false; 
+ 
+    GameObject* obj = NULL; 
+ 
+    // by DB guid 
+    if (GameObjectData const* go_data = sObjectMgr.GetGOData(lowguid)) 
+        obj =GetGameObjectWithGuid(lowguid, go_data->id); 
+ 
+    if (!obj) 
+    { 
+        PSendSysMessage(LANG_COMMAND_OBJNOTFOUND, lowguid); 
+        SetSentErrorMessage(true); 
+        return false; 
+    } 
+ 
+    char* stateStr = strtok (NULL, " "); 
+    uint32 state = stateStr? atoi(stateStr) : 0; 
+    if (state > 2) 
+    { 
+        SendSysMessage(LANG_BAD_VALUE); 
+        SetSentErrorMessage(true); 
+        return false; 
+    } 
+ 
+    obj->SetGoState((GOState)state); 
+    return true; 
+} 
+
 bool ChatHandler::HandleGameObjectNearCommand(char* args)
 {
     float distance;

@@ -367,7 +367,7 @@ bool AntiCheat::CheckNeeded(AntiCheatCheck checktype)
             break;
         case CHECK_MOVEMENT:
             if (   GetPlayer()->GetTransport()
-                || GetPlayer()->HasMovementFlag(MOVEFLAG_ONTRANSPORT) 
+                || GetPlayer()->HasMovementFlag(MOVEFLAG_ONTRANSPORT)
                 || GetMover()->GetMotionMaster()->GetCurrentMovementGeneratorType() == FLIGHT_MOTION_TYPE
                 || GetPlayer()->IsTaxiFlying())
                 return false;
@@ -727,7 +727,7 @@ bool AntiCheat::CheckSpellOndeath()
     char buffer[255];
     sprintf(buffer," player is not in ALIVE state, but cast spell %u ",
                  m_currentspellID);
-     return true; // might not be right
+     return false; 
 }
 
 bool AntiCheat::CheckSpellFamily()

@@ -199,7 +199,6 @@ struct CreatureData
 struct CreatureDataAddonAura
 {
     uint32 spell_id;
-    SpellEffectIndex effect_idx;
 };
 
 // from `creature_addon` and `creature_template_addon`tables
@@ -212,7 +211,7 @@ struct CreatureDataAddon
     uint8  pvp_state;                                       // UnitPVPStateFlags
     uint32 emote;
     uint32 splineFlags;
-    CreatureDataAddonAura const* auras;                     // loaded as char* "spell1 eff1 spell2 eff2 ... "
+    CreatureDataAddonAura const* auras;                     // loaded as char* "spell1 spell2 ... "
 };
 
 struct CreatureModelInfo
@@ -538,6 +537,7 @@ class MANGOS_DLL_SPEC Creature : public Unit
         std::string GetAIName() const;
         std::string GetScriptName() const;
         uint32 GetScriptId() const;
+        bool HasAIName() const { return !GetAIName().empty(); }
 
         // overwrite WorldObject function for proper name localization
         const char* GetNameForLocaleIdx(int32 locale_idx) const;

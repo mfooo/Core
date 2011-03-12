@@ -2,15 +2,12 @@
 TO_DO ++++++++++++++++++++++++
 ==============================
 
-1. one day get outdoor pvp implented
+1. fix custom item level up and talent up   and custom reset instance guy 
 
-2. fix custom tokenvendor and custom talent point stone item ( so far this is all i have tested in customs area )
+2. needs to test each player class and race spell and talent & and start fixing or ect what doesnt work 
 
-3. fix custom item level up and talent up   and custom reset instance guy 
+3. instance stacking nonblizzlike players can do normal instances and then do a heroic instance right after
 
-4. needs to test each player class and race spell and talent & and start fixing or ect what doesnt work 
-
-5. check/fix the over spell stacking or buffing issue 
 
 =======================
 CORE_BUGS_&_ECT +++++++
@@ -20,7 +17,7 @@ CORE_BUGS_&_ECT +++++++
 ==========================
 In_Progress_Testing ++++++
 ==========================
-1. WarHead's Jail _12_18_2010_ Still Testing 2_4_2011
+1. WarHead's Jail _12_18_2010_ Still Testing 3_12_2011
 
 =======================
 SCRIPTDEV2_BUGS ++++++++
@@ -33,10 +30,7 @@ Quests_BUGS_&_ERRORS +++
 ========================
 
 -- Ebon Hold - DK Starting Area bugs  confirmed by FallenangelX
-1. eye of acherus is still not unapplying aura 51923  and players are gettign a speed boost til they log out or server gets rebooted  
-   also launching the eye after recall causes weird bugs but first launch works great 
-
-2. fix bug with quest ambush at overlook   quest works fine   and credit is fine
+1. fix bug with quest ambush at overlook   quest works fine   and credit is fine
 
 ==================
 DATABASE_BUGS+++++
@@ -49,6 +43,7 @@ CLASS_ONLY_SPELLS_TALENT_BUGS+++++
 ==================================
 Testing of these spells was more then just  hitting the button and see if they are working  forumla and ect are looked over as well 8)
 =--/ DEATHKNIGHT \--=
+
 1. Runeforaging = 
 
 2. blood boil = 

@@ -140,7 +140,7 @@ BindIP = "0.0.0.0"
 #
 #    vmap.enableLOS
 #    vmap.enableHeight
-#        Enable/Disable vmap support for line of sight and height calculation
+#        Enable/Disable Vmaps support for line of sight and height calculation
 #        Default: 0 (disable)
 #                 1 (enable)
 #
@@ -218,12 +218,12 @@ PlayerSave.Stats.MinLevel = 1
 PlayerSave.Stats.SaveOnlyOnLogout = 1
 vmap.enableLOS = 1
 vmap.enableHeight = 1
-vmap.ignoreSpellIds = "7720"
+vmap.ignoreSpellIds = "7720, 64843, 64901"
 vmap.enableIndoorCheck = 1
 DetectPosCollision = 1
 TargetPosRecalculateRange = 1.5
 mmap.enabled = 1
-mmap.ignoreMapIds = "189, 576, 578, 580, 603, 607, 608, 615, 616, 617, 618, 628, 631, 632, 658, 668"
+mmap.ignoreMapIds = "189, 576, 578, 580, 603, 607, 608, 615, 616, 617, 618, 628, 631, 632, 649, 658, 668"
 UpdateUptimeInterval = 10
 MaxCoreStuckTime = 0
 AddonChannel = 1
@@ -1923,6 +1923,14 @@ CharDelete.KeepDays = 30
 #        The amount of gold that players will receive after killing an enemy.
 #        Default: 100000
 #
+#    PvPToken.Honor 
+#        The amount of honor points that players will receive after killing an enemy. 
+#        Default: 75000 
+# 
+#    PvPToken.Arena 
+#        The amount of arena points that players will receive after killing an enemy. 
+#        Default: 5000
+#
 #    PvPToken.MapRestriction
 #        The type of maps where players can receive the token
 #        Default: 4 - all maps
@@ -1936,6 +1944,8 @@ PvPToken.Enable = 1
 PvPToken.ItemID = 29434
 PvPToken.ItemCount = 1
 PvPToken.Gold = 100000
+PvPToken.Honor = 75000 
+PvPToken.Arena = 5000
 PvPToken.MapRestriction = 4
 
 ###################################################################################################################

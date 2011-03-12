@@ -214,6 +214,27 @@ struct MANGOS_DLL_DECL boss_halion_realAI : public BSWScriptedAI
             {
                 m_creature->RemoveFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_LOOTABLE);
             }
+            pInstance->SetData(TYPE_HALION, DONE);
+            m_creature->SetFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_LOOTABLE);
+            pInstance->SetData(TYPE_COUNTER, COUNTER_OFF);
+
+            // Updating achievements for all players in the map - not only in real world
+            Map* pMap = m_creature->GetMap();
+            Map::PlayerList const &pList = pMap->GetPlayers();
+                if (pList.isEmpty()) return;
+            for(Map::PlayerList::const_iterator i = pList.begin(); i != pList.end(); ++i)
+            {
+                if (Player* player = i->getSource())
+                {
+                    if (!player) continue;
+
+                    if (player->isGameMaster()) continue;
+
+                    if (!player->IsInMap(m_creature)) continue;
+
+                    player->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE, m_creature->GetEntry());
+                }
+            }
         }
     }
 

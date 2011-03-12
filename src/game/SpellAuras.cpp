@@ -1144,7 +1144,7 @@ void Aura::TriggerSpell()
     // Penance, set target to self if no target set
 	if (!triggerTarget)
 	{
-		uint32 auraId = GetSpellProto()->Id; 
+		uint32 auraId = GetSpellProto()->Id;
 
 		if (auraId == 47757 || auraId == 52986 || auraId == 52987 || auraId == 52988)
 			triggerTarget = GetCaster();
@@ -1688,8 +1688,9 @@ void Aura::TriggerSpell()
 //                    case 65422: break;
 //                    // Rolling Throw
 //                    case 67546: break;
-//                    // Gunship Cannon Fire
-//                    case 70017: break;
+                      case 70017:             // Gunship Cannon Fire
+                          trigger_spell_id = 70021;
+                          break;
 //                    // Ice Tomb
 //                    case 70157: break;
 //                    // Mana Barrier
@@ -2208,7 +2209,7 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
                         if (Unit* caster = GetCaster())
                         caster->CastSpell(caster, 50001, true, NULL, this);
                         return;
-                    case 61187: 
+                    case 61187:
                     case 61190:
                     {
                         target->RemoveAurasDueToSpell(57620);
@@ -2509,31 +2510,31 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
             if (!caster || !caster->isAlive())
                 return;
 
-            uint32 finalSpelId = 0;
+            uint32 finalSpellId = 0;
             switch(GetId())
             {
-                case 19548: finalSpelId = 19597; break;
-                case 19674: finalSpelId = 19677; break;
-                case 19687: finalSpelId = 19676; break;
-                case 19688: finalSpelId = 19678; break;
-                case 19689: finalSpelId = 19679; break;
-                case 19692: finalSpelId = 19680; break;
-                case 19693: finalSpelId = 19684; break;
-                case 19694: finalSpelId = 19681; break;
-                case 19696: finalSpelId = 19682; break;
-                case 19697: finalSpelId = 19683; break;
-                case 19699: finalSpelId = 19685; break;
-                case 19700: finalSpelId = 19686; break;
-                case 30646: finalSpelId = 30647; break;
-                case 30653: finalSpelId = 30648; break;
-                case 30654: finalSpelId = 30652; break;
-                case 30099: finalSpelId = 30100; break;
-                case 30102: finalSpelId = 30103; break;
-                case 30105: finalSpelId = 30104; break;
+                case 19548: finalSpellId = 19597; break;
+                case 19674: finalSpellId = 19677; break;
+                case 19687: finalSpellId = 19676; break;
+                case 19688: finalSpellId = 19678; break;
+                case 19689: finalSpellId = 19679; break;
+                case 19692: finalSpellId = 19680; break;
+                case 19693: finalSpellId = 19684; break;
+                case 19694: finalSpellId = 19681; break;
+                case 19696: finalSpellId = 19682; break;
+                case 19697: finalSpellId = 19683; break;
+                case 19699: finalSpellId = 19685; break;
+                case 19700: finalSpellId = 19686; break;
+                case 30646: finalSpellId = 30647; break;
+                case 30653: finalSpellId = 30648; break;
+                case 30654: finalSpellId = 30652; break;
+                case 30099: finalSpellId = 30100; break;
+                case 30102: finalSpellId = 30103; break;
+                case 30105: finalSpellId = 30104; break;
             }
 
-            if (finalSpelId)
-                caster->CastSpell(target, finalSpelId, true, NULL, this);
+            if (finalSpellId)
+                caster->CastSpell(target, finalSpellId, true, NULL, this);
 
             return;
         }
@@ -2910,7 +2911,8 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
                             target->PlayDirectSound(14972, (Player *)target);
                     }
                     return;
-                case 40131:
+                case 40131:             // shroud of death
+                case 10848:
                 case 27978:
                     if (apply)
                         target->m_AuraFlags |= UNIT_AURAFLAG_ALIVE_INVISIBLE;
@@ -3277,6 +3279,8 @@ void Aura::HandleAuraModShapeshift(bool apply, bool Real)
         return;
 
     uint32 modelid = 0;
+    uint32 curhealth = 0;
+    bool lifehack = false;
     Powers PowerType = POWER_MANA;
     ShapeshiftForm form = ShapeshiftForm(m_modifier.m_miscvalue);
 
@@ -3544,7 +3548,10 @@ void Aura::HandleAuraModShapeshift(bool apply, bool Real)
         if(modelid > 0)
             target->SetDisplayId(target->GetNativeDisplayId());
         if(target->getClass() == CLASS_DRUID)
+        {
             target->setPowerType(POWER_MANA);
+            curhealth = target->GetHealth() * 100 / target->GetMaxHealth();
+        }
         target->SetShapeshiftForm(FORM_NONE);
 
         switch(form)
@@ -3552,6 +3559,8 @@ void Aura::HandleAuraModShapeshift(bool apply, bool Real)
             // Nordrassil Harness - bonus
             case FORM_BEAR:
             case FORM_DIREBEAR:
+            // only use for forms which change health
+                lifehack = true;
             case FORM_CAT:
                 if(Aura* dummy = target->GetDummyAura(37315) )
                     target->CastSpell(target, 37316, true, NULL, dummy);
@@ -3580,6 +3589,24 @@ void Aura::HandleAuraModShapeshift(bool apply, bool Real)
     // adding/removing linked auras
     // add/remove the shapeshift aura's boosts
     HandleShapeshiftBoosts(apply);
+
+    if (!apply)
+    {
+        // Set correct health of player
+        // Bugs if druid has much life
+        if (target->getClass() == CLASS_DRUID && lifehack)
+        {
+            target->SetHealth(target->GetMaxHealth() * curhealth / 100);
+        }
+
+       // Reset rage if warrior switchs Stances 
+        if (target->getClass() == CLASS_WARRIOR) 
+        { 
+            // Exclude talent Tactical Mastery and Stance Mastery 
+            if (target->HasSpell(12295) || target->HasSpell(12676) || target->HasSpell(12677) || target->HasSpell(12678))
+                target->ModifyPower(POWER_RAGE, 0); 
+        }
+    }
 
     target->UpdateSpeed(MOVE_RUN, true);
 
@@ -4537,16 +4564,16 @@ void Aura::HandleAuraModStun(bool apply, bool Real)
             data << uint32(0);
             target->SendMessageToSet(&data, true);
         }
-		
-        // Seduction (Succubus spell) 
-        if (GetSpellProto()->Id == 6358) 
-        { 
-            Unit* pCaster = GetCaster(); 
-            if(!pCaster) 
-                return; 
-             
-            pCaster->InterruptSpell(CURRENT_CHANNELED_SPELL,false); 
-            return; 
+
+        // Seduction (Succubus spell)
+        if (GetSpellProto()->Id == 6358)
+        {
+            Unit* pCaster = GetCaster();
+            if(!pCaster)
+                return;
+
+            pCaster->InterruptSpell(CURRENT_CHANNELED_SPELL,false);
+            return;
         }
 
         // Wyvern Sting
@@ -5347,13 +5374,13 @@ void Aura::HandlePeriodicTriggerSpell(bool apply, bool /*Real*/)
                 }
 
                 return;
-             case 66083:                                     // Lightning Arrows (Trial of the Champion encounter) 
-                 if (m_removeMode == AURA_REMOVE_BY_EXPIRE) 
-                { 
-                    if (Unit* pCaster = GetCaster()) 
-                        pCaster->CastSpell(pCaster, 66085, true, NULL, this); 
-                } 
- 
+             case 66083:                                     // Lightning Arrows (Trial of the Champion encounter)
+                 if (m_removeMode == AURA_REMOVE_BY_EXPIRE)
+                {
+                    if (Unit* pCaster = GetCaster())
+                        pCaster->CastSpell(pCaster, 66085, true, NULL, this);
+                }
+
                 return;
             case 71441:
                 if (m_removeMode == AURA_REMOVE_BY_EXPIRE)
@@ -5997,7 +6024,7 @@ void Aura::HandleAuraModTotalManaPercentRegen(bool apply, bool /*Real*/)
         m_modifier.periodictime = 1000;
 
     if(GetSpellProto()->Id == 60069)            // Dispersion HACK
-        m_modifier.m_miscvalue = 0;	
+        m_modifier.m_miscvalue = 0;
 
     m_periodicTimer = m_modifier.periodictime;
     m_isPeriodic = apply;
@@ -7243,7 +7270,7 @@ void Aura::PeriodicTick()
             Unit *pCaster = GetCaster();
             if(!pCaster)
                 return;
-				
+
             if(!pCaster->IsInWorld() || !pCaster->isAlive())
 			    return;
 
@@ -8122,26 +8149,26 @@ void Aura::PeriodicDummyTick()
 //              case 50493: break;
 //              // Love Rocket Barrage
 //              case 50530: break;
-                case 47214: // Burninate Effect 
-                { 
-                    Unit * caster = GetCaster(); 
-                    if (!caster) 
-                        return; 
- 
-                    if (target->GetEntry() == 26570) 
-                    { 
-                        if (target->HasAura(54683, EFFECT_INDEX_0)) 
-                            return; 
-                        else  
-                        { 
-                            // Credit Scourge 
-                            caster->CastSpell(caster, 47208, true); 
-                            // set ablaze 
-                            target->CastSpell(target, 54683, true); 
-                            ((Creature*)target)->ForcedDespawn(4000);    
-                        } 
-                    }                     
-                    break; 
+                case 47214: // Burninate Effect
+                {
+                    Unit * caster = GetCaster();
+                    if (!caster)
+                        return;
+
+                    if (target->GetEntry() == 26570)
+                    {
+                        if (target->HasAura(54683, EFFECT_INDEX_0))
+                            return;
+                        else
+                        {
+                            // Credit Scourge
+                            caster->CastSpell(caster, 47208, true);
+                            // set ablaze
+                            target->CastSpell(target, 54683, true);
+                            ((Creature*)target)->ForcedDespawn(4000);
+                        }
+                    }
+                    break;
                 }
                 case 50789:                                 // Summon iron dwarf (left or right)
                 case 59860:
@@ -8271,6 +8298,9 @@ void Aura::PeriodicDummyTick()
             // Prey on the Weak
             if (spell->SpellIconID == 2983)
             {
+                if (target->GetTypeId() != TYPEID_PLAYER)
+                    return;
+
                 Unit *victim = target->getVictim();
                 if (victim && (target->GetHealth() * 100 / target->GetMaxHealth() > victim->GetHealth() * 100 / victim->GetMaxHealth()))
                 {
@@ -9586,7 +9616,7 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
                 case 57761:                                 // Fireball! (Brain Freeze triggered)
                 {
                     // consumed aura
-                    if (!apply && m_removeMode != AURA_REMOVE_BY_EXPIRE)
+                    if (!apply && m_removeMode != AURA_REMOVE_BY_EXPIRE && m_removeMode != AURA_REMOVE_BY_STACK)
                     {
                         Unit* caster = GetCaster();
                         // Item - Mage T10 2P Bonus
@@ -9781,7 +9811,7 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
             // Barkskin
             if (GetId()==22812 && m_target->HasAura(63057)) // Glyph of Barkskin
                 spellId1 = 63058;                           // Glyph - Barkskin 01
-            else if (!apply && GetId() == 5229)             // Enrage (Druid Bear) 
+            else if (!apply && GetId() == 5229)             // Enrage (Druid Bear)
                 spellId1 = 51185;                           // King of the Jungle (Enrage damage aura)
             // Item - Druid T10 Feral 4P Bonus
             else if (GetId() == 5229 && m_target->HasAura(70726)) // Enrage

@@ -5914,7 +5914,7 @@ void Player::UpdateWeaponSkill (WeaponAttackType attType)
         case RANGED_ATTACK:
         {
             Item *tmpitem = GetWeaponForAttack(attType,true,true);
-            if (tmpitem)
+            if (tmpitem && (tmpitem->GetProto()->SubClass != ITEM_SUBCLASS_WEAPON_FISHING_POLE))
                 UpdateSkill(tmpitem->GetSkill(),weapon_skill_gain);
             break;
         }
@@ -8612,7 +8612,7 @@ void Player::SendLoot(ObjectGuid guid, LootType loot_type)
                         item->SetLootState(ITEM_LOOT_TEMPORARY);
                         break;
                     default:
-                        loot->FillLoot(item->GetEntry(), LootTemplates_Item, this, item->GetProto()->MaxMoneyLoot == 0);
+                        loot->FillLoot(item->GetEntry(), LootTemplates_Item, this, true, item->GetProto()->MaxMoneyLoot == 0);
                         loot->generateMoneyLoot(item->GetProto()->MinMoneyLoot, item->GetProto()->MaxMoneyLoot);
                         item->SetLootState(ITEM_LOOT_CHANGED);
                         break;
@@ -9784,7 +9784,13 @@ Item* Player::GetItemByGuid(ObjectGuid guid) const
             for(uint32 j = 0; j < pBag->GetBagSize(); ++j)
                 if (Item* pItem = pBag->GetItemByPos(j))
                     if (pItem->GetObjectGuid() == guid)
-                        return pItem;
+                     return pItem;
+
+    for(int i = BANK_SLOT_ITEM_START; i < BANK_SLOT_ITEM_END; ++i)
+        if (Item *pItem = GetItemByPos(INVENTORY_SLOT_BAG_0, i))
+            if (pItem->GetObjectGuid() == guid)
+                return pItem;
+
 
     for(int i = BANK_SLOT_BAG_START; i < BANK_SLOT_BAG_END; ++i)
         if (Bag *pBag = (Bag*)GetItemByPos(INVENTORY_SLOT_BAG_0, i))
@@ -23120,6 +23126,8 @@ void Player::ReceiveToken()
     uint32 itemID = sWorld.getConfig(CONFIG_FLOAT_PVP_TOKEN_ITEMID);
     uint32 itemCount = sWorld.getConfig(CONFIG_FLOAT_PVP_TOKEN_ITEMCOUNT);
     uint32 goldAmount = sWorld.getConfig(CONFIG_FLOAT_PVP_TOKEN_GOLD);
+    uint32 honorAmount = sWorld.getConfig(CONFIG_PVP_TOKEN_HONOR);
+    uint32 arenaAmount = sWorld.getConfig(CONFIG_PVP_TOKEN_ARENA);
 
     ItemPosCountVec dest;
     uint8 msg = CanStoreNewItem( NULL_BAG, NULL_SLOT, dest, itemID, itemCount);
@@ -23130,12 +23138,22 @@ void Player::ReceiveToken()
     }
 
     Item* item = StoreNewItem( dest, itemID, true, Item::GenerateItemRandomPropertyId(itemID));
-    SendNewItem(item,itemCount,true,false);
+   SendNewItem(item,itemCount,true,false);
 
-    if( goldAmount > 0 )
-        ModifyMoney(goldAmount);
-        SaveGoldToDB();
-        return;
+   if( honorAmount > 0 )
+       ModifyHonorPoints(honorAmount);
+       SaveToDB();
+       return;
+
+   if( goldAmount > 0 )
+       ModifyMoney(goldAmount);
+       SaveGoldToDB();
+       return;
+
+   if( arenaAmount > 0 )
+       ModifyArenaPoints(arenaAmount);
+       SaveToDB();
+       return;
 
     ChatHandler(this).PSendSysMessage(LANG_EVENTMESSAGE);
 }

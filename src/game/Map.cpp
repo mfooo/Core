@@ -1462,7 +1462,7 @@ bool DungeonMap::Add(Player *player)
                 player->BindToInstance(GetPersistanceState(), false);
             else
             {
-                // cannot jump to a different instance without resetting it 
+                // cannot jump to a different instance without resetting it
                 MANGOS_ASSERT(playerBind->state == GetPersistentState());
             }
         }
@@ -1920,18 +1920,28 @@ void Map::ScriptsProcess()
                 switch(step.script->talk.chatType)
                 {
                     case CHAT_TYPE_SAY:
+                        if(!unitTarget)
+                            break;
                         pSource->MonsterSay(textId, step.script->talk.language, unitTarget);
                         break;
                     case CHAT_TYPE_YELL:
+                        if(!unitTarget)
+                            break;
                         pSource->MonsterYell(textId, step.script->talk.language, unitTarget);
                         break;
                     case CHAT_TYPE_TEXT_EMOTE:
+                        if(!unitTarget)
+                            break;
                         pSource->MonsterTextEmote(textId, unitTarget);
                         break;
                     case CHAT_TYPE_BOSS_EMOTE:
+                        if(!unitTarget)
+                            break;
                         pSource->MonsterTextEmote(textId, unitTarget, true);
                         break;
                     case CHAT_TYPE_WHISPER:
+                        if(!unitTarget)
+                            break;
                         if (!unitTarget || unitTarget->GetTypeId() != TYPEID_PLAYER)
                         {
                             sLog.outError("SCRIPT_COMMAND_TALK (script id %u) attempt to whisper (%u) to %s, skipping.", step.script->id, step.script->talk.chatType, unitTarget ? unitTarget->GetGuidStr().c_str() : "<no target>");
@@ -1940,6 +1950,8 @@ void Map::ScriptsProcess()
                         pSource->MonsterWhisper(textId, unitTarget);
                         break;
                     case CHAT_TYPE_BOSS_WHISPER:
+                        if(!unitTarget)
+                            break;
                         if (!unitTarget || unitTarget->GetTypeId() != TYPEID_PLAYER)
                         {
                             sLog.outError("SCRIPT_COMMAND_TALK (script id %u) attempt to whisper (%u) to %s, skipping.", step.script->id, step.script->talk.chatType, unitTarget ? unitTarget->GetGuidStr().c_str() : "<no target>");
@@ -1948,6 +1960,8 @@ void Map::ScriptsProcess()
                         pSource->MonsterWhisper(textId, unitTarget, true);
                         break;
                     case CHAT_TYPE_ZONE_YELL:
+                        if(!unitTarget)
+                            break;
                         pSource->MonsterYellToZone(textId, step.script->talk.language, unitTarget);
                         break;
                     default:
@@ -2908,7 +2922,7 @@ Player* Map::GetPlayer(ObjectGuid guid)
 }
 
 /**
- * Function return creature (non-pet and then most summoned by spell creatures) that in world at CURRENT map 
+ * Function return creature (non-pet and then most summoned by spell creatures) that in world at CURRENT map
  *
  * @param guid must be creature guid (HIGHGUID_UNIT)
  */
