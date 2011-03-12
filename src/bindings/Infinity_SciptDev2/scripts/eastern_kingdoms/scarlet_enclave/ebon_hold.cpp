@@ -3725,7 +3725,7 @@ CreatureAI* GetAI_mob_scarlet_courier_controller(Creature* pCreature)
 	return new mob_scarlet_courier_controllerAI (pCreature);
 }
 
-+/*###### 
+/*###### 
 ## npc_valkyr_battle_maiden 
 ######*/ 
 
